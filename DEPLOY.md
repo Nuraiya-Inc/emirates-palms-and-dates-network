@@ -1,11 +1,11 @@
-# Deploy — devin.nuraiya.ai
+# Deploy — epdn.nuraiya.ai
 
 Target: Coolify v4 (Traefik). This app deploys as a **separate Coolify app with
 its own Postgres** — zero contact with any other app or database on the box.
 
 ## 0. DNS (do first)
 
-`devin.nuraiya.ai` → A record → the Coolify VPS public IP (grey cloud if
+`epdn.nuraiya.ai` → A record → the Coolify VPS public IP (grey cloud if
 behind Cloudflare — Traefik terminates TLS itself).
 
 ## 1. Coolify — Postgres
@@ -16,7 +16,7 @@ Coolify → your project → **+ New → Database → PostgreSQL**
 
 ## 2. Coolify — the app
 
-**+ New → Application → Private repository** → `Nuraiya-Inc/devin-uae-date-platform`,
+**+ New → Application → Private repository** → `Nuraiya-Inc/emirates-palms-and-dates-network`,
 branch `main`, Build Pack: **Dockerfile**.
 
 - **Resources:** set memory limit 4–6 GB (Next.js build needs it).
@@ -32,7 +32,7 @@ branch `main`, Build Pack: **Dockerfile**.
 | `SEED_CEO_NAME` | Nima Vakili |
 | `SEED_CEO_PASSWORD` | fresh — never reuse another platform's |
 
-- **Domain:** `https://devin.nuraiya.ai`
+- **Domain:** `https://epdn.nuraiya.ai`
   The image's CMD exports NEXTAUTH_URL/AUTH_URL for this domain — if you
   change the domain, edit the CMD line in the Dockerfile too (and set
   `CANONICAL_URL` to override `src/lib/auth.ts`'s production default).
@@ -62,7 +62,7 @@ curl -s -X POST -H "Authorization: Bearer $CRON_SECRET" http://localhost:3000/ap
 
 ## 5. Verify
 
-`https://devin.nuraiya.ai/api/health` → `{"status":"ok"}`. Sign in, check
+`https://epdn.nuraiya.ai/api/health` → `{"status":"ok"}`. Sign in, check
 `/directory` (232 entries, staff-only), `/partners`, `/dashboard`. Phone:
 `/portal` in Arabic RTL with the عربي|EN toggle; membership card; certificate
 downloads. `npm run demo:reset` between demo rehearsals.

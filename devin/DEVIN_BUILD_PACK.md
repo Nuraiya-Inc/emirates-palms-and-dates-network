@@ -2,7 +2,7 @@
 
 **Purpose:** a single, ordered handoff that lets Devin (a) replicate the platform skeleton and (b) add the Safa BioWorks value-chain network directory (232 real entities), cleanly and verifiably.
 
-**How to use this pack.** Give Devin four things: this file, the architecture spec (*UAE Palm Network — System Architecture Specification*), the reference repo `Nuraiya-Inc/devin-uae-date-platform`, and the three asset files in this pack (`prisma-directory-module.prisma`, `seed-directory.ts`, `directory-data.json`). Then run the tasks below **in order**, one at a time, checking each task's acceptance criteria before starting the next. Do not batch tasks; Devin does best with one scoped task and clear "done" criteria, and badly with mid-task scope changes.
+**How to use this pack.** Give Devin four things: this file, the architecture spec (*UAE Palm Network — System Architecture Specification*), the reference repo `Nuraiya-Inc/emirates-palms-and-dates-network`, and the three asset files in this pack (`prisma-directory-module.prisma`, `seed-directory.ts`, `directory-data.json`). Then run the tasks below **in order**, one at a time, checking each task's acceptance criteria before starting the next. Do not batch tasks; Devin does best with one scoped task and clear "done" criteria, and badly with mid-task scope changes.
 
 > Two paths, pick one before you start:
 > - **Fast clean launch (recommended for today):** point Devin at the reference repo and have it *replicate + extend*. Fastest, lowest risk, demoable today.
@@ -12,7 +12,7 @@
 
 ## Part 0 — One-time Devin setup (do before any task)
 
-1. **Connect the repo.** Give Devin GitHub access to `Nuraiya-Inc/devin-uae-date-platform`.
+1. **Connect the repo.** Give Devin GitHub access to `Nuraiya-Inc/emirates-palms-and-dates-network`.
 2. **Provision the environment (Devin's Machine).** Node 20, a Postgres it can reach, and the env vars from the reference repo (`DATABASE_URL`, `AUTH_SECRET`, `NEXTAUTH_URL`, `ANTHROPIC_API_KEY`, optional `OPENAI_API_KEY`). Use throwaway dev secrets, not production keys.
 3. **First job = boot only.** Before any feature: "install deps, run `prisma generate`, run `next build`, start the app, confirm `GET /api/health` returns ok." Do not proceed until the app builds and boots.
 4. **Load the standing rules (Part 1) into Devin Knowledge** so every task inherits them.
@@ -120,4 +120,4 @@ Adds Safa BioWorks' established network of 232 value-chain entities as a **separ
 | `seed-directory.ts` | `scripts/seed-directory.ts` | Import script with field mapping |
 | `directory-data.json` | `prisma/data/directory-data.json` | The 232 researched entries |
 
-Also hand Devin: the architecture spec (*UAE Palm Network — System Architecture Specification*) and repo access to `Nuraiya-Inc/devin-uae-date-platform`.
+Also hand Devin: the architecture spec (*UAE Palm Network — System Architecture Specification*) and repo access to `Nuraiya-Inc/emirates-palms-and-dates-network`.

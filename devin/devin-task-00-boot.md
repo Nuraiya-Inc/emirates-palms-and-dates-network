@@ -1,6 +1,6 @@
 # Devin Task 00 — Boot the app (do this first, nothing else)
 
-Repository: `Nuraiya-Inc/devin-uae-date-platform` (branch `main`).
+Repository: `Nuraiya-Inc/emirates-palms-and-dates-network` (branch `main`).
 
 Your ONLY goal in this task is to get the existing application installing, building, and booting in your dev environment, and to confirm its health endpoint responds. Do NOT add features, refactor, change the schema, or "improve" anything. If something is broken, fix the minimum needed to boot and report exactly what you changed.
 

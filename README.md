@@ -73,7 +73,7 @@ Seeded logins (rotate immediately):
 
 ## Deploy
 
-See **DEPLOY.md** — Coolify steps for uae.safabioworks.com (own app + own Postgres).
+See **DEPLOY.md** — Coolify steps for epdn.nuraiya.ai (own app + own Postgres).
 
 ## Data handling
 
