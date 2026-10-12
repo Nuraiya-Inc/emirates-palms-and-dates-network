@@ -1,5 +1,5 @@
 /**
- * UAE Palm Network — UAE overview dashboard.
+ * Emirates Palm & Dates Network — UAE overview dashboard.
  *
  * The showpiece screen: a hero panel with the national opportunity, animated
  * KPI tiles, the regional measured-vs-modeled chart, byproduct composition,
@@ -518,7 +518,7 @@ export default async function DashboardPage() {
 
       <p className="pb-2 text-center text-[11px] text-muted">
         Baseline figures: public sources (ADAFSA survey; FAO 2022) + indicative allocations — modeled estimates.
-        Measured figures: approved partner reports. شبكة نخيل الإمارات
+        Measured figures: approved partner reports. شبكة الإمارات للنخيل والتمور
       </p>
     </div>
   );

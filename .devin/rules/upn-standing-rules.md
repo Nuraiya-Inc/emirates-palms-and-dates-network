@@ -1,5 +1,5 @@
 ---
-description: "UAE Palm Network standing rules (UPN governance invariants)"
+description: "Emirates Palm & Dates Network standing rules (UPN governance invariants)"
 trigger: always_on
 ---
 

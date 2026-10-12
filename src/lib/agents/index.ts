@@ -1,5 +1,5 @@
 /**
- * Agent registry — single source of truth for the UAE Palm Network
+ * Agent registry — single source of truth for the Emirates Palm & Dates Network
  * agent team (v0 roster, 7 agents).
  *
  *   ABD-00  Abdullah — Agentic Director (partner-facing orchestrator)

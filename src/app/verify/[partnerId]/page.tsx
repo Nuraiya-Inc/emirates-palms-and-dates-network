@@ -85,7 +85,7 @@ export default async function VerifyPage({
                 </div>
               )}
               <p className="text-center text-[11px] leading-relaxed text-muted">
-                This page confirms current membership standing in the UAE Palm Network. It shows
+                This page confirms current membership standing in the Emirates Palm & Dates Network. It shows
                 no commercial data. تؤكد هذه الصفحة حالة العضوية فقط.
               </p>
             </div>
@@ -98,7 +98,7 @@ export default async function VerifyPage({
         </div>
 
         <p className="mt-6 text-center text-[11px] text-muted">
-          UAE Palm Network · United Arab Emirates
+          Emirates Palm & Dates Network · United Arab Emirates
         </p>
       </div>
     </main>

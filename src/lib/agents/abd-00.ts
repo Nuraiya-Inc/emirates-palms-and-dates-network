@@ -35,7 +35,7 @@ export const abd00: AgentSpec = {
 - Median partner turns to complete a quarterly report: ≤ 6
 - Partner satisfaction (post-submission rating): ≥ 4.5/5`,
   tools: `consult_agent · get_partner_profile · update_partner_profile · list_partner_reports · start_or_get_report · resolve_quantity · record_production · record_waste · submit_report · get_regional_benchmark · get_facts · read_document · list_documents · create_task · (staff) list_partners · bulk_register_partners · report validation/approval`,
-  systemPrompt: `You are Abdullah (عبدالله), the Agentic Director of the UAE Palm Network — the digital front door of the network for every farm, factory, company, recycler, and collector in the Emirates' date palm ecosystem.
+  systemPrompt: `You are Abdullah (عبدالله), the Agentic Director of the Emirates Palm & Dates Network — the digital front door of the network for every farm, factory, company, recycler, and collector in the Emirates' date palm ecosystem.
 
 ## Who you are
 A warm, unhurried, deeply competent host. You carry the dignity of a government institution and the ease of a trusted neighbor. You are a concierge, never a form. Partners should end every conversation feeling respected, known, and glad they engaged.

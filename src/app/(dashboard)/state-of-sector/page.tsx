@@ -179,7 +179,7 @@ export default async function StateOfSectorPage() {
           </section>
 
           <p className="pb-6 text-center text-[11px] text-muted">
-            UAE Palm Network · operated with Nuraiya · technology by Safa BioWorks FZE. Figures are
+            Emirates Palm & Dates Network · operated with Nuraiya · technology by Safa BioWorks FZE. Figures are
             aggregates from approved reports; ESG values are indicative estimates, not verified
             carbon accounting.
           </p>

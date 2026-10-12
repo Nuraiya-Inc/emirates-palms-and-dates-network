@@ -79,7 +79,7 @@ const CLASSIFY_DOCUMENT_TOOL = {
   },
 };
 
-const CLASSIFIER_SYSTEM_PROMPT = `You are the document classifier for the UAE Palm Network platform.
+const CLASSIFIER_SYSTEM_PROMPT = `You are the document classifier for the Emirates Palm & Dates Network platform.
 
 Your job: receive a document and call the \`classify_document\` tool with precise structured output. Never reply in plain text — always use the tool.
 

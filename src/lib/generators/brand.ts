@@ -21,7 +21,7 @@ export const BRAND = {
   muted: '6B7470',
 } as const;
 
-export const COMPANY_NAME = 'UAE Palm Network';
+export const COMPANY_NAME = 'Emirates Palm & Dates Network';
 
 /**
  * Default confidentiality footer applied to generated documents when the

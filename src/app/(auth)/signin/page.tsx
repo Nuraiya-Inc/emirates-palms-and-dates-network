@@ -67,7 +67,7 @@ export default async function SignInPage({
         <div>
           {/* Bilingual tagline — Arabic leads */}
           <div className="mb-2 text-sm text-gold-300" dir="ltr">
-            UAE Palm Network · شبكة نخيل الإمارات
+            Emirates Palm & Dates Network · شبكة الإمارات للنخيل والتمور
           </div>
           <div className="text-4xl font-semibold leading-snug mb-2 font-serif" dir="rtl" lang="ar">
             من النخلة إلى بيانات مناخية موثوقة

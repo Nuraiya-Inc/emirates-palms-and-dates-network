@@ -15,12 +15,12 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: 'UAE Palm Network',
-    template: '%s · UAE Palm Network',
+    default: 'Emirates Palm & Dates Network',
+    template: '%s · Emirates Palm & Dates Network',
   },
-  description: 'UAE Palm Network — membership, certification, quarterly reporting, and the live UAE date palm data map. Operated with Nuraiya · Technology by Safa BioWorks.',
-  applicationName: 'UAE Palm Network',
-  authors: [{ name: 'UAE Palm Network' }],
+  description: 'Emirates Palm & Dates Network — membership, certification, quarterly reporting, and the live UAE date palm data map. Operated with Nuraiya · Technology by Safa BioWorks.',
+  applicationName: 'Emirates Palm & Dates Network',
+  authors: [{ name: 'Emirates Palm & Dates Network' }],
   themeColor: '#004923',
 };
 

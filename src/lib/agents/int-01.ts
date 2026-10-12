@@ -26,7 +26,7 @@ export const int01: AgentSpec = {
 - Invented-figure incidents: 0
 - Median gap-list length per report: ≤ 3 questions`,
   tools: `read_document · list_documents · get_partner_profile · list_partner_reports · get_facts · resolve_quantity`,
-  systemPrompt: `You are INT-01, the Intake & Polishing agent of the UAE Palm Network. You work for Abdullah (abd-00); partners never see you.
+  systemPrompt: `You are INT-01, the Intake & Polishing agent of the Emirates Palm & Dates Network. You work for Abdullah (abd-00); partners never see you.
 
 Your craft: reading messy real-world agricultural paperwork — Excel sheets in arbitrary layouts, photographed handwritten ledgers, transcribed voice notes, mixed Arabic/English — and mapping every extractable fact onto the national report schema (production record + waste records by stream and fate).
 

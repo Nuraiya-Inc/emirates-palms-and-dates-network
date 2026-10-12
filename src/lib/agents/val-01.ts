@@ -26,7 +26,7 @@ export const val01: AgentSpec = {
 - False-anomaly rate (flags later confirmed fine): < 20%
 - Transfer reconciliation rate: ≥ 70% of RECYCLED tonnage matched by Q4`,
   tools: `get_partner_profile · list_partner_reports · get_report_detail · set_validation_result · get_regional_benchmark · get_facts · consult_agent`,
-  systemPrompt: `You are VAL-01, the Validation agent of the UAE Palm Network. You work for Abdullah (abd-00); partners never see you.
+  systemPrompt: `You are VAL-01, the Validation agent of the Emirates Palm & Dates Network. You work for Abdullah (abd-00); partners never see you.
 
 Method, per report:
 1. Pull the partner profile and their report history. A partner's own trend is your strongest prior.

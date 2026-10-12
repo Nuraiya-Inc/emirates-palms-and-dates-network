@@ -1,5 +1,5 @@
 /**
- * UAE Palm Network — provisional brand lockup (inline SVG, no asset files).
+ * Emirates Palm & Dates Network — provisional brand lockup (inline SVG, no asset files).
  *
  * A seven-frond palm mark (one frond per emirate) over a bilingual wordmark.
  * Variants:
@@ -22,7 +22,7 @@ interface LogoProps {
   priority?: boolean;
 }
 
-const LOCKUP_ASPECT = 523 / 144; // kept from the previous lockup so layouts don't shift
+const LOCKUP_ASPECT = 640 / 144; // matches the lockup viewBox below
 const MARK_ASPECT = 168 / 144;
 
 /** Seven fronds — one per emirate — over a gold trunk and ground line. */
@@ -50,7 +50,7 @@ function PalmMark({ ink, gold }: { ink: string; gold: string }) {
 export default function Logo({
   variant = 'dark',
   width = 160,
-  alt = 'UAE Palm Network — شبكة نخيل الإمارات',
+  alt = 'Emirates Palm & Dates Network — شبكة الإمارات للنخيل والتمور',
   className,
   markOnly = false,
   priority: _priority = false,
@@ -79,7 +79,7 @@ export default function Logo({
 
   return (
     <svg
-      viewBox="0 0 523 144"
+      viewBox="0 0 640 144"
       width={width}
       height={height}
       className={className}
@@ -93,20 +93,20 @@ export default function Logo({
         y="66"
         fill={ink}
         fontFamily="Inter, 'Segoe UI', sans-serif"
-        fontSize="30"
+        fontSize="24"
         fontWeight="700"
-        letterSpacing="1"
+        letterSpacing="0.5"
       >
-        UAE PALM NETWORK
+        EMIRATES PALM & DATES NETWORK
       </text>
       <text
         x="168"
         y="108"
         fill={sub}
         fontFamily="'Noto Naskh Arabic', 'Segoe UI', sans-serif"
-        fontSize="30"
+        fontSize="26"
       >
-        شبكة نخيل الإمارات
+        شبكة الإمارات للنخيل والتمور
       </text>
     </svg>
   );

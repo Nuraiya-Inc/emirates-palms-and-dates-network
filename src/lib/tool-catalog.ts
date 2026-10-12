@@ -1,5 +1,5 @@
 /**
- * UAE Palm Network — tool catalog.
+ * Emirates Palm & Dates Network — tool catalog.
  *
  * Each tool: name + description + input_schema (what the model sees) and
  * an execute() handler (server-side). Every mutation writes an AuditLog

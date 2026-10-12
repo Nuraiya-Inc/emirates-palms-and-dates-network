@@ -1,5 +1,5 @@
 /**
- * Seed script — UAE Palm Network (v0).
+ * Seed script — Emirates Palm & Dates Network (v0).
  *
  *   1. Admin user (platform owner) + network staff demo user
  *   2. The 7-agent roster from src/lib/agents
@@ -36,7 +36,7 @@ const REGION3: Record<string, string> = {
 };
 
 async function main() {
-  console.log('🌴 Seeding UAE Palm Network…');
+  console.log('🌴 Seeding Emirates Palm & Dates Network…');
 
   // ─────────────────────────────────────────────
   // 1. Admin + staff users
@@ -305,8 +305,8 @@ async function main() {
         },
         {
           kind: 'EVENT',
-          titleEn: 'Liwa Date Festival — UAE Palm Network Pavilion',
-          titleAr: 'مهرجان ليوا للتمور — جناح شبكة نخيل الإمارات',
+          titleEn: 'Liwa Date Festival — Emirates Palm & Dates Network Pavilion',
+          titleAr: 'مهرجان ليوا للتمور — جناح شبكة الإمارات للنخيل والتمور',
           bodyEn: 'Founding members are invited to exhibit in the network pavilion. RSVP to reserve a place; certified partners receive priority.',
           bodyAr: 'الشركاء المؤسسون مدعوون للعرض في جناح الشبكة. أكدوا الحضور لحجز مكانكم؛ الأولوية للشركاء المعتمدين.',
           eventDate: new Date(Date.UTC(new Date().getUTCFullYear(), 7, 15)),

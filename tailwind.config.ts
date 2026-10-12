@@ -1,7 +1,7 @@
 import type { Config } from 'tailwindcss';
 
 /**
- * UAE Palm Network — design system (gov-modern, light).
+ * Emirates Palm & Dates Network — design system (gov-modern, light).
  *
  *   Primary:  oasis teal   #124E57  (authority, depth)
  *   Accent:   desert gold  #B08A3E  (recognition, certification — used sparingly)

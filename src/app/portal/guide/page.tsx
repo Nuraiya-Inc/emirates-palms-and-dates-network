@@ -86,12 +86,12 @@ export default function PartnerGuidePage() {
 
       <Chapter no="01" en="What this platform is" ar="ما هي هذه المنصة">
         <p>
-          The UAE Palm Network is the official digital home of your relationship with the
+          The Emirates Palm & Dates Network is the official digital home of your relationship with the
           National Center for Palms and Dates. Your membership, your quarterly reports, your
           certificates, your benefits — everything lives here, in one place, in your language.
         </p>
         <p className="ar text-right text-brand-800" dir="rtl">
-          شبكة نخيل الإمارات هي بيتكم الرقمي الرسمي في الشبكة: عضويتكم
+          شبكة الإمارات للنخيل والتمور هي بيتكم الرقمي الرسمي في الشبكة: عضويتكم
           وتقاريركم الربعية وشهاداتكم ومزاياكم — كلها في مكان واحد وبلغتكم.
         </p>
         <Callout tone="gold">

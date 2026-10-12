@@ -1,7 +1,7 @@
-# UAE Palm Network — Platform
+# Emirates Palm & Dates Network — Platform
 
 Multi-agent partner platform for the **UAE date-palm ecosystem** — the
-**UAE Palm Network** (operating partner Nuraiya · technology partner Safa
+**Emirates Palm & Dates Network** (operating partner Nuraiya · technology partner Safa
 BioWorks FZE). Positions the network as the home of the date palm
 ecosystem: membership, certification, incentives, and recognition flow through one
 partner identity, and quarterly reporting is the price of belonging.

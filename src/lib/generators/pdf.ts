@@ -38,7 +38,7 @@ export function generatePdf(input: GeneratePdfInput): Promise<Buffer> {
       info: {
         Title: input.title.slice(0, 200),
         Author: 'Safa Platform · AI agent',
-        Creator: 'UAE Palm Network',
+        Creator: 'Emirates Palm & Dates Network',
         CreationDate: new Date(),
       },
     });

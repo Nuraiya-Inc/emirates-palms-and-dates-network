@@ -18,7 +18,7 @@ const STEPS = [
     ar: 'أهلًا بكم في شبكة الشركاء',
     body:
       'This is your official home with the National Center for Palms and Dates — your membership, reports, certificates, and benefits, all in one place.',
-    bodyAr: 'بيتكم الرسمي في شبكة نخيل الإمارات: العضوية والتقارير والشهادات والمزايا في مكان واحد',
+    bodyAr: 'بيتكم الرسمي في شبكة الإمارات للنخيل والتمور: العضوية والتقارير والشهادات والمزايا في مكان واحد',
   },
   {
     icon: '💬',

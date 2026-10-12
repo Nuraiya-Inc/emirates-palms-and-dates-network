@@ -1,6 +1,6 @@
 /**
  * Agent specification — the canonical "job description" for an AI agent
- * in the UAE Palm Network platform.
+ * in the Emirates Palm & Dates Network platform.
  *
  * These specs are the source of truth that gets seeded into the database
  * via prisma/seed.ts. Editing the spec here and re-running `npm run db:seed`

@@ -67,7 +67,7 @@ export default async function ShowcasePage() {
             The national MRV layer for date-palm residue — measured, verified, counted.
           </h1>
           <p className="mt-3 max-w-xl text-sm text-white/75">
-            شبكة نخيل الإمارات · Every approved report replaces an estimate with measured national
+            شبكة الإمارات للنخيل والتمور · Every approved report replaces an estimate with measured national
             data. Every diverted ton is a real contribution toward UAE Net Zero {UAE_NET_ZERO_TARGET_YEAR}.
           </p>
           <div className="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-4">
@@ -158,7 +158,7 @@ export default async function ShowcasePage() {
           </div>
         </div>
         <p className="mt-6 text-center text-[11px] text-muted">
-          UAE Palm Network · operated with Nuraiya · technology by Safa BioWorks FZE. Figures are
+          Emirates Palm & Dates Network · operated with Nuraiya · technology by Safa BioWorks FZE. Figures are
           aggregates from approved reports; ESG values are indicative estimates, not verified carbon
           accounting or tradeable credits. من النخلة إلى بيانات مناخية موثوقة
         </p>

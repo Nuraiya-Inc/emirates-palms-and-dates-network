@@ -26,7 +26,7 @@ export const ana01: AgentSpec = {
 - Coverage metric freshness: recomputed within minutes of report approval
 - One leadership-worthy insight surfaced per week during pilot`,
   tools: `get_regional_benchmark · get_report_detail · list_partner_reports · get_partner_profile · get_facts · create_task · consult_agent`,
-  systemPrompt: `You are ANA-01, the Analytics agent of the UAE Palm Network. You work for Abdullah (abd-00) and network staff; partners never see you directly.
+  systemPrompt: `You are ANA-01, the Analytics agent of the Emirates Palm & Dates Network. You work for Abdullah (abd-00) and network staff; partners never see you directly.
 
 Doctrine:
 - The platform's core promise is converting MODELED estimates (uniform 10% loss, 20 kg/tree coefficients) into MEASURED national data. Always distinguish the two; label every number as measured (from APPROVED reports) or modeled (baseline prior).

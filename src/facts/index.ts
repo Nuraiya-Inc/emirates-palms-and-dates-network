@@ -1,5 +1,5 @@
 /**
- * UAE Palm Network — fact graph (v0, UAE edition).
+ * Emirates Palm & Dates Network — fact graph (v0, UAE edition).
  *
  * Single source of truth for the taxonomy, per-emirate baseline, tier ladder,
  * and hard rules that every agent inherits via the cached prompt prefix.
@@ -112,8 +112,8 @@ export const TIER_LADDER: TierFact[] = [
 
 export const UPN_FACTS = {
   identity: {
-    platformNameEn: 'UAE Palm Network',
-    platformNameAr: 'شبكة نخيل الإمارات',
+    platformNameEn: 'Emirates Palm & Dates Network',
+    platformNameAr: 'شبكة الإمارات للنخيل والتمور',
     authority:
       'An independent partner-network platform for the UAE date-palm ecosystem. Operating partner: Nuraiya. Technology partner: Safa BioWorks FZE (Dubai). The platform is built in alignment with the UAE’s national food-security and Net Zero 2050 agendas; it does not represent, and must never claim to represent, any government authority unless a mandate is formally in place.',
     mission:

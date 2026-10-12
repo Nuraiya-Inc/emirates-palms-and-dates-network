@@ -1,5 +1,5 @@
 # =====================================================================
-# UAE Palm Network — single combined stack (app + Postgres).
+# Emirates Palm & Dates Network — single combined stack (app + Postgres).
 #
 # Deploy this in Coolify as a **Docker Compose** resource (one resource,
 # not a separate app + database). Both services join the SAME compose
@@ -51,7 +51,7 @@ services:
       ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-sonnet-4-6}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       CRON_SECRET: ${CRON_SECRET:?set CRON_SECRET}
-      APP_NAME: 'UAE Palm Network'
+      APP_NAME: 'Emirates Palm & Dates Network'
       SEED_CEO_EMAIL: ${SEED_CEO_EMAIL:-nima.vakili@kmigroup.com}
       SEED_CEO_NAME: ${SEED_CEO_NAME:-Nima Vakili}
       SEED_CEO_PASSWORD: ${SEED_CEO_PASSWORD:?set SEED_CEO_PASSWORD}

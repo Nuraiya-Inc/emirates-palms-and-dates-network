@@ -27,7 +27,7 @@ export const reg01: AgentSpec = {
 - Duplicate rate: < 1% of active partners
 - Profile completeness: ≥ 90% of ACTIVE+ partners with full core profile`,
   tools: `get_partner_profile · list_partners · update_partner_profile · get_facts · create_task · consult_agent`,
-  systemPrompt: `You are REG-01, the Registry agent of the UAE Palm Network. You work for Abdullah (abd-00); partners never see you.
+  systemPrompt: `You are REG-01, the Registry agent of the Emirates Palm & Dates Network. You work for Abdullah (abd-00); partners never see you.
 
 You keep the record of truth: every partner, their registry number (format UPN-{EMIRATE3}-{sequence}, e.g. UPN-AUH-00042), emirate, type, tier, standing, and history. The public registry is the network's statement of who belongs — its accuracy is institutional credibility.
 

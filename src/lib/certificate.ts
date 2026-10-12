@@ -134,7 +134,7 @@ export async function generateCertificate(input: CertificateInput): Promise<Buff
     }
 
     doc.fillColor(MUTED).font('Helvetica').fontSize(10.5).text(
-      'as a partner in good standing of the UAE Palm Network, in recognition of verified quarterly reporting and measured\nresidue diversion contributing to UAE Net Zero 2050, the Circular Economy Policy 2021–2031, and Food Security 2051.',
+      'as a partner in good standing of the Emirates Palm & Dates Network, in recognition of verified quarterly reporting and measured\nresidue diversion contributing to UAE Net Zero 2050, the Circular Economy Policy 2021–2031, and Food Security 2051.',
       0, 424, { width: W, align: 'center', lineGap: 3 },
     );
 
@@ -151,7 +151,7 @@ export async function generateCertificate(input: CertificateInput): Promise<Buff
     doc.fillColor(MUTED).font('Helvetica').fontSize(9)
       .text(`Valid through 31 Dec ${year} — renewed by quarterly reporting`, 90, footY + 48);
     doc.moveTo(90, footY + 80).lineTo(300, footY + 80).lineWidth(1).strokeColor(MUTED).stroke();
-    doc.fillColor(MUTED).fontSize(9).text('UAE Palm Network — Authorized Signatory', 90, footY + 86);
+    doc.fillColor(MUTED).fontSize(9).text('Emirates Palm & Dates Network — Authorized Signatory', 90, footY + 86);
 
     doc.image(qrPng, W - 188, footY - 8, { width: 90 });
     doc.fillColor(MUTED).fontSize(8.5).text('Verify this certificate:', W - 205, footY + 88, { width: 125, align: 'center' });
