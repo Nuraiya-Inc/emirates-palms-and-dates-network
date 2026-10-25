@@ -223,7 +223,7 @@ export default function AddUserForm({ agents, initial }: AddUserFormProps) {
           type="submit"
           disabled={isPending}
           className="px-4 py-2 rounded text-white text-sm font-medium disabled:opacity-50"
-          style={{ background: '#0F2E2E' }}
+          style={{ background: '#1F2A44' }}
         >
           {isPending ? 'Creating…' : 'Add member'}
         </button>

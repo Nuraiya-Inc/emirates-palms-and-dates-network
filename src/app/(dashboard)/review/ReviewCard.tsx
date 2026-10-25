@@ -198,7 +198,7 @@ export default function ReviewCard({ review }: Props) {
             onClick={() => decide('approve')}
             disabled={busy !== null}
             className="text-sm px-4 py-1.5 rounded-full text-white font-medium disabled:opacity-50 inline-flex items-center gap-1.5"
-            style={{ background: '#004923' }}
+            style={{ background: '#1F2A44' }}
           >
             <Check className="w-3.5 h-3.5" strokeWidth={2.5} />
             {busy === 'approve'

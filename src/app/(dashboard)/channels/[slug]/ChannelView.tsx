@@ -163,7 +163,7 @@ export default function ChannelView({ channel, initialMessages, currentUserId, c
               onClick={send}
               disabled={!input.trim() || sending}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-white text-sm font-medium transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-card-hover"
-              style={{ background: '#004923' }}
+              style={{ background: '#1F2A44' }}
             >
               <Send className="w-3.5 h-3.5" strokeWidth={2} />
               {sending ? 'Sending…' : 'Send'}

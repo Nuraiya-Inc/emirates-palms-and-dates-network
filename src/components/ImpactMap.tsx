@@ -47,7 +47,7 @@ export default function ImpactMap({ emirates }: { emirates: EmirateImpact[] }) {
                 </title>
               </rect>
               <text x={s.lx} y={s.ly} textAnchor="middle" fontSize="12" fontWeight="600"
-                fill={pct !== null && pct >= 50 ? '#ffffff' : '#0B1F26'}>
+                fill={pct !== null && pct >= 50 ? '#ffffff' : '#121829'}>
                 {e?.nameEn ?? code}
               </text>
               {e && (

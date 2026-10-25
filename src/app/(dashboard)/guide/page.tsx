@@ -40,7 +40,7 @@ export default function StaffGuidePage() {
   return (
     <div className="mx-auto max-w-4xl space-y-6 p-6">
       <div className="relative overflow-hidden rounded-2xl p-7 text-white shadow-card-hover"
-           style={{ background: 'linear-gradient(135deg, #07272D, #0C3B43 60%, #124E57)' }}>
+           style={{ background: 'linear-gradient(135deg, #0B101D, #141C30 60%, #1F2A44)' }}>
         <div className="dot-grid absolute inset-0 opacity-60" aria-hidden />
         <div className="relative">
           <div className="text-[11px] uppercase tracking-[0.16em] text-white/70">Staff Guide · دليل الموظف</div>

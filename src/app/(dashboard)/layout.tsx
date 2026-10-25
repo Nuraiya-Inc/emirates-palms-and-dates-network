@@ -56,7 +56,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         role: session.user.role,
         photoUrl: photo,
         avInitials: av?.initials ?? '?',
-        avColor: av?.color ?? '#004923',
+        avColor: av?.color ?? '#1F2A44',
         canReview,
         isExec: isExec(session.user.role),
         canModel: canModel(session.user.role, session.user.email ?? dbUser?.email ?? null),

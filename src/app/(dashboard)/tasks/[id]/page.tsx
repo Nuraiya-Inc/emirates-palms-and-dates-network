@@ -95,7 +95,7 @@ export default async function TaskDetailPage({ params }: { params: Promise<{ id:
             <Link
               href={`/agents/${task.ownerAgent.slug}/chat?taskId=${task.id}`}
               className="px-4 py-2 rounded text-white text-sm font-medium whitespace-nowrap flex-shrink-0"
-              style={{ background: '#004923' }}
+              style={{ background: '#1F2A44' }}
               title={`Open chat with ${task.ownerAgent.slug} to update this task`}
             >
               Continue in chat ↗

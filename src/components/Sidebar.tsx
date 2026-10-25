@@ -184,7 +184,7 @@ export default function Sidebar({
   return (
     <aside
       className={`${collapsed ? 'md:w-16' : 'md:w-64'} w-64 text-white p-5 flex flex-col md:transition-[width] duration-200 md:shrink-0 md:relative fixed inset-y-0 left-0 z-40 md:z-auto transform ${mobileClasses} transition-transform md:transform-none`}
-      style={{ background: 'linear-gradient(180deg, #0C3B43 0%, #07272D 100%)' }}
+      style={{ background: 'linear-gradient(180deg, #141C30 0%, #0B101D 100%)' }}
     >
       {/* Collapse/expand toggle — md+ only; mobile drawer always renders expanded */}
       {onToggleCollapsed && (

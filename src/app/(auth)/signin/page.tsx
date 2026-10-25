@@ -173,7 +173,7 @@ export default async function SignInPage({
             <button
               type="submit"
               className="w-full py-2.5 rounded-md text-white text-sm font-medium transition-all hover:shadow-card-hover"
-              style={{ background: '#124E57' }}
+              style={{ background: '#1F2A44' }}
             >
               Sign in · دخول
             </button>

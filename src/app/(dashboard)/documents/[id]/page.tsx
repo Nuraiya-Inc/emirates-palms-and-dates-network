@@ -132,7 +132,7 @@ export default async function DocumentDetailPage({ params }: { params: Promise<{
               target="_blank"
               rel="noopener noreferrer"
               className="flex-1 sm:flex-none text-center px-4 py-2 rounded text-white text-sm font-medium"
-              style={{ background: '#004923' }}
+              style={{ background: '#1F2A44' }}
               title="Open in a new tab (renders inline for PDFs and images)"
             >
               Open ↗

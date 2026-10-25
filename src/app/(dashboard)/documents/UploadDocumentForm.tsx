@@ -177,7 +177,7 @@ export default function UploadDocumentForm({ projects }: { projects: ProjectOpt[
           type="submit"
           disabled={busy || !file}
           className="px-4 py-2 rounded text-white text-sm font-medium disabled:opacity-50"
-          style={{ background: '#0F2E2E' }}
+          style={{ background: '#1F2A44' }}
         >
           {busy ? 'Uploading…' : 'Upload & auto-classify'}
         </button>

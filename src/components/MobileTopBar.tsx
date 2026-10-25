@@ -23,7 +23,7 @@ export default function MobileTopBar({
   return (
     <div
       className="md:hidden sticky top-0 z-30 flex items-center justify-between px-4 py-2.5 text-white shadow-md"
-      style={{ background: 'linear-gradient(180deg, #004923 0%, #003318 100%)' }}
+      style={{ background: 'linear-gradient(180deg, #1F2A44 0%, #141C30 100%)' }}
     >
       <button
         type="button"

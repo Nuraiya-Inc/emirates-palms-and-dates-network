@@ -93,7 +93,7 @@ export default function UserAdminActions({
                 onClick={onResetPassword}
                 disabled={isPending}
                 className="text-sm px-3 py-1.5 rounded text-white"
-                style={{ background: '#0F2E2E' }}
+                style={{ background: '#1F2A44' }}
               >
                 {isPending ? 'Saving…' : 'Set password'}
               </button>

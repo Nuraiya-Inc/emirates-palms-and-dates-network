@@ -57,8 +57,8 @@ export default function NetZeroTrajectory({ perYear, targetYear, currentYear }: 
       <line x1={x0} y1={y0 + (y1 - y0) / 2} x2={x1} y2={y0 + (y1 - y0) / 2} stroke="#E6E1D6" strokeDasharray="4 5" opacity={0.6} />
 
       {/* 2050 horizon marker */}
-      <line x1={x1} y1={y0} x2={x1} y2={y1} stroke="#B08A3E" strokeWidth={1.5} strokeDasharray="3 4" />
-      <text x={x1 - 4} y={y0 + 12} textAnchor="end" fontSize={10} fill="#B08A3E" fontWeight={600}>
+      <line x1={x1} y1={y0} x2={x1} y2={y1} stroke="#6B4EFF" strokeWidth={1.5} strokeDasharray="3 4" />
+      <text x={x1 - 4} y={y0 + 12} textAnchor="end" fontSize={10} fill="#6B4EFF" fontWeight={600}>
         Net Zero {targetYear}
       </text>
 
@@ -113,7 +113,7 @@ export default function NetZeroTrajectory({ perYear, targetYear, currentYear }: 
       )}
 
       {/* 2050 x-label */}
-      <text x={x1} y={y1 + 14} textAnchor="end" fontSize={9.5} fill="#B08A3E">{targetYear}</text>
+      <text x={x1} y={y1 + 14} textAnchor="end" fontSize={9.5} fill="#6B4EFF">{targetYear}</text>
     </svg>
   );
 }

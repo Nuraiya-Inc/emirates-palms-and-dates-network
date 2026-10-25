@@ -57,7 +57,7 @@ export default function CelebrationBanner({ triggers }: Props) {
       window.localStorage.setItem(STORAGE_KEY, triggerKey);
 
       // Brand-coloured confetti — lime + brand greens
-      const palette = ['#E1E32A', '#004923', '#006950', '#2C8255', '#90C038'];
+      const palette = ['#E1E32A', '#1F2A44', '#2C3A5E', '#2C8255', '#90C038'];
 
       // Burst 1: from the centre, big spread
       confetti({

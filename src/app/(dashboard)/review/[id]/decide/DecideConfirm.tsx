@@ -160,7 +160,7 @@ export default function DecideConfirm(props: Props) {
           className={`text-sm px-5 py-2 rounded-full font-medium text-white disabled:opacity-50 inline-flex items-center gap-1.5 ${
             isApprove ? '' : 'bg-mist text-ink hover:bg-line'
           }`}
-          style={isApprove ? { background: '#004923' } : undefined}
+          style={isApprove ? { background: '#1F2A44' } : undefined}
         >
           {isApprove ? (
             <Check className="w-4 h-4" strokeWidth={2.5} />

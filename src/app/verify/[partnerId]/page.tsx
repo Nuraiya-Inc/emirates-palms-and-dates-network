@@ -54,7 +54,7 @@ export default async function VerifyPage({
             </div>
             {valid && (
               <div className="mx-auto mt-2 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs text-white/90">
-                <span style={{ color: '#D5B672' }}>◉</span>
+                <span style={{ color: '#A596FF' }}>◉</span>
                 Annual seal {new Date().getUTCFullYear()} · valid through 31 Dec · renewed by quarterly diversion reporting
               </div>
             )}

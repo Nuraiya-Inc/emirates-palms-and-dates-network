@@ -17,10 +17,10 @@ import CountUp from '@/components/viz/CountUp';
 export const dynamic = 'force-dynamic';
 
 const TIER_GRADIENT: Record<string, string> = {
-  ELITE: 'linear-gradient(135deg, #4D3A18 0%, #B08A3E 60%, #D5B672 100%)',
-  CERTIFIED: 'linear-gradient(135deg, #0C3B43 0%, #1E6B55 60%, #2E9E7E 100%)',
-  ACTIVE: 'linear-gradient(135deg, #07272D 0%, #124E57 60%, #2E747C 100%)',
-  REGISTERED: 'linear-gradient(135deg, #3A4547 0%, #56666A 60%, #6E7A78 100%)',
+  ELITE: 'linear-gradient(135deg, #191142 0%, #6B4EFF 60%, #A596FF 100%)',
+  CERTIFIED: 'linear-gradient(135deg, #141C30 0%, #412CA8 60%, #6B4EFF 100%)',
+  ACTIVE: 'linear-gradient(135deg, #0B101D 0%, #1F2A44 60%, #3E4D7A 100%)',
+  REGISTERED: 'linear-gradient(135deg, #374151 0%, #4B5563 60%, #6B7280 100%)',
 };
 
 export default async function PortalHome() {

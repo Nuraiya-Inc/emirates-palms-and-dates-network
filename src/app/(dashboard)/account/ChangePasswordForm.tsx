@@ -130,7 +130,7 @@ export default function ChangePasswordForm() {
           type="submit"
           disabled={busy}
           className="text-sm px-5 py-2 rounded-full text-white font-medium disabled:opacity-50 inline-flex items-center gap-1.5"
-          style={{ background: '#004923' }}
+          style={{ background: '#1F2A44' }}
         >
           {success && !busy ? <Check className="w-3.5 h-3.5" strokeWidth={2.5} /> : null}
           {busy ? 'Updating…' : success ? 'Updated' : 'Update password'}

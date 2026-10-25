@@ -115,7 +115,7 @@ export default async function DashboardPage() {
         <div className="dot-grid absolute inset-0" aria-hidden />
         <div
           className="absolute -right-24 -top-24 h-80 w-80 rounded-full opacity-20 blur-3xl"
-          style={{ background: 'radial-gradient(circle, #D5B672 0%, transparent 65%)' }}
+          style={{ background: 'radial-gradient(circle, #A596FF 0%, transparent 65%)' }}
           aria-hidden
         />
         <div className="relative flex flex-col gap-8 p-7 sm:p-9 md:flex-row md:items-center md:justify-between">
@@ -159,7 +159,7 @@ export default async function DashboardPage() {
                 <circle
                   className="arc-animate"
                   cx="66" cy="66" r={R} fill="none"
-                  stroke="#D5B672" strokeWidth="10" strokeLinecap="round"
+                  stroke="#A596FF" strokeWidth="10" strokeLinecap="round"
                   strokeDasharray={`${CIRC} ${CIRC}`}
                   style={{
                     ['--arc-len' as string]: `${CIRC}`,

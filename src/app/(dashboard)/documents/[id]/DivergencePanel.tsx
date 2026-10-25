@@ -65,7 +65,7 @@ export default function DivergencePanel({ documentId }: { documentId: string }) 
           onClick={runScan}
           disabled={busy}
           className="text-xs px-3 py-1.5 rounded-md text-white disabled:opacity-50"
-          style={{ background: '#004923' }}
+          style={{ background: '#1F2A44' }}
           title="Compare this document against the canonical fact graph"
         >
           {busy ? 'Scanning…' : result ? 'Re-scan' : 'Check against canon'}

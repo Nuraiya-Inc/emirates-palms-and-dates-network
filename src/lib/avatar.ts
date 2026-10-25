@@ -12,8 +12,8 @@
 
 /** Curated brand-aligned background colours. Each is paired with white text. */
 const PALETTE = [
-  '#004923', // brand deep green (primary)
-  '#006950', // brand mid green
+  '#1F2A44', // brand deep green (primary)
+  '#2C3A5E', // brand mid green
   '#2C8255', // lighter green
   '#005338', // dark brand
   '#6E710F', // olive/lime-dark

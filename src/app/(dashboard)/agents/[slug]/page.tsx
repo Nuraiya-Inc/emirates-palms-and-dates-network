@@ -162,7 +162,7 @@ export default async function AgentDetailPage({ params }: { params: Promise<{ sl
               <Link
                 href={`/agents/${agent.slug}/chat`}
                 className="inline-flex items-center justify-center gap-2.5 px-7 py-3.5 rounded-full text-white text-base font-medium shadow-card hover:shadow-card-hover transition-all hover:-translate-y-0.5"
-                style={{ background: 'linear-gradient(135deg, #004923 0%, #006950 100%)' }}
+                style={{ background: 'linear-gradient(135deg, #1F2A44 0%, #2C3A5E 100%)' }}
               >
                 <MessageSquare className="w-5 h-5" strokeWidth={2} />
                 <span>Open chat with {firstName}</span>

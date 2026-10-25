@@ -596,7 +596,7 @@ export default function ChatWindow({ agentSlug, agentName, agentTier, initialMes
               onClick={send}
               disabled={!input.trim()}
               className="px-5 py-2 rounded-full text-white text-sm font-medium transition-all disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-card-hover"
-              style={{ background: '#004923' }}
+              style={{ background: '#1F2A44' }}
               title={busy ? 'Agent is mid-thought — your message will queue and send in order.' : 'Send message'}
             >
               {busy && queue.length > 0 ? `Queue +${queue.length + 1}` : busy ? 'Queue +1' : 'Send'}
