@@ -1,18 +1,18 @@
 /**
- * Regional Standings — the national scoreboard.
+ * Emirate Standings — the national scoreboard.
  *
- * Honor-based competition between regions: participation rate, reported
- * production, and diversion share for the current reporting cycle. Regions
- * are ranked; the top three get podium treatment. This is the screen an
- * official shows a regional director to move a region — recognition, not
+ * Honor-based competition between emirates: participation rate, reported
+ * textile intake, and diversion share for the current reporting cycle.
+ * Emirates are ranked; the top three get podium treatment. This is the screen
+ * an official shows an emirate lead to move an emirate — recognition, not
  * penalty (hard rule: never scold).
  *
  * All figures come from partner-submitted, APPROVED reports — labeled as
- * such and never blended silently with the national baseline (UPN-7).
+ * such and never blended silently with the national baseline (NTR-7).
  */
 
 import { prisma } from '@/lib/db';
-import { REGION_BASELINE } from '@/facts';
+import { REGION_BASELINE, NTR_FACTS } from '@/facts';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,7 +25,7 @@ function prevCycle(c: { year: number; quarter: number }) {
   return c.quarter === 1 ? { year: c.year - 1, quarter: 4 } : { year: c.year, quarter: c.quarter - 1 };
 }
 
-const DIVERTED = ['FEED', 'SOLD', 'RECYCLED'];
+const DIVERTED: readonly string[] = NTR_FACTS.taxonomy.divertedFates;
 const RANK_BADGE = ['bg-gradient-to-br from-gold-400 to-gold-600 text-white', 'bg-gradient-to-br from-slate-300 to-slate-400 text-white', 'bg-gradient-to-br from-amber-600 to-amber-800 text-white'];
 
 interface Row {
@@ -58,7 +58,7 @@ export default async function StandingsPage() {
       partnerId: true,
       status: true,
       partner: { select: { region: true } },
-      production: { select: { datesProducedTons: true } },
+      production: { select: { textileGeneratedTons: true } },
       wasteRecords: { select: { fate: true, tons: true } },
     },
   });
@@ -85,7 +85,7 @@ export default async function StandingsPage() {
       r.reporters++;
     }
     if (rep.status === 'APPROVED') {
-      if (rep.production) r.tons += rep.production.datesProducedTons ?? 0;
+      if (rep.production) r.tons += rep.production.textileGeneratedTons ?? 0;
       const w = wasteTotals.get(r.code) ?? { diverted: 0, total: 0 };
       for (const wr of rep.wasteRecords) {
         w.total += wr.tons;
@@ -118,9 +118,9 @@ export default async function StandingsPage() {
     <div className="mx-auto max-w-6xl space-y-8 p-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-brand-800">Regional Standings</h1>
+          <h1 className="text-2xl font-semibold tracking-tight text-brand-800">Emirate Standings</h1>
           <p className="text-sm text-muted">
-            الترتيب الوطني للمناطق — reporting cycle {cycleLabel} · from partner-submitted reports only
+            الترتيب الوطني للإمارات · reporting cycle {cycleLabel} · from partner-submitted diversion reports only
           </p>
         </div>
         <div className="rounded-lg border border-line bg-white px-3 py-2 text-xs text-muted">
@@ -163,13 +163,13 @@ export default async function StandingsPage() {
               <div className="grid grid-cols-2 gap-2 text-center text-sm">
                 <div className="rounded-lg bg-mist p-2">
                   <div className="font-semibold text-ink">{r.tons.toLocaleString(undefined, { maximumFractionDigits: 0 })} t</div>
-                  <div className="text-[10px] uppercase tracking-wide text-muted">reported production</div>
+                  <div className="text-[10px] uppercase tracking-wide text-muted">textile logged</div>
                 </div>
                 <div className="rounded-lg bg-mist p-2">
                   <div className="font-semibold text-ink">
                     {r.divertedShare == null ? '—' : `${Math.round(r.divertedShare * 100)}%`}
                   </div>
-                  <div className="text-[10px] uppercase tracking-wide text-muted">byproducts diverted</div>
+                  <div className="text-[10px] uppercase tracking-wide text-muted">diversion rate</div>
                 </div>
               </div>
             </div>
@@ -183,11 +183,11 @@ export default async function StandingsPage() {
           <thead>
             <tr className="text-left text-muted">
               <th className="p-3">Rank</th>
-              <th className="p-3">Region</th>
+              <th className="p-3">Emirate</th>
               <th className="p-3">Partners</th>
               <th className="p-3">Reported this cycle</th>
               <th className="p-3">Participation</th>
-              <th className="p-3">Production (t)</th>
+              <th className="p-3">Textile logged (t)</th>
               <th className="p-3">Diverted</th>
             </tr>
           </thead>
@@ -232,9 +232,9 @@ export default async function StandingsPage() {
       </div>
 
       <p className="text-xs text-muted">
-        Figures reflect partner-submitted reports (submitted or better; production and diversion counted once
-        approved) — not the national baseline. Standings recognize participation; no region is penalized. Regional
-        recognition letters can be drafted from here via Abdullah.
+        Figures reflect partner-submitted diversion reports (submitted or better; tonnage and diversion counted once
+        approved), not the national baseline. Standings recognize participation; no emirate is penalized. Emirate
+        recognition letters can be drafted from here via Noura.
       </p>
     </div>
   );

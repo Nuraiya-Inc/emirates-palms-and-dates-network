@@ -1,5 +1,5 @@
 # =====================================================================
-# Emirates Palm & Dates Network — single combined stack (app + Postgres).
+# Naseej Textile Recovery Platform — single combined stack (app + Postgres).
 #
 # Deploy this in Coolify as a **Docker Compose** resource (one resource,
 # not a separate app + database). Both services join the SAME compose
@@ -19,13 +19,13 @@ services:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_USER: upn
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme_upn_password}
-      POSTGRES_DB: upn
+      POSTGRES_USER: ntr
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme_ntr_password}
+      POSTGRES_DB: ntr
     volumes:
-      - upn_pgdata:/var/lib/postgresql/data
+      - ntr_pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U upn -d upn']
+      test: ['CMD-SHELL', 'pg_isready -U ntr -d ntr']
       interval: 5s
       timeout: 5s
       retries: 30
@@ -40,18 +40,18 @@ services:
         condition: service_healthy
     environment:
       # App reaches the database over the shared compose network at host `db`.
-      DATABASE_URL: postgresql://upn:${POSTGRES_PASSWORD:-changeme_upn_password}@db:5432/upn?schema=public
+      DATABASE_URL: postgresql://ntr:${POSTGRES_PASSWORD:-changeme_ntr_password}@db:5432/ntr?schema=public
       # Auth.js v5 reads AUTH_SECRET; NEXTAUTH_SECRET set too for compatibility.
       AUTH_SECRET: ${AUTH_SECRET:?set AUTH_SECRET}
       NEXTAUTH_SECRET: ${AUTH_SECRET:?set AUTH_SECRET}
-      AUTH_URL: ${AUTH_URL:-https://epdn.nuraiya.ai}
-      NEXTAUTH_URL: ${AUTH_URL:-https://epdn.nuraiya.ai}
+      AUTH_URL: ${AUTH_URL:-https://ntrp.nuraiya.ai}
+      NEXTAUTH_URL: ${AUTH_URL:-https://ntrp.nuraiya.ai}
       AUTH_TRUST_HOST: 'true'
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:?set ANTHROPIC_API_KEY}
       ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-sonnet-4-6}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       CRON_SECRET: ${CRON_SECRET:?set CRON_SECRET}
-      APP_NAME: 'Emirates Palm & Dates Network'
+      APP_NAME: 'Naseej Textile Recovery Platform'
       SEED_CEO_EMAIL: ${SEED_CEO_EMAIL:-nima.vakili@kmigroup.com}
       SEED_CEO_NAME: ${SEED_CEO_NAME:-Nima Vakili}
       SEED_CEO_PASSWORD: ${SEED_CEO_PASSWORD:?set SEED_CEO_PASSWORD}
@@ -62,7 +62,7 @@ services:
     ports:
       - '3000'
     volumes:
-      - upn_uploads:/app/uploads
+      - ntr_uploads:/app/uploads
     healthcheck:
       test: ['CMD-SHELL', 'wget -qO- http://localhost:3000/api/health || exit 1']
       interval: 30s
@@ -71,5 +71,5 @@ services:
       start_period: 40s
 
 volumes:
-  upn_pgdata:
-  upn_uploads:
+  ntr_pgdata:
+  ntr_uploads:

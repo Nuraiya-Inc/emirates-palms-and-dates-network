@@ -3,38 +3,38 @@
 /**
  * First-visit onboarding tour — a three-step welcome shown once per browser
  * (localStorage flag). Radically short: the goal is to hand the new partner
- * to Abdullah and the guide, not to explain everything here.
+ * to Noura and the guide, not to explain everything here.
  */
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 
-const FLAG = 'upn-welcome-v1';
+const FLAG = 'ntr-welcome-v1';
 
 const STEPS = [
   {
-    icon: '🌴',
-    en: 'Welcome to the Partner Network',
-    ar: 'أهلًا بكم في شبكة الشركاء',
+    icon: '🧵',
+    en: 'Welcome to Naseej',
+    ar: 'أهلًا بكم في نسيج',
     body:
-      'This is your official home with the National Center for Palms and Dates — your membership, reports, certificates, and benefits, all in one place.',
-    bodyAr: 'بيتكم الرسمي في شبكة الإمارات للنخيل والتمور: العضوية والتقارير والشهادات والمزايا في مكان واحد',
+      'This is your home on the Naseej Textile Recovery Platform. Your membership, your diversion reports, your certificates and your benefits, all in one place.',
+    bodyAr: 'هذه صفحتكم في منصة نسيج لاستعادة المنسوجات: العضوية وتقارير التحويل والشهادات والمزايا في مكان واحد',
   },
   {
     icon: '💬',
-    en: 'Abdullah is your one door',
-    ar: 'عبدالله بابكم الواحد',
+    en: 'Noura is your one door',
+    ar: 'نورة بابكم الواحد',
     body:
-      'The chat button in the corner reaches Abdullah — the Center’s concierge. He completes your quarterly report with you, reads any Excel or even a photo of your notebook, and never asks the same question twice.',
-    bodyAr: 'زر المحادثة يصلكم بعبدالله — يكمل تقريركم ويقرأ أي ملف أو صورة، ولا يسأل سؤالًا مرتين',
+      'The chat button in the corner reaches Noura, the network director. She logs your loads, completes your quarterly diversion report with you, reads any Excel or a photo of your records, and never asks the same question twice.',
+    bodyAr: 'زر المحادثة يصلكم بنورة، مديرة الشبكة. تسجّل حمولاتكم وتكمل تقرير التحويل معكم وتقرأ أي ملف أو صورة، ولا تسأل سؤالًا مرتين',
   },
   {
     icon: '🏅',
     en: 'Reporting is how you climb',
     ar: 'التقارير طريق الصعود',
     body:
-      'Approved quarterly reports raise your tier: Registered → Active → Certified → Elite. Higher tiers unlock certificates, awards eligibility, and first access to programs.',
-    bodyAr: 'التقارير المعتمدة ترفع عضويتكم: مسجّل ← نشط ← معتمد ← نخبة',
+      'Approved quarterly diversion reports raise your tier: Registered, Active Member, Certified Recovery Partner, Elite Recovery Partner. Higher tiers unlock certificates, verified diversion statements and first access to programs.',
+    bodyAr: 'تقارير التحويل المعتمدة ترفع عضويتكم: مسجّل، عضو نشط، شريك استعادة معتمد، شريك استعادة نخبة',
   },
 ];
 
@@ -64,8 +64,8 @@ export default function WelcomeTour() {
   const last = step === STEPS.length - 1;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-teal-950/60 p-4 backdrop-blur-sm sm:items-center"
-         style={{ background: 'rgba(7,39,45,.62)' }}>
+    <div className="fixed inset-0 z-50 flex items-end justify-center p-4 backdrop-blur-sm sm:items-center"
+         style={{ background: 'rgba(20,28,48,.62)' }}>
       <div className="w-full max-w-md overflow-hidden rounded-2xl bg-white shadow-card-hover">
         <div className="gold-bar" aria-hidden />
         <div className="p-6 text-center sm:p-8">
@@ -89,7 +89,7 @@ export default function WelcomeTour() {
                   onClick={dismiss}
                   className="rounded-xl bg-brand-700 px-4 py-3 text-sm font-medium text-white transition hover:bg-brand-600"
                 >
-                  Say hello to Abdullah · سلّموا على عبدالله
+                  Say hello to Noura · سلّموا على نورة
                 </Link>
                 <Link
                   href="/portal/guide"

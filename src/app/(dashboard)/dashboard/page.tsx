@@ -1,16 +1,16 @@
 /**
- * Emirates Palm & Dates Network — UAE overview dashboard.
+ * Naseej Textile Recovery Platform — UAE overview dashboard.
  *
  * The showpiece screen: a hero panel with the national opportunity, animated
- * KPI tiles, the regional measured-vs-modeled chart, byproduct composition,
- * the membership ladder, and live activity. Baseline figures are the network's
- * modeled estimates (May 2026, Restricted); measured figures come from
- * APPROVED quarterly reports.
+ * KPI tiles, the regional measured-vs-indicative chart, stream composition,
+ * the membership ladder, and live activity. Baseline figures are the reported
+ * national totals plus INDICATIVE per-emirate allocations; measured figures
+ * come from APPROVED quarterly diversion reports.
  */
 
 import Link from 'next/link';
 import { prisma } from '@/lib/db';
-import { REGION_BASELINE, UPN_FACTS } from '@/facts';
+import { REGION_BASELINE, NTR_FACTS } from '@/facts';
 import CountUp from '@/components/viz/CountUp';
 import RegionBars from '@/components/viz/RegionBars';
 import NetZeroTrajectory from '@/components/NetZeroTrajectory';
@@ -20,14 +20,16 @@ import { nationalEsgEstimate, nationalNetZeroContext, UAE_NET_ZERO_TARGET_YEAR }
 
 export const dynamic = 'force-dynamic';
 
-// Byproduct composition palette — validated (dataviz six checks, light mode).
+// Stream composition palette — validated (dataviz six checks, light mode).
 // Order is fixed; adjacent hues alternate families for CVD separation.
 const COMPOSITION = [
-  { key: 'Fronds', ar: 'سعف', hex: '#0B7FB0' },
-  { key: 'Fibers', ar: 'ليف', hex: '#E08A00' },
-  { key: 'Frond bases', ar: 'كرب', hex: '#4BA6F0' },
+  { key: 'Apparel', ar: 'ملابس', hex: '#0B7FB0' },
+  { key: 'Carpet', ar: 'سجاد', hex: '#E08A00' },
+  { key: 'Hospitality textiles', ar: 'منسوجات الضيافة', hex: '#4BA6F0' },
   { key: 'Other', ar: 'أخرى', hex: '#8F5E0A' },
 ] as const;
+
+const DIVERTED_FATES: readonly string[] = NTR_FACTS.taxonomy.divertedFates;
 
 export default async function DashboardPage() {
   const [
@@ -59,20 +61,20 @@ export default async function DashboardPage() {
     nationalEsgEstimate(new Date().getUTCFullYear()),
     nationalNetZeroContext(),
   ]);
-  const totals = UPN_FACTS.baseline.nationalTotals;
+  const totals = NTR_FACTS.baseline.nationalTotals;
   const tierCount = (t: string) => partnersByTier.find((x) => x.tier === t)?._count ?? 0;
   const statusCount = (s: string) => reportCounts.find((x) => x.status === s)?._count ?? 0;
 
-  const measuredProductionTons = approvedReports.reduce(
-    (a, r) => a + (r.production?.datesProducedTons ?? 0),
+  const measuredGeneratedTons = approvedReports.reduce(
+    (a, r) => a + (r.production?.textileGeneratedTons ?? 0),
     0,
   );
-  const coveragePct = Math.min(100, (measuredProductionTons / totals.dateProductionTons) * 100);
+  const coveragePct = Math.min(100, (measuredGeneratedTons / totals.textileWasteTons) * 100);
 
   const allWaste = approvedReports.flatMap((r) => r.wasteRecords);
   const wasteTons = allWaste.reduce((a, w) => a + w.tons, 0);
   const divertedTons = allWaste
-    .filter((w) => w.fate === 'RECYCLED' || w.fate === 'SOLD' || w.fate === 'FEED')
+    .filter((w) => DIVERTED_FATES.includes(w.fate))
     .reduce((a, w) => a + w.tons, 0);
   const diversionPct = wasteTons > 0 ? Math.round((divertedTons / wasteTons) * 100) : null;
 
@@ -80,7 +82,7 @@ export default async function DashboardPage() {
   for (const r of approvedReports) {
     measuredByRegion.set(
       r.partner.region,
-      (measuredByRegion.get(r.partner.region) ?? 0) + (r.production?.datesProducedTons ?? 0),
+      (measuredByRegion.get(r.partner.region) ?? 0) + (r.production?.textileGeneratedTons ?? 0),
     );
   }
   const partnersInRegion = (code: string) =>
@@ -90,16 +92,16 @@ export default async function DashboardPage() {
     code: r.code,
     nameEn: r.nameEn,
     nameAr: r.nameAr,
-    baseline: r.dateProductionTons,
+    baseline: r.textileWasteTons,
     measured: measuredByRegion.get(r.code) ?? 0,
     partners: partnersInRegion(r.code),
   }));
 
-  // Byproduct composition values (national baseline)
-  const compTotal = 459703.5 + 22539.1 + 244173.4 + 24886.9;
-  const compValues = [459703.5, 22539.1, 244173.4, 24886.9]; // fronds, fibers, frond bases, other
+  // Stream composition values (indicative national splits from the fact graph)
+  const compValues = [totals.apparelTons, totals.carpetTons, totals.hospitalityTextileTons, totals.otherTextileTons];
+  const compTotal = compValues.reduce((a, b) => a + b, 0);
 
-  // Gauge: share of the byproduct stream measured through approved reports
+  // Gauge: share of the textile stream measured through approved reports
   const usedPct = Math.max(1, Math.round(coveragePct));
   const R = 52;
   const CIRC = 2 * Math.PI * R;
@@ -123,14 +125,15 @@ export default async function DashboardPage() {
               The national opportunity
             </div>
             <div className="text-5xl font-semibold leading-none tracking-tight sm:text-6xl">
-              <CountUp value={totals.palmByproductsTons} duration={1400} />
+              ~<CountUp value={totals.textileWasteTons} duration={1400} />
               <span className="ml-2 text-2xl font-normal text-white/70">tons / year</span>
             </div>
             <p className="mt-3 max-w-lg text-sm leading-relaxed text-white/75">
-              of palm byproducts are generated every year across the tracked emirates — and their fate
-              is almost entirely unmeasured. Every approved report on this platform replaces an
-              indicative estimate with measured national data, and every diverted ton is a visible
-              contribution to the Emirates&apos; circular-economy and Net Zero 2050 goals.
+              of textile waste is generated in the UAE every year, and about {Math.round(totals.landfillShare * 100)}% of it
+              goes to landfill (reported at the national initiative launch, June 2026). Nobody counts
+              carpet and commercial textiles separately. Every approved report on this platform
+              replaces an indicative estimate with measured data, and every diverted ton is a visible
+              contribution to the UAE&apos;s landfill-diversion and Net Zero 2050 goals.
             </p>
             {netZero.measuredSharePct !== null && (
               <div className="mt-4 inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-3 py-2">
@@ -138,7 +141,7 @@ export default async function DashboardPage() {
                   <CountUp value={netZero.measuredSharePct} decimals={netZero.measuredSharePct < 10 ? 1 : 0} suffix="%" />
                 </span>
                 <span className="text-[11px] leading-tight text-white/75">
-                  of estimated national residue<br />now measured · the MRV gap we close
+                  of the national textile stream<br />now measured · the gap we close
                 </span>
               </div>
             )}
@@ -171,7 +174,7 @@ export default async function DashboardPage() {
                 of stream measured
               </text>
               <text x="66" y="90" textAnchor="middle" fill="rgba(255,255,255,0.45)" fontSize="8">
-                baseline · modeled
+                baseline · reported, approx.
               </text>
             </svg>
           </div>
@@ -194,7 +197,7 @@ export default async function DashboardPage() {
           </div>
         </div>
         <span className="text-[11px] text-muted">
-          Indicative factor · not verified carbon accounting — MRV dataset for GCOM/RVCMC readiness
+          Indicative factor · not verified carbon accounting · an auditable MRV dataset, not credits
         </span>
       </section>
 
@@ -254,7 +257,7 @@ export default async function DashboardPage() {
           <div className="section-rule" aria-hidden />
           <h2 className="text-lg font-semibold tracking-tight text-brand-800">Fate shift</h2>
           <p className="mb-4 text-xs text-muted">
-            Residue diverted vs burned/buried/dumped, per year — the shift the platform measures
+            Textile diverted vs landfilled or incinerated, per year. The shift the platform measures.
           </p>
           {netZero.perYear.length === 0 ? (
             <p className="py-8 text-center text-sm text-muted">No approved reports yet.</p>
@@ -280,12 +283,12 @@ export default async function DashboardPage() {
                       <div
                         className="h-full bg-gold-600"
                         style={{ width: `${100 - pct}%` }}
-                        title={`${y.harmfulTons.toLocaleString('en-US')} t burned/buried/dumped`}
+                        title={`${y.harmfulTons.toLocaleString('en-US')} t landfilled or incinerated`}
                       />
                     </div>
                     <div className="mt-0.5 flex justify-between text-[10px] text-muted">
                       <span>{y.divertedTons.toLocaleString('en-US')} t diverted</span>
-                      <span>{y.harmfulTons.toLocaleString('en-US')} t still harmful</span>
+                      <span>{y.harmfulTons.toLocaleString('en-US')} t still lost</span>
                     </div>
                   </div>
                 );
@@ -295,7 +298,7 @@ export default async function DashboardPage() {
                   <i className="h-2.5 w-2.5 rounded-[3px] bg-mint-500" /> Diverted
                 </span>
                 <span className="inline-flex items-center gap-1.5">
-                  <i className="h-2.5 w-2.5 rounded-[3px] bg-gold-600" /> Burned · buried · dumped
+                  <i className="h-2.5 w-2.5 rounded-[3px] bg-gold-600" /> Landfilled · incinerated
                 </span>
               </div>
             </div>
@@ -309,7 +312,7 @@ export default async function DashboardPage() {
           <h2 className="text-sm font-semibold tracking-tight text-brand-800">
             What these numbers feed
           </h2>
-          <span className="text-[11px] text-muted">measured residue → national mandates</span>
+          <span className="text-[11px] text-muted">measured diversion → national goals</span>
         </div>
         <MandateBadges />
       </section>
@@ -338,7 +341,7 @@ export default async function DashboardPage() {
               style={{ width: `${Math.max(coveragePct, 1.2)}%` }}
             />
           </div>
-          <TileHint>of national production under approved reports</TileHint>
+          <TileHint>of the national textile stream under approved reports</TileHint>
         </Tile>
 
         <Tile className="fade-up fade-up-3" label="Reports in pipeline" href="/approvals">
@@ -350,11 +353,11 @@ export default async function DashboardPage() {
           </TileHint>
         </Tile>
 
-        <Tile className="fade-up fade-up-4" label="Waste diversion (measured)">
+        <Tile className="fade-up fade-up-4" label="Diversion rate (measured)">
           <div className="text-3xl font-semibold tracking-tight text-ink">
             {diversionPct !== null ? <CountUp value={diversionPct} suffix="%" /> : '—'}
           </div>
-          <TileHint>vs unmeasured fate in the baseline</TileHint>
+          <TileHint>of logged loads sent to a productive fate</TileHint>
         </Tile>
       </section>
 
@@ -378,10 +381,10 @@ export default async function DashboardPage() {
           <div>
             <div className="section-rule" aria-hidden />
             <h2 className="text-lg font-semibold tracking-tight text-brand-800">
-              Regions — measured vs modeled
+              Emirates: measured vs indicative
             </h2>
             <p className="text-xs text-muted">
-              Annual date production per administrative region · hover a bar for detail
+              Annual textile waste per emirate, indicative allocation vs measured intake · hover a bar for detail
             </p>
           </div>
           <Link href="/facts" className="text-xs text-brand-600 hover:underline">
@@ -392,13 +395,13 @@ export default async function DashboardPage() {
       </section>
 
       <div className="grid gap-6 lg:grid-cols-5">
-        {/* ── Byproduct composition ────────────────────────── */}
+        {/* ── Stream composition ───────────────────────────── */}
         <section className="fade-up fade-up-4 rounded-2xl border border-line bg-white p-5 shadow-card sm:p-6 lg:col-span-3">
           <div className="section-rule" aria-hidden />
           <h2 className="text-lg font-semibold tracking-tight text-brand-800">
-            What the byproduct stream is made of
+            What the textile stream is made of
           </h2>
-          <p className="mb-5 text-xs text-muted">UAE palm-byproduct stream · working set, modeled</p>
+          <p className="mb-5 text-xs text-muted">UAE textile waste by stream · indicative split, not published data</p>
 
           {/* stacked bar with 2px surface gaps */}
           <div className="flex h-[22px] w-full gap-[2px] overflow-hidden rounded-lg">
@@ -517,8 +520,8 @@ export default async function DashboardPage() {
       </section>
 
       <p className="pb-2 text-center text-[11px] text-muted">
-        Baseline figures: public sources (ADAFSA survey; FAO 2022) + indicative allocations — modeled estimates.
-        Measured figures: approved partner reports. شبكة الإمارات للنخيل والتمور
+        Baseline figures: national totals reported at the national textile-circularity initiative launch (June 2026); per-emirate rows and stream splits are indicative allocations.
+        Measured figures: approved partner reports. منصة نسيج لاستعادة المنسوجات
       </p>
     </div>
   );

@@ -85,11 +85,11 @@ export default async function PortalHome() {
   }
 
   const statusLabel: Record<string, string> = {
-    DRAFT: t(lang, 'In progress with Abdullah', 'قيد الإعداد مع عبدالله'),
-    SUBMITTED: t(lang, 'Submitted — validation in progress', 'تم الإرسال — قيد التدقيق'),
-    VALIDATED: t(lang, 'Validated — awaiting network approval', 'تم التدقيق — بانتظار اعتماد الشبكة'),
-    APPROVED: t(lang, 'Approved — شكراً لمساهمتكم', 'معتمد — شكرًا لمساهمتكم'),
-    RETURNED: t(lang, 'Returned with questions — Abdullah has the details', 'أُعيد باستفسارات — التفاصيل لدى عبدالله'),
+    DRAFT: t(lang, 'In progress with Noura', 'قيد الإعداد مع نورة'),
+    SUBMITTED: t(lang, 'Submitted, validation in progress', 'تم الإرسال، قيد التدقيق'),
+    VALIDATED: t(lang, 'Validated, awaiting network approval', 'تم التدقيق، بانتظار اعتماد الشبكة'),
+    APPROVED: t(lang, 'Approved. Thank you for your contribution', 'معتمد. شكرًا لمساهمتكم'),
+    RETURNED: t(lang, 'Returned with questions. Noura has the details', 'أُعيد باستفسارات. التفاصيل لدى نورة'),
   };
 
   return (
@@ -161,10 +161,10 @@ export default async function PortalHome() {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <div className="text-sm font-semibold text-amber-800">
-                {t(lang, 'Protect your standing — one quarter is unreported · احموا اعتمادكم', 'احموا اعتمادكم — ربع واحد لم يُرفع تقريره بعد')}
+                {t(lang, 'Protect your standing: one quarter is unreported', 'احموا اعتمادكم: ربع واحد لم يُرفع تقريره بعد')}
               </div>
               <p className="mt-0.5 text-sm text-amber-800/80">
-                {t(lang, 'Your next report restores everything instantly. Abdullah can complete it with you in minutes — even from a photo of your records.', 'تقريركم القادم يعيد كل شيء فورًا. عبدالله يكمله معكم في دقائق — حتى من صورة لسجلاتكم.')}
+                {t(lang, 'Your next diversion report restores everything instantly. Noura can complete it with you in minutes, even from a photo of your records.', 'تقرير التحويل القادم يعيد كل شيء فورًا. نورة تكمله معكم في دقائق، حتى من صورة لسجلاتكم.')}
               </p>
             </div>
             <Link
@@ -181,10 +181,10 @@ export default async function PortalHome() {
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
               <div className="text-sm font-semibold text-red-800">
-                {t(lang, 'Standing paused — benefits on hold · العضوية موقوفة مؤقتًا', 'العضوية موقوفة مؤقتًا — المزايا معلّقة')}
+                {t(lang, 'Standing paused: benefits on hold', 'العضوية موقوفة مؤقتًا: المزايا معلّقة')}
               </div>
               <p className="mt-0.5 text-sm text-red-800/80">
-                {t(lang, 'Marketplace, collection priority, and your certificate are paused — nothing is lost. Complete your record with Abdullah and standing returns to GOOD automatically.', 'السوق وأولوية الجمع والشهادة معلّقة مؤقتًا — ولم يُفقد شيء. أكملوا سجلكم مع عبدالله وتعود العضوية تلقائيًا.')}
+                {t(lang, 'Marketplace, pickup priority and your certificate are paused. Nothing is lost. Complete your record with Noura and standing returns to GOOD automatically.', 'السوق وأولوية الجمع والشهادة معلّقة مؤقتًا، ولم يُفقد شيء. أكملوا سجلكم مع نورة وتعود العضوية تلقائيًا.')}
               </p>
             </div>
             <Link
@@ -201,14 +201,14 @@ export default async function PortalHome() {
       <section className="fade-up fade-up-1 grid grid-cols-2 gap-3 md:grid-cols-4">
         <div className="rounded-2xl border border-line bg-white p-4 shadow-card">
           <div className="mb-1.5 text-[11px] uppercase tracking-[0.12em] text-muted">
-            {t(lang, 'Reported', 'مُبلَّغ')}
+            {t(lang, 'Logged', 'مُسجَّل')}
           </div>
           <div className="text-2xl font-semibold tracking-tight text-ink">
             <CountUp value={esg.totalWasteTons} decimals={1} />
             <span className="ml-1 text-sm font-normal text-muted">t</span>
           </div>
           <div className="mt-1 text-[11px] text-muted">
-            {t(lang, `residue in ${year}`, `نواتج في ${year}`)}
+            {t(lang, `textile in ${year}`, `منسوجات في ${year}`)}
           </div>
         </div>
         <div className="rounded-2xl border border-line bg-white p-4 shadow-card">
@@ -221,8 +221,8 @@ export default async function PortalHome() {
           </div>
           <div className="mt-1 text-[11px] text-muted">
             {esg.diversionRatePct !== null
-              ? `${esg.diversionRatePct}% ${t(lang, 'of your residue', 'من نواتجكم')}`
-              : t(lang, 'fed · sold · recycled', 'أعلاف · مبيعات · تدوير')}
+              ? `${esg.diversionRatePct}% ${t(lang, 'of your loads', 'من حمولاتكم')}`
+              : t(lang, 'reused · donated · recycled', 'إعادة استخدام · تبرع · تدوير')}
           </div>
         </div>
         <div className="rounded-2xl border border-line bg-white p-4 shadow-card">
@@ -248,8 +248,8 @@ export default async function PortalHome() {
           </div>
           <div className="mt-1 text-[11px] text-muted">
             {harmfulTons > 0
-              ? t(lang, `if ${harmfulTons} t burned/dumped were diverted`, `لو حُوِّلت ${harmfulTons} طن محروقة/مدفونة`)
-              : t(lang, 'no harmful-fate residue — ممتاز', 'لا نواتج ضارة — ممتاز')}
+              ? t(lang, `if ${harmfulTons} t landfilled or incinerated were diverted`, `لو حُوِّلت ${harmfulTons} طن من المكب أو الحرق`)
+              : t(lang, 'nothing to landfill or incineration. Excellent', 'لا شيء إلى المكب أو الحرق. ممتاز')}
           </div>
         </div>
       </section>
@@ -261,7 +261,7 @@ export default async function PortalHome() {
             <div>
               <div className="section-rule" aria-hidden />
               <h2 className="text-lg font-semibold tracking-tight text-brand-800">
-                {t(lang, 'Where your residue went', 'وجهة نواتجكم')}
+                {t(lang, 'Where your textile went', 'وجهة منسوجاتكم')}
               </h2>
             </div>
             {benchmarkPct !== null && (
@@ -284,7 +284,7 @@ export default async function PortalHome() {
               <div
                 className="h-full bg-gold-600"
                 style={{ width: `${(harmfulTons / esg.totalWasteTons) * 100}%` }}
-                title={`${harmfulTons.toLocaleString('en-US')} t burned/buried/dumped`}
+                title={`${harmfulTons.toLocaleString('en-US')} t landfilled or incinerated`}
               />
             )}
             {esg.totalWasteTons - esg.divertedTons - harmfulTons > 0 && (
@@ -298,15 +298,15 @@ export default async function PortalHome() {
           <div className="mt-3 flex flex-wrap items-center gap-4 text-[11px] text-muted">
             <span className="inline-flex items-center gap-1.5">
               <i className="h-2.5 w-2.5 rounded-[3px] bg-mint-500" />
-              {t(lang, `Diverted — ${esg.divertedTons} t`, `مُحوَّل — ${esg.divertedTons} طن`)}
+              {t(lang, `Diverted: ${esg.divertedTons} t`, `مُحوَّل: ${esg.divertedTons} طن`)}
             </span>
             <span className="inline-flex items-center gap-1.5">
               <i className="h-2.5 w-2.5 rounded-[3px] bg-gold-600" />
-              {t(lang, `Burned · buried · dumped — ${harmfulTons} t`, `محروق · مدفون · ملقى — ${harmfulTons} طن`)}
+              {t(lang, `Landfilled · incinerated: ${harmfulTons} t`, `مكب · حرق: ${harmfulTons} طن`)}
             </span>
             {esg.opportunityTCO2e > 0 && (
               <span className="ml-auto text-gold-700">
-                {t(lang, `Divert it all → +${esg.opportunityTCO2e} tCO₂e`, `حوّلوه كله ← +${esg.opportunityTCO2e} طن مكافئ`)}
+                {t(lang, `Divert it all → +${esg.opportunityTCO2e} tCO₂e (indicative)`, `حوّلوه كله ← +${esg.opportunityTCO2e} طن مكافئ (تقديري)`)}
               </span>
             )}
           </div>
@@ -319,19 +319,19 @@ export default async function PortalHome() {
           <div>
             <div className="section-rule" aria-hidden />
             <h2 className="text-lg font-semibold tracking-tight text-brand-800">
-              {t(lang, `Q${q} ${year} report`, `تقرير الربع ${q} لسنة ${year}`)}
+              {t(lang, `Q${q} ${year} diversion report`, `تقرير التحويل للربع ${q} لسنة ${year}`)}
             </h2>
             <p className="text-sm text-muted">
               {current
                 ? statusLabel[current.status] ?? current.status
-                : t(lang, 'Not started — Abdullah can complete it with you in a few minutes.', 'لم يبدأ بعد — عبدالله يكمله معكم في دقائق.')}
+                : t(lang, 'Not started. Noura can complete it with you in a few minutes.', 'لم يبدأ بعد. نورة تكمله معكم في دقائق.')}
             </p>
           </div>
           <Link
             href="/portal/chat"
             className="rounded-xl bg-brand-700 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-brand-600"
           >
-            {current ? t(lang, 'Continue with Abdullah →', '← أكملوا مع عبدالله') : t(lang, 'Start with Abdullah →', '← ابدأوا مع عبدالله')}
+            {current ? t(lang, 'Continue with Noura →', '← أكملوا مع نورة') : t(lang, 'Start with Noura →', '← ابدأوا مع نورة')}
           </Link>
         </div>
       </section>
@@ -341,16 +341,16 @@ export default async function PortalHome() {
         <QuickAction
           className="fade-up fade-up-1"
           href="/portal/collection"
-          title={t(lang, 'Request collection', 'طلب جمع النواتج')}
-          ar={t(lang, 'طلب جمع النواتج', 'Request collection')}
-          hint={openTickets > 0 ? t(lang, `${openTickets} active ticket${openTickets === 1 ? '' : 's'}`, `${openTickets} تذكرة نشطة`) : t(lang, 'Fronds, pits, fibers…', 'سعف، نوى، ليف…')}
+          title={t(lang, 'Request a pickup', 'طلب جمع حمولة')}
+          ar={t(lang, 'طلب جمع حمولة', 'Request a pickup')}
+          hint={openTickets > 0 ? t(lang, `${openTickets} active pickup${openTickets === 1 ? '' : 's'}`, `${openTickets} طلب جمع نشط`) : t(lang, 'Carpet, linen, apparel, turf…', 'سجاد، بياضات، ملابس، عشب صناعي…')}
         />
         <QuickAction
           className="fade-up fade-up-2"
           href="/portal/market"
-          title={t(lang, 'Sell surplus', 'بيع الفائض')}
-          ar={t(lang, 'بيع الفائض', 'Sell surplus')}
-          hint={t(lang, 'List dates or byproducts', 'اعرضوا التمور أو النواتج')}
+          title={t(lang, 'Offer material', 'عرض مواد')}
+          ar={t(lang, 'عرض مواد', 'Offer material')}
+          hint={t(lang, 'List loads or recycled products', 'اعرضوا حمولات أو منتجات معاد تدويرها')}
         />
         <QuickAction
           className="fade-up fade-up-3"
@@ -375,28 +375,32 @@ export default async function PortalHome() {
           <h2 className="text-lg font-semibold tracking-tight text-brand-800">
             {lang === 'ar' ? `منطقتكم — ${baseline.nameAr} · ${baseline.nameEn}` : `Your region — ${baseline.nameEn} · ${baseline.nameAr}`}
           </h2>
+          <div className="mt-1 flex items-center gap-1.5 text-[11px] text-muted">
+            {t(lang, 'Indicative allocation of the reported national figure', 'توزيع تقديري للرقم الوطني المُعلن')}
+            <IndicativeChip />
+          </div>
           <div className="mt-3 grid grid-cols-3 gap-3 text-center">
             <div>
               <div className="text-xl font-semibold text-ink">
-                {(baseline.palmTrees / 1_000_000).toFixed(1)}M
+                {Math.round(baseline.textileWasteTons / 1000).toLocaleString('en-US')}K t
               </div>
-              <div className="text-[11px] text-muted">{t(lang, 'palm trees', 'نخلة')}</div>
+              <div className="text-[11px] text-muted">{t(lang, 'textile waste / yr', 'نفايات نسيجية سنويًا')}</div>
             </div>
             <div>
               <div className="text-xl font-semibold text-ink">
-                {Math.round(baseline.dateProductionTons / 1000).toLocaleString('en-US')}K t
+                {Math.round(baseline.landfilledTons / 1000).toLocaleString('en-US')}K t
               </div>
-              <div className="text-[11px] text-muted">{t(lang, 'date production / yr', 'إنتاج التمور سنويًا')}</div>
+              <div className="text-[11px] text-muted">{t(lang, 'to landfill / yr', 'إلى المكب سنويًا')}</div>
             </div>
             <div>
               <div className="text-xl font-semibold text-ink">
-                {Math.round(baseline.palmByproductsTons / 1000).toLocaleString('en-US')}K t
+                {Math.round(baseline.carpetTons / 1000).toLocaleString('en-US')}K t
               </div>
-              <div className="text-[11px] text-muted">{t(lang, 'byproducts / yr', 'نواتج ثانوية سنويًا')}</div>
+              <div className="text-[11px] text-muted">{t(lang, 'carpet / yr', 'سجاد سنويًا')}</div>
             </div>
           </div>
           <p className="mt-3 text-xs leading-relaxed text-muted">
-            {t(lang, "Your reports build the Emirates' food-security map — every measured ton replaces an estimate. مساهمتكم تبني الخريطة الوطنية.", 'تقاريركم تبني خريطة الأمن الغذائي للإمارات — كل طن مُقاس يحل محل تقدير. Your reports build the national map.')}
+            {t(lang, 'Nobody counts this stream today. Every load you log replaces an estimate with a measured tonne.', 'لا أحد يُحصي هذا التيار اليوم. كل حمولة تسجّلونها تستبدل تقديرًا بطن مُقاس.')}
           </p>
         </section>
       )}

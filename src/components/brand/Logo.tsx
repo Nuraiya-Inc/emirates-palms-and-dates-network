@@ -1,14 +1,14 @@
 /**
- * Emirates Palm & Dates Network — provisional brand lockup (inline SVG, no asset files).
+ * Naseej Textile Recovery Platform — provisional brand lockup (inline SVG, no asset files).
  *
- * A seven-frond palm mark (one frond per emirate) over a bilingual wordmark.
+ * A weave mark (interlaced warp and weft strokes) over a bilingual wordmark.
  * Variants:
- *   - `dark` (default): teal ink for light backgrounds
+ *   - `dark` (default): indigo ink for light backgrounds
  *   - `light`: warm-white for dark backgrounds (sidebar, sign-in panel)
- *   - markOnly: the palm mark alone (collapsed sidebar, favicons)
+ *   - markOnly: the weave mark alone (collapsed sidebar, favicons)
  *
- * NOTE: provisional white-label identity. Replace with the client's official
- * brand files (vector + usage guide) when an operating brand is adopted.
+ * NOTE: provisional white-label identity. Replace with the official brand
+ * files (vector + usage guide) when an operating brand is adopted.
  */
 
 interface LogoProps {
@@ -25,24 +25,26 @@ interface LogoProps {
 const LOCKUP_ASPECT = 640 / 144; // matches the lockup viewBox below
 const MARK_ASPECT = 168 / 144;
 
-/** Seven fronds — one per emirate — over a gold trunk and ground line. */
-function PalmMark({ ink, gold }: { ink: string; gold: string }) {
+/** Weave mark — three warp strokes over three weft strokes, interlaced. */
+function WeaveMark({ ink, accent }: { ink: string; accent: string }) {
   return (
-    <g>
-      {/* fronds */}
-      <g stroke={ink} strokeWidth="7" strokeLinecap="round" fill="none">
-        <path d="M84 62 C 84 40, 84 30, 84 18" />
-        <path d="M84 62 C 74 44, 66 34, 52 24" />
-        <path d="M84 62 C 94 44, 102 34, 116 24" />
-        <path d="M84 62 C 66 50, 50 44, 32 42" />
-        <path d="M84 62 C 102 50, 118 44, 136 42" />
-        <path d="M84 62 C 64 60, 46 62, 30 70" />
-        <path d="M84 62 C 104 60, 122 62, 138 70" />
+    <g strokeLinecap="round" fill="none">
+      {/* warp (vertical) */}
+      <g stroke={ink} strokeWidth="10">
+        <path d="M54 22 V 122" />
+        <path d="M84 22 V 122" />
+        <path d="M114 22 V 122" />
       </g>
-      {/* trunk */}
-      <path d="M84 62 C 82 86, 86 102, 84 122" stroke={gold} strokeWidth="9" strokeLinecap="round" fill="none" />
-      {/* ground */}
-      <path d="M58 128 H 110" stroke={gold} strokeWidth="6" strokeLinecap="round" />
+      {/* weft (horizontal) in the accent, drawn in segments so it reads as woven */}
+      <g stroke={accent} strokeWidth="10">
+        <path d="M30 48 H 46" /><path d="M62 48 H 76" /><path d="M92 48 H 106" /><path d="M122 48 H 138" />
+        <path d="M30 76 H 138" />
+        <path d="M30 104 H 46" /><path d="M62 104 H 76" /><path d="M92 104 H 106" /><path d="M122 104 H 138" />
+      </g>
+      {/* over-strokes: warp crossing the middle weft */}
+      <g stroke={ink} strokeWidth="10">
+        <path d="M54 66 V 86" /><path d="M114 66 V 86" />
+      </g>
     </g>
   );
 }
@@ -50,14 +52,14 @@ function PalmMark({ ink, gold }: { ink: string; gold: string }) {
 export default function Logo({
   variant = 'dark',
   width = 160,
-  alt = 'Emirates Palm & Dates Network — شبكة الإمارات للنخيل والتمور',
+  alt = 'Naseej Textile Recovery Platform — منصة نسيج لاستعادة المنسوجات',
   className,
   markOnly = false,
   priority: _priority = false,
 }: LogoProps) {
-  const ink = variant === 'light' ? '#F7F3EA' : '#0C3B43';
-  const gold = variant === 'light' ? '#D5B672' : '#B08A3E';
-  const sub = variant === 'light' ? 'rgba(247,243,234,0.75)' : '#6E7A78';
+  const ink = variant === 'light' ? '#F5F2EC' : '#1F2A44';
+  const accent = variant === 'light' ? '#A596FF' : '#6B4EFF';
+  const sub = variant === 'light' ? 'rgba(245,242,236,0.75)' : '#6B7280';
 
   const aspectRatio = markOnly ? MARK_ASPECT : LOCKUP_ASPECT;
   const height = Math.round(width / aspectRatio);
@@ -72,7 +74,7 @@ export default function Logo({
         role="img"
         aria-label={alt}
       >
-        <PalmMark ink={ink} gold={gold} />
+        <WeaveMark ink={ink} accent={accent} />
       </svg>
     );
   }
@@ -86,18 +88,18 @@ export default function Logo({
       role="img"
       aria-label={alt}
     >
-      <PalmMark ink={ink} gold={gold} />
+      <WeaveMark ink={ink} accent={accent} />
       {/* Wordmark */}
       <text
         x="168"
         y="66"
         fill={ink}
         fontFamily="Inter, 'Segoe UI', sans-serif"
-        fontSize="24"
+        fontSize="22"
         fontWeight="700"
         letterSpacing="0.5"
       >
-        EMIRATES PALM & DATES NETWORK
+        NASEEJ TEXTILE RECOVERY PLATFORM
       </text>
       <text
         x="168"
@@ -106,7 +108,7 @@ export default function Logo({
         fontFamily="'Noto Naskh Arabic', 'Segoe UI', sans-serif"
         fontSize="26"
       >
-        شبكة الإمارات للنخيل والتمور
+        منصة نسيج لاستعادة المنسوجات
       </text>
     </svg>
   );

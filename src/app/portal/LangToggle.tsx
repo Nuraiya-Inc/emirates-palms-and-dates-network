@@ -2,12 +2,12 @@
 
 import { useRouter } from 'next/navigation';
 
-/** Arabic/English switch — writes the upn-lang cookie and re-renders the portal. */
+/** Arabic/English switch — writes the ntr-lang cookie and re-renders the portal. */
 export default function LangToggle({ lang }: { lang: 'ar' | 'en' }) {
   const router = useRouter();
 
   function setLang(next: 'ar' | 'en') {
-    document.cookie = `upn-lang=${next}; path=/; max-age=31536000; samesite=lax`;
+    document.cookie = `ntr-lang=${next}; path=/; max-age=31536000; samesite=lax`;
     router.refresh();
   }
 

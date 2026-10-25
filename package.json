@@ -1,8 +1,8 @@
 {
-  "name": "safa-platform",
+  "name": "naseej-textile-recovery-platform",
   "version": "0.1.0",
   "private": true,
-  "description": "Emirates Palm & Dates Network — partner-facing multi-agent platform for the UAE date-palm ecosystem: AI agents with bounded tools, human-in-the-loop approvals, and an immutable audit log.",
+  "description": "Naseej Textile Recovery Platform — partner-facing multi-agent platform for textile recovery in the UAE: one register, one ledger; AI agents with bounded tools, human-in-the-loop approvals, and an immutable audit log.",
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",

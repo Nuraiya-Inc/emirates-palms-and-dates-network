@@ -1,59 +1,73 @@
-# Emirates Palm & Dates Network — Platform
+# Naseej Textile Recovery Platform
 
-Multi-agent partner platform for the **UAE date-palm ecosystem** — the
-**Emirates Palm & Dates Network** (operating partner Nuraiya · technology partner Safa
-BioWorks FZE). Positions the network as the home of the date palm
-ecosystem: membership, certification, incentives, and recognition flow through one
-partner identity, and quarterly reporting is the price of belonging.
+Multi-agent partner platform for **textile recovery in the UAE**. One register
+every participant enrols in once, one ledger every load is logged in: carpet,
+apparel, hospitality and technical textiles, from removal to final fate.
+Operating partner Nuraiya · anchor processor for carpet and polyolefin fractions
+Chemplax (Kenton, Tennessee; UAE entry in progress).
 
-**Operating principle:** prestige → benefits → membership → reporting → data →
-insight → more prestige to distribute. The platform converts modeled
-estimates (uniform 10% loss, ~20 kg/tree coefficients) into measured national data.
+**Operating principle:** visibility → routing → diversion → evidence →
+incentives → more visibility. Nobody subsidizes a stream they cannot see.
+Track and trace first, collect second, valorize third.
+
+The platform is built on the same kernel as the Emirates Palm & Dates Network
+(EPDN) and the Dulsco deployment: approval queue, audit log, cron locks,
+document pipeline, bilingual partner portal. Domain, facts, agents and seeds are
+textile-specific.
+
+> Naming note: Naseej is also the name of the UAE's National Initiative for
+> Textile Circularity. This platform is independent infrastructure aligned with
+> national goals and must never claim affiliation or endorsement (rule NTR-4).
 
 ## Agent roster (v0 — 7 agents)
 
 ```
-ABD-00  Abdullah — Agentic Director  ← the only agent partners ever meet
-├─ INT-01  Intake & Polishing   (Excel/ledger photos/voice → schema records)
+NOU-00  Noura — Agentic Director  ← the only agent partners ever meet
+├─ INT-01  Intake & Polishing   (Excel/weighbridge tickets/photos/voice → load records)
 ├─ VAL-01  Validation           (plausibility vs priors + history; confidence scores)
 ├─ ANA-01  Analytics            (coverage map, benchmarks — min 3 partners per aggregate)
 ├─ CER-01  Certification & Tiers (standing engine; drafts only — officials approve)
-├─ ENG-01  Engagement           (honor-based campaigns, regional standings, reminders)
-└─ REG-01  Registry             (national registry; public changes via approval queue)
+├─ ENG-01  Engagement           (honor-based campaigns, emirate standings, reminders)
+└─ REG-01  Registry             (network registry; public changes via approval queue)
 ```
 
 ## The flow
 
-1. A partner talks to Abdullah (web chat now, WhatsApp in Sprint 3) and hands over
-   whatever they have — an Excel in any layout, a photo of a paper ledger, a voice note.
-2. Abdullah extracts, confirms (never interrogates), records production + waste
-   records against the national schema, and submits.
-3. VAL-01 scores the report against regional priors, the partner's own history, and
+1. A participant talks to Noura (web chat now, WhatsApp later) and hands over
+   whatever they have: a pickup request, a weighbridge ticket, a photo of a
+   strip-out, a voice note.
+2. Noura extracts, confirms (never interrogates), records loads against the
+   schema (stream × fate × tonnes, grade, destination) and submits the
+   quarterly diversion report.
+3. VAL-01 scores it against regional priors, the partner's own history, and
    physical plausibility. Clean → VALIDATED; questions → RETURNED (kindly).
-4. Network staff approve VALIDATED reports; approved data feeds the live national
-   dashboard (measured vs modeled coverage per region).
-5. CER-01 recomputes tier eligibility; tier changes land in the approvals queue —
-   **agents draft, officials decide** (hard rule UPN-2).
+4. Network staff approve VALIDATED reports; approved data feeds the live
+   national dashboard (measured vs indicative coverage per emirate).
+5. CER-01 recomputes tier eligibility; tier changes land in the approvals queue:
+   **agents draft, officials decide** (hard rule NTR-2).
 
 ## Domain model
 
-Partner (registry no, type, region, tier, standing, profile memory) ·
+Partner (registry no, participant type, emirate, tier, standing, profile memory) ·
 QuarterlyReport (DRAFT→SUBMITTED→VALIDATED→APPROVED / RETURNED) ·
-ProductionRecord · WasteRecord (stream × fate × tons, destination for traceability) ·
-MaterialTransfer (farm-outbound ↔ recycler-inbound reconciliation) · TierEvent ·
-RegionBaseline (public sources + flagged indicative allocations; seeded as
-validation priors).
+ProductionRecord (units, tonnes generated / recovered, material types, capacity) ·
+WasteRecord (stream × fate × tonnes, destination for chain of custody) ·
+MaterialTransfer (source-outbound ↔ offtaker-inbound reconciliation) ·
+CollectionTicket (pickup request for a load) · Listing (offtake marketplace) ·
+TierEvent · RegionBaseline (indicative allocations; seeded as validation priors).
+
+Streams: PI_CARPET · PC_CARPET_TILE · PC_CARPET_BROADLOOM · APPAREL_WEARABLE ·
+APPAREL_NONWEARABLE · HOSPITALITY_TEXTILE · TECHNICAL_TEXTILE · TURF · OTHER.
+Fates: REUSED · DONATED · RECYCLED_POLYMER · RECYCLED_FIBER · DOWNCYCLED ·
+EXPORTED · INCINERATED · LANDFILLED · UNKNOWN. Every load gets a fate, including
+landfill with its reason (rule NTR-8).
 
 ## Stack
 
 Next.js 15 App Router + TypeScript · Prisma 5.22 + Postgres · NextAuth v5 ·
 Anthropic SDK (per-agent system prompts, bounded tool catalog, prompt-cached
-UPN fact-graph prefix) · exceljs/mammoth/sharp/Whisper intake · pdfkit/docx
+fact-graph prefix) · exceljs/mammoth/sharp/Whisper intake · pdfkit/docx
 generators · Docker/Coolify deploy.
-
-Forked from the Safa BioWorks platform architecture (same runtime patterns:
-approval queue, audit log, cron locks, document pipeline). All Safa data,
-facts, and history removed — fresh git history.
 
 ## Run locally
 
@@ -68,15 +82,17 @@ npm run dev            # → http://localhost:3000
 
 Seeded logins (rotate immediately):
 - Admin: SEED_CEO_EMAIL / SEED_CEO_PASSWORD
-- Network demo official: demo.official@uaepalm.ae / <SEED_CEO_PASSWORD>-upn
-- Demo partner (Al Ain Heritage Farm, Abu Dhabi): demo.farm@partners.uaepalm.ae / <SEED_CEO_PASSWORD>-farm
+- Network demo official: demo.official@naseej.nuraiya.ai / <SEED_CEO_PASSWORD>-ntr
+- Demo partner (Dubai hotel group): demo.hotel@partners.naseej.nuraiya.ai / <SEED_CEO_PASSWORD>-hotel
 
 ## Deploy
 
-See **DEPLOY.md** — Coolify steps for epdn.nuraiya.ai (own app + own Postgres).
+See **DEPLOY.md** — Coolify steps for ntrp.nuraiya.ai (own app + own Postgres).
 
 ## Data handling
 
-Only Abu Dhabi's baseline is surveyed (ADAFSA, reported 2024). The other
-emirates' rows are explicitly flagged indicative placeholders — never quote
-them externally; network-measured data replaces them.
+The only reported national figures are the ~220,000 t/yr of textile waste and
+~88% landfill share published at the national initiative's launch (June 2026).
+No emirate publishes a textile baseline; every per-emirate row and stream split
+in `src/facts` is an indicative allocation, flagged as such, never to be quoted
+externally. Network-measured data replaces it. That replacement is the product.

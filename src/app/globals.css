@@ -3,16 +3,16 @@
 @tailwind utilities;
 
 :root {
-  /* NCPD Partner Network — Saudi gov-modern light */
-  --safa-brand: #124E57;      /* oasis teal */
-  --safa-brand-mid: #1B5F68;
-  --safa-lime: #B08A3E;       /* desert gold accent */
+  /* Naseej Textile Recovery Platform — modern light */
+  --safa-brand: #1F2A44;      /* ink indigo */
+  --safa-brand-mid: #2C3A5E;
+  --safa-lime: #6B4EFF;       /* weave violet accent */
 
-  --safa-ink: #16282B;
-  --safa-cream: #FAF7F1;
-  --safa-mist: #F4F1EA;
-  --safa-muted: #6E7A78;
-  --safa-line: #E6E1D6;
+  --safa-ink: #121829;
+  --safa-cream: #FAF8F4;
+  --safa-mist: #F5F2EC;
+  --safa-muted: #6B7280;
+  --safa-line: #E5E1D8;
 }
 
 html, body {
@@ -103,27 +103,27 @@ body {
 
 /* Utility — subtle gradient backdrop used on a few hero surfaces */
 .bg-brand-gradient {
-  background: linear-gradient(135deg, #07272D 0%, #124E57 55%, #1B5F68 100%);
+  background: linear-gradient(135deg, #0B101D 0%, #1F2A44 55%, #2C3A5E 100%);
 }
 
-/* Signature gov accent — thin gold gradient bar (top of app + section rules) */
+/* Signature accent — thin violet gradient bar (top of app + section rules) */
 .gold-bar {
   height: 3px;
-  background: linear-gradient(90deg, #B08A3E 0%, #D5B672 45%, #B08A3E 100%);
+  background: linear-gradient(90deg, #6B4EFF 0%, #A596FF 45%, #6B4EFF 100%);
 }
 .section-rule {
   display: inline-block;
   width: 2.25rem;
   height: 3px;
   border-radius: 2px;
-  background: linear-gradient(90deg, #B08A3E, #D5B672);
+  background: linear-gradient(90deg, #6B4EFF, #A596FF);
   margin-bottom: 0.5rem;
 }
 
 /* Selection */
 ::selection {
-  background: #E4CF9E;
-  color: #07272D;
+  background: #C4B8FF;
+  color: #0B101D;
 }
 
 

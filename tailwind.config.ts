@@ -1,12 +1,12 @@
 import type { Config } from 'tailwindcss';
 
 /**
- * Emirates Palm & Dates Network — design system (gov-modern, light).
+ * Naseej Textile Recovery Platform — design system (modern, light).
  *
- *   Primary:  oasis teal   #124E57  (authority, depth)
- *   Accent:   desert gold  #B08A3E  (recognition, certification — used sparingly)
- *   Success:  palm mint    #2E9E7E
- *   Canvas:   warm sand    #F4F1EA  with white surfaces
+ *   Primary:  ink indigo     #1F2A44  (authority, depth)
+ *   Accent:   weave violet   #6B4EFF  (recognition, certification — used sparingly)
+ *   Success:  recovery green #2E9E7E
+ *   Canvas:   warm linen     #F5F2EC  with white surfaces
  *
  * Semantic token names (brand/ink/cream/mist/muted/line) are kept identical
  * to the inherited codebase so every component repaints without edits.
@@ -14,31 +14,31 @@ import type { Config } from 'tailwindcss';
  */
 
 const brandRamp = {
-  DEFAULT: '#124E57',
-  50:  '#EDF4F4',
-  100: '#D4E5E6',
-  200: '#A9CBCD',
-  300: '#7BAEB2',
-  400: '#4F9096',
-  500: '#2E747C',
-  600: '#1B5F68',
-  700: '#124E57',
-  800: '#0C3B43',
-  900: '#07272D',
+  DEFAULT: '#1F2A44',
+  50:  '#EEF0F6',
+  100: '#D7DBE8',
+  200: '#AEB6D0',
+  300: '#8491B6',
+  400: '#5C6C9A',
+  500: '#3E4D7A',
+  600: '#2C3A5E',
+  700: '#1F2A44',
+  800: '#141C30',
+  900: '#0B101D',
 };
 
 const goldRamp = {
-  DEFAULT: '#B08A3E',
-  50:  '#FAF5EA',
-  100: '#F1E6CB',
-  200: '#E4CF9E',
-  300: '#D5B672',
-  400: '#C6A050',
-  500: '#B08A3E',
-  600: '#927030',
-  700: '#715624',
-  800: '#4D3A18',
-  900: '#2A1F0C',
+  DEFAULT: '#6B4EFF',
+  50:  '#F1EEFF',
+  100: '#E0DAFF',
+  200: '#C4B8FF',
+  300: '#A596FF',
+  400: '#8873FF',
+  500: '#6B4EFF',
+  600: '#553BD6',
+  700: '#412CA8',
+  800: '#2C1E75',
+  900: '#191142',
 };
 
 const config: Config = {
@@ -46,13 +46,13 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // ── Primary brand: oasis teal ─────────────────────────
+        // ── Primary brand: ink indigo ─────────────────────────
         brand: brandRamp,
 
-        // ── Gold accent (certification / recognition moments) ──
+        // ── Violet accent (certification / recognition moments) — token name kept as `gold` ──
         gold: goldRamp,
 
-        // ── Success: palm mint ────────────────────────────────
+        // ── Success: recovery green ───────────────────────────
         mint: {
           DEFAULT: '#2E9E7E',
           100: '#DDF2EB',
@@ -61,12 +61,12 @@ const config: Config = {
           700: '#1E6B55',
         },
 
-        // ── Neutral ramp — warm sand ──────────────────────────
-        ink:   '#16282B',
-        cream: '#FAF7F1',  // raised warm surface
-        mist:  '#F4F1EA',  // body canvas
-        muted: '#6E7A78',  // secondary text
-        line:  '#E6E1D6',  // borders
+        // ── Neutral ramp — warm linen ─────────────────────────
+        ink:   '#121829',
+        cream: '#FAF8F4',  // raised warm surface
+        mist:  '#F5F2EC',  // body canvas
+        muted: '#6B7280',  // secondary text
+        line:  '#E5E1D8',  // borders
 
         // ── Legacy aliases (existing component refs repaint in-brand) ──
         forest: brandRamp,
@@ -80,8 +80,8 @@ const config: Config = {
         display: ['var(--font-inter)', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
       },
       boxShadow: {
-        card: '0 1px 2px rgba(18, 78, 87, 0.04), 0 2px 8px rgba(18, 78, 87, 0.05)',
-        'card-hover': '0 6px 18px rgba(18, 78, 87, 0.10)',
+        card: '0 1px 2px rgba(31, 42, 68, 0.04), 0 2px 8px rgba(31, 42, 68, 0.05)',
+        'card-hover': '0 6px 18px rgba(31, 42, 68, 0.10)',
       },
       borderRadius: {
         xl: '0.875rem',
