@@ -114,7 +114,7 @@ export async function reviewStandings(now: Date = new Date()): Promise<StandingR
             target === 'GOOD'
               ? `${partner.registryNo} standing restored to GOOD — record complete`
               : target === 'AT_RISK'
-                ? `${partner.registryNo} is AT RISK — ${mq.year} Q${mq.quarter} unreported. Abdullah should reach out warmly.`
+                ? `${partner.registryNo} is AT RISK — ${mq.year} Q${mq.quarter} unreported. Noura should reach out warmly.`
                 : `${partner.registryNo} standing PAUSED — ${missed} quarters unreported. Benefits paused; path back open.`,
           payload: { registryNo: partner.registryNo, missed, latestDue: mq } as Prisma.InputJsonValue,
         },

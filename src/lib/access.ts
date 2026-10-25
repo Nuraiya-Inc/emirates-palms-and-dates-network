@@ -105,15 +105,15 @@ export async function canChatWithAgent(
   user: SessionUser,
   agent: { id: string; slug: string; tier: string; branch: AgentBranch },
 ): Promise<boolean> {
-  // Partner-portal users (linked to a Partner record) talk to Abdullah ONLY.
+  // Partner-portal users (linked to a Partner record) talk to Noura ONLY.
   const { prisma } = await import('./db');
   const linkedPartner = await prisma.partner.findUnique({
     where: { userId: user.id },
     select: { id: true },
   });
-  if (linkedPartner) return agent.slug === 'abd-00';
+  if (linkedPartner) return agent.slug === 'nou-00';
 
-  // Abdullah (orchestrator) — any network exec/staff.
+  // Noura (orchestrator) — any network exec/staff.
   if (agent.tier === 'ORCHESTRATOR') return isExec(user.role);
 
   if (isExec(user.role)) return true;
