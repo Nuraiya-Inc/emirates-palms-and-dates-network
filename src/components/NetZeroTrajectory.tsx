@@ -3,7 +3,7 @@
  * the UAE Net Zero 2050 horizon. One axis, draw-in animation, crosshair
  * tooltip via native <title>. Server-rendered SVG — no client JS needed.
  *
- * Palette job: magnitude → single sequential hue (palm green ramp);
+ * Palette job: magnitude → single sequential hue (recovery green ramp);
  * the 2050 horizon is a neutral dashed guide, not a second series color.
  */
 

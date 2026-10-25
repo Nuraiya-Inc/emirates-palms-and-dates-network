@@ -15,13 +15,13 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Emirates Palm & Dates Network',
-    template: '%s · Emirates Palm & Dates Network',
+    default: 'Naseej Textile Recovery Platform',
+    template: '%s · Naseej Textile Recovery Platform',
   },
-  description: 'Emirates Palm & Dates Network — membership, certification, quarterly reporting, and the live UAE date palm data map. Operated with Nuraiya · Technology by Safa BioWorks.',
-  applicationName: 'Emirates Palm & Dates Network',
-  authors: [{ name: 'Emirates Palm & Dates Network' }],
-  themeColor: '#004923',
+  description: 'Naseej Textile Recovery Platform: one register and one ledger for textile recovery in the UAE. Membership, chain of custody, quarterly diversion reporting, and the live UAE textile recovery map. Operated with Nuraiya.',
+  applicationName: 'Naseej Textile Recovery Platform',
+  authors: [{ name: 'Naseej Textile Recovery Platform' }],
+  themeColor: '#1F2A44',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

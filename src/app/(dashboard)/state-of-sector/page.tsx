@@ -1,6 +1,6 @@
 /**
  * State of the Sector — the network's annual national report, generated
- * live from approved partner data. Aggregate-only (rule UPN-3): per-emirate
+ * live from approved partner data. Aggregate-only (rule NTR-3): per-emirate
  * rows appear only where ≥3 partners exist; smaller emirates are folded.
  *
  * "Print / Save as PDF" uses the browser's native print — the layout has
@@ -15,8 +15,16 @@ import Logo from '@/components/brand/Logo';
 export const dynamic = 'force-dynamic';
 
 const TYPE_LABEL: Record<string, string> = {
-  FARM: 'Farms', FACTORY: 'Factories', COMPANY: 'Companies',
-  RECYCLER: 'Recyclers', COLLECTOR: 'Collectors',
+  RECYCLER: 'Recyclers / Processors',
+  INSTALLER: 'Carpet Installers / Removers',
+  DIVERSION_UNIT: 'Landfill Diversion Units',
+  CHARITY: 'Charities / Reuse Organisations',
+  HOSPITALITY: 'Hotels / Hospitality Groups',
+  FACILITY: 'Facilities Management / Property',
+  RETAILER: 'Retailers / Brands',
+  MANUFACTURER: 'Flooring / Textile Manufacturers',
+  HAULIER: 'Hauliers / Logistics',
+  SORTER: 'Sorters / Graders / Exporters',
 };
 
 function Stat({ label, value, sub }: { label: string; value: string; sub?: string }) {
@@ -43,10 +51,10 @@ export default async function StateOfSectorPage() {
             State of the Sector · تقرير حالة القطاع
           </div>
           <h1 className="mt-1 text-2xl font-semibold tracking-tight text-brand-800 sm:text-3xl">
-            UAE Date-Palm Sector — {r.year}
+            UAE Textile Recovery · {r.year}
           </h1>
           <p className="mt-1 text-sm text-muted">
-            Generated {r.generatedAt} from approved partner reports. Aggregate figures only.
+            Generated {r.generatedAt} from approved partner diversion reports. Aggregate figures only.
           </p>
         </div>
         <div className="flex flex-col items-end gap-3">
@@ -70,9 +78,9 @@ export default async function StateOfSectorPage() {
             <Stat label="Registered partners" value={t.partners.toLocaleString('en-US')} />
             <Stat label="Reporting this year" value={t.reportingPartners.toLocaleString('en-US')}
               sub={t.participationRatePct !== null ? `${t.participationRatePct}% participation` : undefined} />
-            <Stat label="Dates reported (t)" value={t.productionTons.toLocaleString('en-US')} />
+            <Stat label="Textile logged (t)" value={t.productionTons.toLocaleString('en-US')} />
             <Stat label="Diverted (t)" value={t.divertedTons.toLocaleString('en-US')}
-              sub={t.diversionRatePct !== null ? `${t.diversionRatePct}% of residue` : undefined} />
+              sub={t.diversionRatePct !== null ? `${t.diversionRatePct}% diversion rate` : undefined} />
           </section>
 
           {/* Net Zero contribution */}
@@ -107,7 +115,7 @@ export default async function StateOfSectorPage() {
                     <th className="px-3 py-2 font-medium">Baseline</th>
                     <th className="px-3 py-2 text-right font-medium">Partners</th>
                     <th className="px-3 py-2 text-right font-medium">Reporting</th>
-                    <th className="px-3 py-2 text-right font-medium">Production (t)</th>
+                    <th className="px-3 py-2 text-right font-medium">Textile logged (t)</th>
                     <th className="px-3 py-2 text-right font-medium">Diversion</th>
                     <th className="px-5 py-2 text-right font-medium">tCO₂e (est.)</th>
                   </tr>
@@ -120,8 +128,8 @@ export default async function StateOfSectorPage() {
                         <span className="text-muted"> · {e.nameAr}</span>
                       </td>
                       <td className="px-3 py-2.5">
-                        <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${e.baselineQuality === 'SURVEYED' ? 'bg-mint-100 text-mint-700' : 'bg-mist text-muted'}`}>
-                          {e.baselineQuality === 'SURVEYED' ? 'Surveyed' : 'Indicative'}
+                        <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${e.baselineQuality === 'INDICATIVE' ? 'bg-mist text-muted' : 'bg-mint-100 text-mint-700'}`}>
+                          {e.baselineQuality === 'INDICATIVE' ? 'Indicative' : 'Reported'}
                         </span>
                       </td>
                       <td className="px-3 py-2.5 text-right tabular-nums">{e.partners}</td>
@@ -147,7 +155,7 @@ export default async function StateOfSectorPage() {
           {/* Composition */}
           <section className="grid gap-4 sm:grid-cols-2">
             <div className="rounded-2xl border border-line bg-white p-5">
-              <h2 className="mb-3 text-base font-semibold text-brand-800">Network by actor type</h2>
+              <h2 className="mb-3 text-base font-semibold text-brand-800">Network by participant type</h2>
               <div className="space-y-2">
                 {r.byType.map((row) => {
                   const max = r.byType[0]?.count || 1;
@@ -179,7 +187,7 @@ export default async function StateOfSectorPage() {
           </section>
 
           <p className="pb-6 text-center text-[11px] text-muted">
-            Emirates Palm & Dates Network · operated with Nuraiya · technology by Safa BioWorks FZE. Figures are
+            Naseej Textile Recovery Platform · operated with Nuraiya · anchor processor Chemplax. Figures are
             aggregates from approved reports; ESG values are indicative estimates, not verified
             carbon accounting.
           </p>

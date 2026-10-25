@@ -113,17 +113,17 @@ const NAV: NavGroupDef[] = [
     labelAr: 'الشبكة',
     items: [
       { href: '/partners',  label: 'Partners',  labelAr: 'الشركاء', icon: Users },
-      { href: '/directory', label: 'Directory', labelAr: 'الدليل', icon: BookUser },
+      { href: '/directory', label: 'Value chain', labelAr: 'سلسلة القيمة', icon: BookUser },
       { href: '/network',   label: 'Network inbox', labelAr: 'بريد الشبكة', icon: Inbox },
-      { href: '/standings', label: 'Recognition', labelAr: 'الإنجازات', icon: Trophy },
+      { href: '/standings', label: 'Emirate standings', labelAr: 'ترتيب الإمارات', icon: Trophy },
       { href: '/ask', label: 'Ask the Sector', labelAr: 'اسأل القطاع', icon: Sparkles },
       { href: '/state-of-sector', label: 'State of Sector', labelAr: 'حالة القطاع', icon: FileBarChart },
-      { href: '/showcase',  label: 'National counter', labelAr: 'العدّاد الوطني', icon: MapIcon },
+      { href: '/showcase',  label: 'Recovery counter', labelAr: 'عدّاد الاستعادة', icon: MapIcon },
       { href: '/roadmap',   label: 'Next Phase', labelAr: 'المرحلة القادمة', icon: Rocket },
       { href: '/tasks',     label: 'Tasks',     labelAr: 'المهام', icon: ListTodo },
       // Documents module is inherited from the base platform and still
       // carries its taxonomy (Sci memo / Investor / IP critical). Hidden
-      // from the network console until it's re-skinned for the Center —
+      // from the network console until it's re-skinned for the network team —
       // the route itself remains available at /documents.
       // { href: '/documents', label: 'Documents', icon: FileText },
     ],
@@ -218,7 +218,7 @@ export default function Sidebar({
           <>
             <Logo variant="light" width={156} priority />
             <div className="text-[10px] uppercase tracking-[0.2em] text-gold-300/90 mt-2 ml-1">
-              Partner Network
+              Textile Recovery Network
             </div>
           </>
         )}

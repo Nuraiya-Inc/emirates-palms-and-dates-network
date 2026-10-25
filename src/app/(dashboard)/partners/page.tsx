@@ -37,7 +37,7 @@ export default async function PartnersPage() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight text-brand-800">Partner Registry</h1>
         <p className="text-sm text-muted">
-          السجل الوطني للشركاء — {partners.length} partner{partners.length === 1 ? '' : 's'} · standing is held, not
+          السجل الوطني للشركاء · {partners.length} partner{partners.length === 1 ? '' : 's'} · standing is held, not
           owned
         </p>
       </div>
@@ -49,7 +49,7 @@ export default async function PartnersPage() {
               <th className="p-3">Registry no.</th>
               <th className="p-3">Name</th>
               <th className="p-3">Type</th>
-              <th className="p-3">Region</th>
+              <th className="p-3">Emirate</th>
               <th className="p-3">Tier</th>
               <th className="p-3">Standing</th>
               <th className="p-3">Last report</th>
@@ -73,6 +73,7 @@ export default async function PartnersPage() {
                   </td>
                   <td className="p-3">
                     {p.type}
+                    {p.subtype ? ` · ${p.subtype}` : ''}
                     {p.sizeClass ? ` · ${p.sizeClass}` : ''}
                   </td>
                   <td className="p-3">{p.region}</td>
@@ -102,7 +103,7 @@ export default async function PartnersPage() {
 
       <p className="text-xs text-muted">
         Tier changes and public registry updates require official approval (see the Approvals queue). Partners are
-        onboarded by Abdullah — start a conversation in Agents → Abdullah.
+        onboarded by Noura. Start a conversation in Agents → Noura.
       </p>
     </div>
   );

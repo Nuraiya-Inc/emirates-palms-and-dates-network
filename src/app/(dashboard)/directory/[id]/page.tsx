@@ -1,7 +1,7 @@
 /**
  * Directory entry detail — staff-only view of one value-chain entity.
  * Shows the full research record including the contact block and
- * safaRelevance, which must never surface on public/neutral pages (UPN-1).
+ * safaRelevance, which must never surface on public/neutral pages (NTR-1).
  */
 
 import Link from 'next/link';
@@ -104,7 +104,7 @@ export default async function DirectoryEntryPage({ params }: { params: Promise<{
       {entry.safaRelevance && (
         <section className="rounded-xl border border-amber-400/30 bg-amber-400/5 p-5">
           <h2 className="mb-2 text-sm font-semibold text-gold-700">
-            Safa BioWorks relevance <span className="font-normal text-muted">— internal, never public (UPN-1)</span>
+            Chemplax feedstock relevance <span className="font-normal text-muted">· internal, never public (NTR-1)</span>
           </h2>
           <p className="whitespace-pre-wrap text-sm text-forest-700">{entry.safaRelevance}</p>
         </section>

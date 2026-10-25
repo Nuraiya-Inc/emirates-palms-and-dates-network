@@ -124,15 +124,15 @@ export default function DashboardShell({ user, agents, dataRoomFrozen, children 
         </main>
       </div>
 
-      {/* Abdullah — Arabic-first quick chat, one tap from anywhere */}
+      {/* Noura — Arabic-first quick chat, one tap from anywhere */}
       <Link
-        href="/agents/abd-00/chat"
+        href="/agents/nou-00/chat"
         dir="rtl"
         className="fixed bottom-5 right-5 z-40 flex items-center gap-2 rounded-full bg-brand-700 px-5 py-3 text-sm font-semibold text-white shadow-card-hover transition hover:bg-brand-600"
-        aria-label="الدردشة مع عبدالله · Chat with Abdullah"
+        aria-label="الدردشة مع نورة · Chat with Noura"
       >
         <MessageCircle className="h-5 w-5" />
-        <span>الدردشة مع عبدالله <span className="font-normal text-white/70">· Abdullah</span></span>
+        <span>الدردشة مع نورة <span className="font-normal text-white/70">· Noura</span></span>
       </Link>
 
       <CommandPalette

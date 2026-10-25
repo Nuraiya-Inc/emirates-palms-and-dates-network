@@ -10,7 +10,7 @@ interface Row {
   code: string;
   nameEn: string;
   nameAr: string;
-  baseline: number; // production tons (modeled)
+  baseline: number; // textile waste tons (indicative allocation)
   measured: number; // approved-report tons
   partners: number;
 }
@@ -80,7 +80,7 @@ export default function RegionBars({ rows }: { rows: Row[] }) {
       <div className="mt-3 flex items-center gap-5 pl-[108px] text-[11px] text-muted">
         <span className="inline-flex items-center gap-1.5">
           <i className="inline-block h-2.5 w-2.5 rounded-[3px] bg-brand-600/85" />
-          Baseline production (modeled)
+          Baseline textile waste (indicative)
         </span>
         <span className="inline-flex items-center gap-1.5">
           <i className="inline-block h-2.5 w-2.5 rounded-[3px] bg-mint-500" />

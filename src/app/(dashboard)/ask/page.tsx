@@ -3,7 +3,7 @@
 /**
  * Ask the Sector — an official asks a question in Arabic or English and the
  * Analytics agent (ana-01) answers from LIVE data via its query_sector_metrics
- * tool. Aggregate-only by design (rule UPN-3). Thin client over the existing
+ * tool. Aggregate-only by design (rule NTR-3). Thin client over the existing
  * agent chat endpoint.
  */
 
@@ -13,7 +13,7 @@ interface Turn { role: 'user' | 'agent'; text: string }
 
 const SUGGESTIONS: Array<{ en: string; ar: string; q: string }> = [
   { en: 'Which emirates are behind on reporting?', ar: 'أي إمارة الأقل التزامًا بالتقارير؟', q: 'أي إمارة الأقل التزامًا بالتقارير هذا العام؟ أعطني نسبة المشاركة لكل إمارة.' },
-  { en: 'How much residue was diverted this year?', ar: 'كم كمية النواتج المُحوَّلة هذا العام؟', q: 'كم كمية نواتج النخيل التي حُوِّلت عن الحرق أو الدفن هذا العام، وما نسبة التحويل؟' },
+  { en: 'How much textile was diverted from landfill this year?', ar: 'كم كمية المنسوجات المُحوَّلة عن المكب هذا العام؟', q: 'كم كمية المنسوجات التي حُوِّلت عن المكب هذا العام، وما نسبة التحويل؟' },
   { en: "What's our estimated climate contribution?", ar: 'ما مساهمتنا المناخية التقديرية؟', q: 'ما مساهمة الشبكة المناخية التقديرية هذا العام وتراكميًا؟ وضّح أنها تقديرية.' },
   { en: 'Give me a one-paragraph state of the sector.', ar: 'أعطني ملخصًا موجزًا لحالة القطاع.', q: 'أعطني ملخصًا موجزًا من فقرة واحدة لحالة القطاع من الأرقام الحية.' },
 ];

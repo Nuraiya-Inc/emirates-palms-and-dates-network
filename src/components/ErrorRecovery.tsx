@@ -12,7 +12,7 @@ import { useEffect } from 'react';
  * automatically (guarded, to avoid loops) instead of showing a dead screen.
  */
 
-const RELOAD_FLAG = 'upn-stale-reload-at';
+const RELOAD_FLAG = 'ntr-stale-reload-at';
 
 function isStaleDeployError(error: Error): boolean {
   const text = `${error?.name ?? ''} ${error?.message ?? ''}`;

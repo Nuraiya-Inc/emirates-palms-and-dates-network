@@ -1,6 +1,6 @@
 /**
  * network console — Network inbox: everything partners send through the portal.
- * Applications to decide, collection tickets to monitor, marketplace
+ * Applications to decide, pickup requests (textile loads) to monitor, marketplace
  * activity, and the voice of the network.
  */
 
@@ -53,11 +53,11 @@ export default async function NetworkInboxPage() {
         <div className="section-rule" aria-hidden />
         <h1 className="text-2xl font-semibold tracking-tight text-brand-800">Network inbox</h1>
         <p className="text-sm text-muted">
-          What the network is sending in — {applications.length} application
-          {applications.length === 1 ? '' : 's'} to decide · {openTickets} open collection ticket
+          What the network is sending in · {applications.length} application
+          {applications.length === 1 ? '' : 's'} to decide · {openTickets} open pickup request
           {openTickets === 1 ? '' : 's'} · {suggestions.length} new voice item
           {suggestions.length === 1 ? '' : 's'}
-          {collectedTons > 0 && ` · ${collectedTons.toLocaleString('en-US')} t collected via tickets`}
+          {collectedTons > 0 && ` · ${collectedTons.toLocaleString('en-US')} t of loads collected via pickups`}
         </p>
       </header>
 
@@ -113,10 +113,10 @@ export default async function NetworkInboxPage() {
         {/* Collection activity */}
         <section className="fade-up fade-up-2 rounded-2xl border border-line bg-white p-5 shadow-card">
           <h2 className="mb-4 text-lg font-semibold tracking-tight text-brand-800">
-            Collection tickets
+            Pickup requests · loads
           </h2>
           <div className="space-y-2 text-sm">
-            {tickets.length === 0 && <p className="text-muted">No tickets yet.</p>}
+            {tickets.length === 0 && <p className="text-muted">No pickup requests yet.</p>}
             {tickets.map((t) => (
               <div key={t.id} className="flex items-center justify-between gap-2 rounded-lg border border-line/70 px-3 py-2">
                 <span className="min-w-0 truncate">

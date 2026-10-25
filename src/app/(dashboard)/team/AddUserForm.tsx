@@ -121,7 +121,7 @@ export default function AddUserForm({ agents, initial }: AddUserFormProps) {
             defaultValue={initial?.entity ?? 'FZE'}
             className="w-full px-3 py-2 border border-forest-200 rounded text-sm bg-white focus:outline-none focus:border-amber"
           >
-            <option value="GROUP">Emirates Palm & Dates Network</option>
+            <option value="GROUP">Naseej Textile Recovery Platform</option>
             
             <option value="GROUP">Cross-entity (CEO / MD)</option>
           </select>

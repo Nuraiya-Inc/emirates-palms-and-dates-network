@@ -1,8 +1,8 @@
 /**
- * Public showcase — the National MRV counter (M7).
+ * Public showcase — the live textile recovery counter (M7).
  *
  * Public (excluded from auth middleware). Aggregate-only, no partner-level
- * data ever (UPN-3 floor enforced in buildImpactMap). The shareable
+ * data ever (NTR-3 floor enforced in buildImpactMap). The shareable
  * "national climate contribution, live" page for the pitch, partners
  * considering joining, and the public verify story.
  */
@@ -14,7 +14,7 @@ import CountUp from '@/components/viz/CountUp';
 import MandateBadges from '@/components/MandateBadges';
 import IndicativeChip from '@/components/IndicativeChip';
 import { buildImpactMap } from '@/lib/impact-map';
-import { nationalNetZeroContext, UAE_NET_ZERO_TARGET_YEAR } from '@/lib/esg';
+import { nationalNetZeroContext, UAE_NET_ZERO_TARGET_YEAR, INDICATIVE_FACTOR_TCO2E_PER_TON } from '@/lib/esg';
 
 export const dynamic = 'force-dynamic';
 
@@ -56,28 +56,28 @@ export default async function ShowcasePage() {
       <div className="gold-bar w-full" aria-hidden />
 
       {/* Hero — the live national counter */}
-      <section className="relative overflow-hidden text-white" style={{ background: 'linear-gradient(135deg, #07272D, #0C3B43 55%, #124E57)' }}>
+      <section className="relative overflow-hidden text-white" style={{ background: 'linear-gradient(135deg, #141C30, #1F2A44 55%, #2A3A66)' }}>
         <div className="dot-grid absolute inset-0 opacity-50" aria-hidden />
         <div className="relative mx-auto max-w-5xl px-5 py-10 sm:py-14">
           <Logo variant="light" width={190} />
-          <div className="mt-6 text-lg font-medium font-serif" dir="rtl" lang="ar">
-            من النخلة إلى بيانات مناخية موثوقة
+          <div className="mt-6 text-lg font-medium" dir="rtl" lang="ar">
+            كل حمولة تُحسب. كل مصير يُسجَّل.
           </div>
           <h1 className="mt-1 max-w-2xl text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
-            The national MRV layer for date-palm residue — measured, verified, counted.
+            Textile recovery in the UAE: measured, verified, counted.
           </h1>
           <p className="mt-3 max-w-xl text-sm text-white/75">
-            شبكة الإمارات للنخيل والتمور · Every approved report replaces an estimate with measured national
+            منصة نسيج لاستعادة المنسوجات · Every approved report replaces an estimate with measured
             data. Every diverted ton is a real contribution toward UAE Net Zero {UAE_NET_ZERO_TARGET_YEAR}.
           </p>
           <div className="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-4">
-            <Big value={t.divertedTons} decimals={1} suffix=" t" label="Residue diverted (measured)" />
+            <Big value={t.divertedTons} decimals={1} suffix=" t" label="Textile diverted (measured)" />
             <Big value={t.avoidedTCO2e} decimals={1} label="tCO₂e avoided (est.)" indicative />
             <Big
               value={netZero.measuredSharePct ?? 0}
               decimals={(netZero.measuredSharePct ?? 0) < 10 ? 1 : 0}
               suffix="%"
-              label="of estimated residue now measured"
+              label="of the national textile stream now measured"
             />
             <Big value={t.reportingPartners} label={`Reporting in ${data.year}`} />
           </div>
@@ -93,8 +93,8 @@ export default async function ShowcasePage() {
         <p className="mt-1 text-sm text-muted">
           Coloured by the share of each emirate&apos;s partners reporting in {data.year}. Emirates with
           fewer than three partners are shown without a figure to protect confidentiality.
-          Only Abu Dhabi&apos;s baseline is surveyed — every other figure starts as an estimate the
-          network is actively replacing with measurement.
+          No emirate publishes a textile baseline. Every emirate figure starts as an indicative
+          allocation the network is actively replacing with measurement.
         </p>
         <div className="mt-6 rounded-2xl border border-line bg-white p-5 shadow-card sm:p-8">
           <ImpactMap emirates={data.emirates} />
@@ -120,8 +120,8 @@ export default async function ShowcasePage() {
           <div className="mt-3 grid gap-4 text-sm leading-relaxed text-muted sm:grid-cols-3">
             <div>
               <span className="font-semibold text-ink">1 · Partners report quarterly.</span>{' '}
-              Farms, factories, and recyclers record what each residue stream became — fed to
-              livestock, sold, recycled, or burned/buried/dumped.
+              Hotels, facilities, installers, sorters, recyclers and charities record what each textile
+              load became: reused, donated, recycled, downcycled, exported, or landfilled with its reason.
             </div>
             <div>
               <span className="font-semibold text-ink">2 · Officials validate and approve.</span>{' '}
@@ -130,8 +130,8 @@ export default async function ShowcasePage() {
             </div>
             <div>
               <span className="font-semibold text-ink">3 · Diversion prices the climate win.</span>{' '}
-              Diverted tons are priced at a conservative indicative factor (1.2 tCO₂e/t). These are
-              indicative avoided emissions — an auditable path toward certification, not credits.
+              Diverted tons are priced at a conservative indicative factor ({INDICATIVE_FACTOR_TCO2E_PER_TON} tCO₂e/t). These are
+              indicative avoided emissions, an auditable path toward certification, not credits.
             </div>
           </div>
         </div>
@@ -145,11 +145,11 @@ export default async function ShowcasePage() {
             <IndicativeChip />
           </div>
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted">
-            Every ton of palm residue a partner diverts from burning or burial to a productive fate
-            is recorded and, using a conservative indicative factor, translated into estimated avoided
-            emissions — methane that open dumping would release, CO₂ that burning would emit. These
-            are auditable records — not offsets or tradeable credits — that build the measured
-            foundation the Emirates&apos; net-zero journey needs.
+            Every ton of textile a partner diverts from landfill to a productive fate is recorded and,
+            using a conservative indicative factor, translated into estimated avoided emissions: landfill
+            methane that is not released, virgin fibre or polymer that is not produced. These are
+            auditable records, not offsets or tradeable credits, that build the measured foundation the
+            UAE&apos;s net-zero journey needs.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
             <Link href="/signin" className="rounded-xl bg-brand-700 px-4 py-2.5 text-sm font-medium text-white hover:bg-brand-600">
@@ -158,9 +158,9 @@ export default async function ShowcasePage() {
           </div>
         </div>
         <p className="mt-6 text-center text-[11px] text-muted">
-          Emirates Palm & Dates Network · operated with Nuraiya · technology by Safa BioWorks FZE. Figures are
+          Naseej Textile Recovery Platform · operated with Nuraiya · anchor processor Chemplax. Figures are
           aggregates from approved reports; ESG values are indicative estimates, not verified carbon
-          accounting or tradeable credits. من النخلة إلى بيانات مناخية موثوقة
+          accounting or tradeable credits. An independent platform, not a government body.
         </p>
       </section>
     </main>

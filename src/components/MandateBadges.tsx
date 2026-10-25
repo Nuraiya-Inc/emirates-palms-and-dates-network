@@ -12,29 +12,24 @@ const MANDATES: Array<{ en: string; ar: string; tip: string }> = [
     tip: 'UAE Net Zero by 2050 strategic initiative — measured diversion contributes to the national pathway.',
   },
   {
-    en: 'COP28 Sustainable Agriculture',
-    ar: 'إعلان COP28 للزراعة المستدامة',
-    tip: 'COP28 UAE Declaration on Sustainable Agriculture, Resilient Food Systems, and Climate Action.',
-  },
-  {
     en: 'Circular Economy 2021–2031',
     ar: 'الاقتصاد الدائري 2021–2031',
-    tip: 'UAE Circular Economy Policy 2021–2031 — residue diverted to productive fates is the measured contribution.',
+    tip: 'UAE Circular Economy Policy 2021–2031. Textile diverted to productive fates is the measured contribution.',
   },
   {
-    en: 'Plant the Emirates',
-    ar: 'ازرعوا الإمارات',
-    tip: 'Plant the Emirates national programme for expanding agriculture and green cover.',
+    en: 'Integrated Waste Management',
+    ar: 'الإدارة المتكاملة للنفايات',
+    tip: 'UAE Integrated Waste Management Agenda: landfill diversion is the headline target this ledger measures.',
   },
   {
-    en: 'Food Security 2051',
-    ar: 'الأمن الغذائي 2051',
-    tip: 'UAE National Food Security Strategy 2051 — the network is the sector’s data layer.',
+    en: 'Textile circularity',
+    ar: 'دائرية المنسوجات',
+    tip: 'The national drive for textile circularity (initiative launched June 2026). The platform is aligned with its goals; it is independent of it and does not represent it.',
   },
   {
-    en: 'Al Ain & Liwa (FAO GIAHS)',
-    ar: 'واحات العين و ليوا',
-    tip: 'Al Ain and Liwa oases are FAO Globally Important Agricultural Heritage Systems.',
+    en: 'Climate law 2024',
+    ar: 'قانون المناخ 2024',
+    tip: 'UAE federal climate law (2024) and national carbon accounting. Verified diversion records are the auditable MRV dataset.',
   },
 ];
 

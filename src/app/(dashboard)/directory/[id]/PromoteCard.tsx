@@ -4,7 +4,7 @@
  * PromoteCard — staff action that registers a DirectoryEntry as a Partner
  * (TD4). Creates exactly one Partner at REGISTERED tier, links partnerId,
  * and flips relationship to REGISTERED. Tier/certification changes are not
- * offered here — they go through the approvals queue (UPN-2).
+ * offered here — they go through the approvals queue (NTR-2).
  */
 
 import { useState } from 'react';
@@ -14,20 +14,25 @@ import type { Region, ValueChainStage } from '@prisma/client';
 import { REGION_LABELS } from '@/lib/directory-labels';
 
 const TYPE_OPTIONS = [
-  { value: 'FARM', label: 'Farm' },
-  { value: 'FACTORY', label: 'Factory' },
-  { value: 'COMPANY', label: 'Company' },
-  { value: 'RECYCLER', label: 'Recycler' },
-  { value: 'COLLECTOR', label: 'Collector' },
+  { value: 'RECYCLER', label: 'Recycler / Processor' },
+  { value: 'INSTALLER', label: 'Carpet Installer / Remover' },
+  { value: 'DIVERSION_UNIT', label: 'Landfill Diversion Unit' },
+  { value: 'CHARITY', label: 'Charity / Reuse Organisation' },
+  { value: 'HOSPITALITY', label: 'Hotel / Hospitality Group' },
+  { value: 'FACILITY', label: 'Facilities Management / Property Portfolio' },
+  { value: 'RETAILER', label: 'Retailer / Brand' },
+  { value: 'MANUFACTURER', label: 'Flooring / Textile Manufacturer' },
+  { value: 'HAULIER', label: 'Haulier / Logistics' },
+  { value: 'SORTER', label: 'Sorter / Grader / Exporter' },
 ];
 
 const STAGE_TO_TYPE: Record<ValueChainStage, string> = {
-  GROWERS_FARMS: 'FARM',
-  PROCESSORS_MANUFACTURERS: 'FACTORY',
-  WASTE_COLLECTION: 'COLLECTOR',
-  TRADERS_IMPORT_EXPORT: 'COMPANY',
-  BUYERS_END_USERS: 'COMPANY',
-  ECOSYSTEM: 'COMPANY',
+  SOURCES_GENERATORS: 'HOSPITALITY',
+  COLLECTION_LOGISTICS: 'HAULIER',
+  SORTING_GRADING: 'SORTER',
+  RECYCLERS_PROCESSORS: 'RECYCLER',
+  REUSE_CHARITY: 'CHARITY',
+  ECOSYSTEM: 'FACILITY',
 };
 
 export default function PromoteCard({
@@ -93,7 +98,7 @@ export default function PromoteCard({
       </h2>
       <p className="mb-4 text-xs text-muted">
         Creates a Partner at REGISTERED tier and links it here — the entity starts counting in partner aggregates
-        only after this. Tier or certification changes afterwards go through the approvals queue (UPN-2).
+        only after this. Tier or certification changes afterwards go through the approvals queue (NTR-2).
       </p>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">

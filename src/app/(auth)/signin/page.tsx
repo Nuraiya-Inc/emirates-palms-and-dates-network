@@ -12,8 +12,8 @@ export const dynamic = 'force-dynamic';
 /**
  * Sign-in / landing — the climate story leads (M1).
  *
- * RTL Arabic hero by default: «من النخلة إلى بيانات مناخية موثوقة» —
- * from the palm to trusted climate data — with a LIVE national headline
+ * RTL Arabic hero by default: «كل حمولة تُحسب» (every load counts) with a
+ * LIVE national headline
  * stat (approved-report diversion, indicative tCO₂e) and the mandate
  * badge row. The sign-in form is a clean secondary entry.
  *
@@ -58,7 +58,7 @@ export default async function SignInPage({
       {/* Left side — climate hero (RTL Arabic primary) */}
       <div
         className="hidden md:flex md:w-1/2 lg:w-3/5 flex-col justify-between p-12 text-white"
-        style={{ background: 'linear-gradient(150deg, #07272D 0%, #0C3B43 45%, #124E57 100%)' }}
+        style={{ background: 'linear-gradient(150deg, #141C30 0%, #1F2A44 45%, #2A3A66 100%)' }}
       >
         <div>
           <Logo variant="light" width={200} priority />
@@ -67,17 +67,17 @@ export default async function SignInPage({
         <div>
           {/* Bilingual tagline — Arabic leads */}
           <div className="mb-2 text-sm text-gold-300" dir="ltr">
-            Emirates Palm & Dates Network · شبكة الإمارات للنخيل والتمور
+            Naseej Textile Recovery Platform · منصة نسيج لاستعادة المنسوجات
           </div>
-          <div className="text-4xl font-semibold leading-snug mb-2 font-serif" dir="rtl" lang="ar">
-            من النخلة إلى بيانات مناخية موثوقة
+          <div className="text-4xl font-semibold leading-snug mb-2" dir="rtl" lang="ar">
+            كل حمولة تُحسب. كل مصير يُسجَّل.
           </div>
           <div className="text-lg text-white/85 mb-5 tracking-tight">
-            Measure. Verify. Contribute to Net Zero 2050.
+            Track and trace. Collect. Valorize.
           </div>
           <p className="text-white/70 max-w-md leading-relaxed text-sm">
-            The national MRV layer for date-palm residue — turning what thousands of farms
-            burn or dump into measured, verifiable climate contribution.
+            One register and one ledger for textile recovery in the UAE. Every load logged at removal,
+            graded before it moves, routed to an offtaker, and counted whatever its fate.
           </p>
 
           {/* Live headline stat */}
@@ -102,9 +102,9 @@ export default async function SignInPage({
         {/* Measure · Verify · Contribute tiles */}
         <div className="grid grid-cols-3 gap-3">
           {[
-            { ar: 'نقيس', en: 'Measure', d: 'Farm-level residue, reported quarterly' },
-            { ar: 'نُدقق', en: 'Verify', d: 'Validated, approved, audit-trailed' },
-            { ar: 'نُسهم', en: 'Contribute', d: 'Rolled up to Net Zero 2050' },
+            { ar: 'نتتبّع', en: 'Track', d: 'Every load logged and graded at intake' },
+            { ar: 'نجمع', en: 'Collect', d: 'Pickups routed, chain of custody reconciled' },
+            { ar: 'نستعيد', en: 'Valorize', d: 'Verified diversion, rolled up to Net Zero 2050' },
           ].map((tile) => (
             <div key={tile.en} className="rounded-xl border border-white/15 bg-white/5 p-3">
               <div className="text-base font-medium" dir="rtl" lang="ar">{tile.ar}</div>
@@ -123,10 +123,10 @@ export default async function SignInPage({
           </div>
           {/* Mobile-only condensed hero */}
           <div className="md:hidden mb-6 text-center">
-            <div className="text-xl font-semibold font-serif text-brand-800" dir="rtl" lang="ar">
-              من النخلة إلى بيانات مناخية موثوقة
+            <div className="text-xl font-semibold text-brand-800" dir="rtl" lang="ar">
+              كل حمولة تُحسب. كل مصير يُسجَّل.
             </div>
-            <div className="mt-1 text-xs text-muted">Measure · Verify · Net Zero 2050</div>
+            <div className="mt-1 text-xs text-muted">Track · Collect · Valorize</div>
           </div>
 
           <h1 className="text-2xl font-semibold text-brand mb-1 tracking-tight">

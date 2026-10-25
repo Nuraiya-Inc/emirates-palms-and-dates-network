@@ -1,7 +1,7 @@
 /**
  * Staff Guide — onboarding + operating reference for the network console.
  * Written for a first-time network official: what each screen is for, the
- * daily rhythm, the iron rules, and exactly how to use Abdullah as staff.
+ * daily rhythm, the iron rules, and exactly how to use Noura as staff.
  */
 
 import Link from 'next/link';
@@ -31,8 +31,8 @@ function Rule({ children }: { children: React.ReactNode }) {
 
 const CHAPTERS: Array<[string, string]> = [
   ['01', 'The console at a glance'], ['02', 'Your daily rhythm'], ['03', 'The approval rule'],
-  ['04', 'Partner registry & certificates'], ['05', 'Abdullah for staff'], ['06', 'Bulk onboarding'],
-  ['07', 'Regional standings'], ['08', 'ESG figures — what you may say'], ['09', 'The agent team'],
+  ['04', 'Partner registry & certificates'], ['05', 'Noura for staff'], ['06', 'Bulk onboarding'],
+  ['07', 'Emirate standings'], ['08', 'ESG figures — what you may say'], ['09', 'The agent team'],
   ['10', 'Data governance'],
 ];
 
@@ -62,9 +62,9 @@ export default function StaffGuidePage() {
       <Chapter no="01" title="The console at a glance">
         <p>
           <Link href="/dashboard" className="text-brand-600 underline underline-offset-2">Dashboard</Link> is
-          the Emirates in one screen: the national opportunity figure, verified diversion, region
+          the UAE textile stream in one screen: the national waste figure, verified diversion, emirate
           bars, and the live activity feed. Every number is one of two kinds — <b>measured</b>
-          {' '}(from approved partner reports) or <b>baseline</b> (the national reference model) —
+          {' '}(from approved partner diversion reports) or <b>baseline</b> (reported national totals and indicative emirate allocations) —
           and the interface always labels which is which. When someone asks &quot;where does this
           figure come from?&quot;, the answer is always traceable: report → validation → approval.
         </p>
@@ -87,7 +87,7 @@ export default function StaffGuidePage() {
         <p>
           <b>3 · <Link href="/network" className="text-brand-600 underline underline-offset-2">Network inbox</Link></b> —
           partner applications (awards, grants), suggestions and complaints from Voice of the
-          Network, and open collection tickets and listings. Decide applications here; partners see
+          Network, and open pickup requests and listings. Decide applications here; partners see
           your decision in their portal immediately.
         </p>
       </Chapter>
@@ -101,8 +101,8 @@ export default function StaffGuidePage() {
         <p>
           Practically: when the certification agent believes a partner earned a promotion, an
           approval request appears in your queue with the evidence attached (approved quarters,
-          validation scores). Until you approve, nothing changes for the partner and Abdullah tells
-          them only that the request is &quot;with the Center for approval.&quot;
+          validation scores, chain-of-custody checks). Until you approve, nothing changes for the partner and Noura tells
+          them only that the request is &quot;with the network team for approval.&quot;
         </p>
       </Chapter>
 
@@ -116,67 +116,67 @@ export default function StaffGuidePage() {
         <p>
           The QR resolves to a <b>public verification page</b> (<code>/verify/…</code>) that shows
           standing only — never figures. Anyone can scan it: buyers, banks, inspectors. This is
-          the network acting as the sector&apos;s verification authority, and it costs you nothing to
+          the network acting as the stream&apos;s verification layer, and it costs you nothing to
           issue.
         </p>
       </Chapter>
 
-      <Chapter no="05" title="Abdullah for staff — your operator">
+      <Chapter no="05" title="Noura for staff — your operator">
         <p>
-          Staff accounts get a more capable Abdullah in <Link href="/agents" className="text-brand-600 underline underline-offset-2">Agents</Link>.
-          Things you can ask him to do, in plain language:
+          Staff accounts get a more capable Noura in <Link href="/agents" className="text-brand-600 underline underline-offset-2">Agents</Link>.
+          Things you can ask her to do, in plain language:
         </p>
         <ul className="list-disc space-y-1 pl-5 text-sm">
-          <li>&quot;List all Al Ain farms that haven&apos;t reported this quarter&quot;</li>
-          <li>&quot;Show me the detail of Al Ain Heritage Farm&apos;s Q2 report&quot; — then &quot;approve it&quot;</li>
-          <li>&quot;What&apos;s the emirate benchmark for medium farms in Ras Al Khaimah?&quot;</li>
-          <li>&quot;Draft a tier promotion for UPN-AUH-00005&quot; (arrives in your approval queue)</li>
+          <li>&quot;List all Dubai hotels that haven&apos;t reported this quarter&quot;</li>
+          <li>&quot;Show me the detail of a partner&apos;s Q2 diversion report&quot;, then &quot;approve it&quot;</li>
+          <li>&quot;What&apos;s the emirate benchmark for medium hotel groups in Abu Dhabi?&quot;</li>
+          <li>&quot;Draft a tier promotion for NTR-AUH-00005&quot; (arrives in your approval queue)</li>
           <li>&quot;Register these partners…&quot; — see bulk onboarding below</li>
           <li>&quot;Generate a quarterly summary document for the leadership meeting&quot;</li>
         </ul>
         <p className="text-sm text-muted">
-          Everything Abdullah does is written to the audit log under your session — the same
+          Everything Noura does is written to the audit log under your session, the same
           accountability as doing it by hand, at a fraction of the time.
         </p>
       </Chapter>
 
-      <Chapter no="06" title="Bulk onboarding — a branch register in one conversation">
-        <p>To onboard many partners at once, give Abdullah the list — any format works:</p>
+      <Chapter no="06" title="Bulk onboarding — a portfolio register in one conversation">
+        <p>To onboard many partners at once, give Noura the list. Any format works:</p>
         <div className="rounded-xl bg-mist p-4 font-mono text-[13px] leading-relaxed">
-          You: <i>Here is the Al Ain branch member register (attach the spreadsheet, paste a table,
-          or even a photo of a printed list) — please onboard all of them.</i>
+          You: <i>Here is the hotel group&apos;s property list (attach the spreadsheet, paste a table,
+          or even a photo of a printed list). Please onboard all of them.</i>
         </div>
         <p>
-          Abdullah normalizes every row (regions mapped, facility types matched), <b>shows you a
+          Noura normalizes every row (emirates mapped, participant types matched), <b>shows you a
           preview</b>, flags duplicates already in the registry, and asks for your go-ahead. On
-          confirmation he registers the batch — up to 100 at a time — with sequential registry
-          numbers per region (<code>UPN-AUH-00007, 00008, …</code>), all starting at Registered
+          confirmation she registers the batch, up to 100 at a time, with sequential registry
+          numbers per emirate (<code>NTR-AUH-00007, 00008, …</code>), all starting at Registered
           tier. The batch is recorded in the audit log and the activity feed.
         </p>
-        <Rule>Abdullah never invents rows — he registers only what you actually supplied, and he skips duplicates rather than overwriting.</Rule>
+        <Rule>Noura never invents rows. She registers only what you actually supplied, and she skips duplicates rather than overwriting.</Rule>
       </Chapter>
 
-      <Chapter no="07" title="Regional standings — recognition, never penalty">
+      <Chapter no="07" title="Emirate standings — recognition, never penalty">
         <p>
           <Link href="/standings" className="text-brand-600 underline underline-offset-2">Standings</Link> ranks
-          regions for the current reporting cycle: <b>participation first</b>, diversion share
-          second, volume third (dampened so large regions don&apos;t win on size alone). Use it in
-          regional director meetings — the question &quot;where does my region stand?&quot; moves
-          behavior more than any circular. Frame it as recognition: ask Abdullah to draft
+          emirates for the current reporting cycle: <b>participation first</b>, diversion rate
+          second, volume third (dampened so large emirates don&apos;t win on size alone). Use it in
+          emirate lead meetings. The question &quot;where does my emirate stand?&quot; moves
+          behavior more than any circular. Frame it as recognition: ask Noura to draft
           congratulation letters for the podium; never use standings to penalize.
         </p>
       </Chapter>
 
       <Chapter no="08" title="ESG figures — what you may and may not say">
         <Rule>
-          Every CO₂e figure on the platform is an <b>indicative estimate</b> from verified waste
+          Every CO₂e figure on the platform is an <b>indicative estimate</b> from verified
           diversion. It is labeled that way everywhere, and must stay that way in anything you
           publish. It is NOT verified carbon accounting and NOT tradeable credits.
         </Rule>
         <p>
-          Safe language: <i>&quot;estimated avoided emissions from verified byproduct
+          Safe language: <i>&quot;estimated avoided emissions from verified textile
           diversion.&quot;</i> Not safe: &quot;carbon credits,&quot; &quot;offsets,&quot; or any
-          tradeable claim. Before any external ESG publication, the Center should engage a
+          tradeable claim. Before any external ESG publication, the network should engage a
           qualified carbon methodology consultant. The platform&apos;s honest labeling is an asset
           — it is what makes the data credible as the UAE&apos;s carbon-market infrastructure matures.
         </p>
@@ -187,9 +187,9 @@ export default function StaffGuidePage() {
           <table className="w-full text-sm">
             <tbody>
               {[
-                ['Abdullah (abd-00)', 'Partner concierge & orchestrator — the only agent partners ever see'],
-                ['Intake (int-01)', 'Parses messy files: Excel in any layout, ledger photos, voice notes'],
-                ['Validation (val-01)', 'Checks every figure against history, regional priors, physical bounds'],
+                ['Noura (nou-00)', 'Partner concierge & orchestrator — the only agent partners ever see'],
+                ['Intake (int-01)', 'Parses messy files: Excel in any layout, weighbridge slips, load photos, voice notes'],
+                ['Validation (val-01)', 'Checks every figure against history, emirate priors, physical bounds (kg per m², kg per room-year)'],
                 ['Analytics (ana-01)', 'Benchmarks, trends, and briefing material'],
                 ['Certification (cer-01)', 'Drafts tier and standing changes for your approval'],
                 ['Engagement (eng-01)', 'Reminder campaigns and seasonal communications'],
@@ -204,23 +204,25 @@ export default function StaffGuidePage() {
           </table>
         </div>
         <p className="text-sm text-muted">
-          Backend agents never talk to partners — their work reaches partners only through
-          Abdullah&apos;s voice, and reaches the registry only through your approvals.
+          Backend agents never talk to partners. Their work reaches partners only through
+          Noura&apos;s voice, and reaches the registry only through your approvals.
         </p>
       </Chapter>
 
       <Chapter no="10" title="Data governance — the hard rules">
         <ul className="list-disc space-y-2 pl-5">
-          <li><b>Partner confidentiality:</b> one partner&apos;s data is never shown to another. Aggregates require at least three partners; below that the platform shows the regional baseline, labeled as such.</li>
+          <li><b>Partner confidentiality:</b> one partner&apos;s data is never shown to another. Aggregates require at least three partners; below that the platform shows the emirate baseline, labeled as such.</li>
           <li><b>Auditability:</b> every agent action, tool call, and official decision is written to the <Link href="/activity" className="text-brand-600 underline underline-offset-2">audit log</Link>.</li>
-          <li><b>Baseline honesty:</b> only Abu Dhabi&apos;s baseline is surveyed (ADAFSA); other emirates&apos; rows are indicative placeholders. Never quote them externally — reported data replaces them.</li>
+          <li><b>Baseline honesty:</b> only the national totals are reported (approximate, June 2026); every emirate row and stream split is an indicative placeholder. Never quote them externally. Reported data replaces them.</li>
+          <li><b>Every load gets a fate:</b> landfill with its reason is still a logged fate. A load never disappears from the ledger to flatter a diversion rate.</li>
+          <li><b>No affiliation claims:</b> the platform is independent. It never claims government endorsement or affiliation with the national textile-circularity initiative.</li>
           <li><b>Arabic first:</b> all partner-facing communication defaults to Arabic; partners who prefer English get English. The choice is remembered.</li>
         </ul>
       </Chapter>
 
       <p className="pb-4 text-center text-xs text-muted">
         Partners have their own guide at <code>/portal/guide</code> — it opens automatically on
-        their first visit. When a partner asks &quot;how do I…&quot;, Abdullah answers; this page
+        their first visit. When a partner asks &quot;how do I…&quot;, Noura answers; this page
         is for you.
       </p>
     </div>

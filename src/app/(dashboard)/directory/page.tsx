@@ -1,8 +1,8 @@
 /**
- * Value-chain directory — Safa BioWorks' researched network map (staff only).
+ * Value-chain directory — the researched UAE textile recovery network map (staff only).
  *
  * DirectoryEntry is NOT a Partner: these rows never feed participation
- * rates, benchmarks, or sector aggregates (UPN-7). Contact details and
+ * rates, benchmarks, or sector aggregates (NTR-7). Contact details and
  * safaRelevance are internal context — this page is gated to staff
  * (TEAM_MEMBER and above) and never linked from partner/public surfaces.
  */
@@ -88,8 +88,8 @@ export default async function DirectoryPage({ searchParams }: { searchParams: Pr
       <div>
         <h1 className="text-2xl font-semibold tracking-tight text-brand-800">Value-Chain Directory</h1>
         <p className="text-sm text-muted">
-          دليل سلسلة القيمة — {entries.length} of {total} entries · researched network map, not registered partners —
-          nothing here counts in sector aggregates until promoted.
+          دليل سلسلة القيمة · {entries.length} of {total} entries · researched map of the textile value chain, not registered partners.
+          Nothing here counts in sector aggregates until promoted.
         </p>
       </div>
 
@@ -201,7 +201,7 @@ export default async function DirectoryPage({ searchParams }: { searchParams: Pr
       )}
 
       <p className="text-xs text-muted">
-        Internal directory — contact details and Safa relevance are staff-only and never appear on public surfaces
+        Internal directory. Contact details and offtaker relevance are staff-only and never appear on public surfaces
         (impact map, showcase). Promoting an entry to a registered partner is done from the entry&apos;s detail page.
       </p>
     </div>

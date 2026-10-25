@@ -13,8 +13,8 @@ export const dynamic = 'force-dynamic';
 const TIER_AR: Record<string, string> = {
   REGISTERED: 'عضو مسجّل',
   ACTIVE: 'عضو نشط',
-  CERTIFIED: 'شريك معتمد',
-  ELITE: 'شريك نخبة',
+  CERTIFIED: 'شريك استعادة معتمد',
+  ELITE: 'شريك استعادة نخبة',
 };
 
 export default async function VerifyPage({
@@ -44,18 +44,18 @@ export default async function VerifyPage({
         <div className="overflow-hidden rounded-2xl border border-line bg-white shadow-card-hover">
           <div
             className={`px-6 py-4 text-center text-white ${valid ? '' : ''}`}
-            style={{ background: valid ? 'linear-gradient(135deg, #0C3B43, #124E57)' : '#6E7A78' }}
+            style={{ background: valid ? 'linear-gradient(135deg, #1F2A44, #2A3A66)' : '#6E7A78' }}
           >
             <div className="text-2xl font-semibold">
               {partner ? (valid ? '✓ Verified · موثّق' : 'Standing paused · العضوية موقوفة') : 'Not found · غير موجود'}
             </div>
             <div className="mt-1 text-xs text-white/75">
-              Official verification by the National Center for Palms and Dates
+              Network verification · Naseej Textile Recovery Platform
             </div>
             {valid && (
               <div className="mx-auto mt-2 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs text-white/90">
                 <span style={{ color: '#D5B672' }}>◉</span>
-                Annual seal {new Date().getUTCFullYear()} · valid through 31 Dec — renewed by quarterly reporting
+                Annual seal {new Date().getUTCFullYear()} · valid through 31 Dec · renewed by quarterly diversion reporting
               </div>
             )}
           </div>
@@ -74,7 +74,7 @@ export default async function VerifyPage({
                   <div className="text-xs text-brand-700">{TIER_AR[partner.tier]}</div>
                 </div>
                 <div className="rounded-xl bg-mist p-3">
-                  <div className="text-[10px] uppercase tracking-wide text-muted">Region</div>
+                  <div className="text-[10px] uppercase tracking-wide text-muted">Emirate</div>
                   <div className="font-semibold text-ink">{partner.region}</div>
                   <div className="text-xs text-muted">member since {partner.createdAt.getUTCFullYear()}</div>
                 </div>
@@ -85,20 +85,20 @@ export default async function VerifyPage({
                 </div>
               )}
               <p className="text-center text-[11px] leading-relaxed text-muted">
-                This page confirms current membership standing in the Emirates Palm & Dates Network. It shows
-                no commercial data. تؤكد هذه الصفحة حالة العضوية فقط.
+                This page confirms current membership standing in the Naseej Textile Recovery Platform. It shows
+                no commercial data. Certification is the network&apos;s own recognition. تؤكد هذه الصفحة حالة العضوية فقط.
               </p>
             </div>
           ) : (
             <div className="p-6 text-center text-sm text-muted">
               No partner matches this certificate. If you believe this is an error, contact the
-              Center. لا يوجد شريك مطابق لهذه الشهادة.
+              network team. لا يوجد شريك مطابق لهذه الشهادة.
             </div>
           )}
         </div>
 
         <p className="mt-6 text-center text-[11px] text-muted">
-          Emirates Palm & Dates Network · United Arab Emirates
+          Naseej Textile Recovery Platform · United Arab Emirates · an independent partner network
         </p>
       </div>
     </main>
