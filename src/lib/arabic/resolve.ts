@@ -1,9 +1,9 @@
 /**
- * The Arabic resolver — runs BEFORE Abdullah records anything.
+ * The Arabic resolver — runs BEFORE Noura records anything.
  *
- * Input: a raw farmer utterance (typed or voice-note transcript).
+ * Input: a raw partner utterance (typed or voice-note transcript).
  * Output: a structured, auditable resolution — kg low/high range,
- * waste stream, fate, variety, reporting period — plus a verdict:
+ * textile stream, fate, material type, reporting period — plus a verdict:
  *   - resolved (record it), or
  *   - mustClarify (ask exactly one targeted dialect question).
  *
@@ -11,8 +11,8 @@
  *   - Never invent a number. An unresolved quantity returns
  *     mustClarify + a dialect-phrased question — it does not guess.
  *   - Local units resolve to RANGES flagged INDICATIVE, consistent with
- *     UPN-7/ESG honesty.
- *   - Latin numerals in output (UPN Arabic-first rule) — Arabic-Indic
+ *     NTR-7/ESG honesty.
+ *   - Latin numerals in output (NTR-5 Arabic-first rule) — Arabic-Indic
  *     numerals (٠١٢٣٤٥٦٧٨٩) are normalized on input.
  *
  * Everything here is pure + deterministic — unit-testable without a
@@ -24,7 +24,7 @@ import {
   containsTerm,
   findStream,
   findFate,
-  findVariety,
+  findMaterialType,
   type WasteStreamCode,
   type WasteFateCode,
 } from './lexicon';
@@ -40,7 +40,7 @@ export type ResolutionConfidence = 'HIGH' | 'MEDIUM' | 'LOW';
 export type ResolutionKind = 'WASTE' | 'PRODUCTION' | 'AUTO';
 
 export interface QuantityResolution {
-  /** The farmer's original words — verbatim, for the audit trail. */
+  /** The partner's original words — verbatim, for the audit trail. */
   rawText: string;
   /** Digits normalized to Latin, diacritics stripped — what we parsed. */
   normalized: string;
@@ -50,7 +50,7 @@ export interface QuantityResolution {
   kgHigh: number | null;
   /** Working midpoint — used only where a single number is unavoidable. */
   kgMid: number | null;
-  /** Number of units counted (٣ بيكات → 3). */
+  /** Number of units counted (٣ بالات → 3). */
   count: number | null;
   unitCode: string | null;
   /** Range flagged INDICATIVE (local unit estimate) vs exact (kg/ton). */
@@ -60,7 +60,8 @@ export interface QuantityResolution {
   streamMatched: string | null;
   fate: WasteFateCode | null;
   fateMatched: string | null;
-  variety: string | null;
+  /** Canonical material / polymer / fibre type (e.g. "nylon 6", "PP", "cotton"). */
+  materialType: string | null;
   period: PeriodResolution | null;
 
   /** Was the utterance approximate ("حوالي"…)? Ranges already account for it. */
@@ -68,7 +69,7 @@ export interface QuantityResolution {
 
   confidence: ResolutionConfidence;
   mustClarify: boolean;
-  /** ONE question in Emirati dialect, ready to relay verbatim — only
+  /** ONE question in Gulf dialect, ready to relay verbatim — only
    * present when mustClarify is true and the answer changes the number. */
   clarifyQuestion: string | null;
   /** English-gloss version of the question for staff/debug transparency. */
@@ -143,7 +144,7 @@ export function resolveQuantity(rawText: string, kind: ResolutionKind = 'AUTO'):
   const unit = findUnit(rawText);
   const stream = kind === 'PRODUCTION' ? null : findStream(rawText);
   const fate = kind === 'PRODUCTION' ? null : findFate(rawText);
-  const variety = findVariety(rawText);
+  const materialType = findMaterialType(rawText);
   const period = resolvePeriod(rawText);
   const approx = isApprox(normalized);
 
@@ -159,7 +160,7 @@ export function resolveQuantity(rawText: string, kind: ResolutionKind = 'AUTO'):
   // Total units = count + fraction-of-one-unit (additive, not
   // multiplicative): "٢ طن ونص" = 2 + 0.5 = 2.5t. A و-variant implies
   // a whole unit when no count was spoken: "طن ونص" = 1.5t. A unit
-  // alone ("وايت جريد") means one by convention.
+  // alone ("بالة ملابس") means one by convention.
   const totalUnits =
     unit && (count || modifier)
       ? (count?.count ?? (modifier?.impliesWhole ? 1 : 0)) + (modifier?.factor ?? (count ? 0 : 1))
@@ -180,13 +181,13 @@ export function resolveQuantity(rawText: string, kind: ResolutionKind = 'AUTO'):
     }
     notes.push(unit.caveat);
   } else if (!unit && count) {
-    // A bare number with no unit — the classic "٣ بيكات" failure is
+    // A bare number with no unit — the classic "٣ بالات" failure is
     // covered; a bare "15" must still be clarified: 15 what?
     mustClarify = true;
     const q = defaultClarifier(kind);
     clarifyQuestion = q.ar;
     clarifyQuestionEn = q.en;
-    notes.push(`bare number "${count.matched}" with no unit — cannot pick tons vs kg vs baskets`);
+    notes.push(`bare number "${count.matched}" with no unit — cannot pick tons vs kg vs bales vs m²`);
   } else {
     // Neither number nor unit.
     mustClarify = true;
@@ -198,7 +199,7 @@ export function resolveQuantity(rawText: string, kind: ResolutionKind = 'AUTO'):
 
   // Unit ambiguity escalates to clarification only when it changes the
   // number materially — HIGH-ambiguity units always ask; LOW units record
-  // the range and note it (the farmer confirms at playback).
+  // the range and note it (the partner confirms at playback).
   if (!mustClarify && unit && unit.ambiguity === 'HIGH' && unit.clarifier) {
     mustClarify = true;
     clarifyQuestion = unit.clarifier;
@@ -233,6 +234,9 @@ export function resolveQuantity(rawText: string, kind: ResolutionKind = 'AUTO'):
   if (stream && !fate) {
     notes.push('stream identified but fate unknown — ask where it went if not already stated');
   }
+  if (fate && fate.fate === 'RECYCLED_FIBER' && fate.matched && !/fib|ألياف|الياف|غزل|فرم/i.test(fate.matched)) {
+    notes.push('generic "recycled" wording — defaulted to the fibre route; confirm polymer vs fibre route with the partner');
+  }
   if (period) notes.push(`period: ${period.matched} → ${period.year} Q${period.quarter} (${period.basis}, ${period.confidence})`);
 
   return {
@@ -248,7 +252,7 @@ export function resolveQuantity(rawText: string, kind: ResolutionKind = 'AUTO'):
     streamMatched: stream?.matched ?? null,
     fate: fate?.fate ?? null,
     fateMatched: fate?.matched ?? null,
-    variety: variety?.variety ?? null,
+    materialType: materialType?.materialType ?? null,
     period,
     approximate: approx,
     confidence,
@@ -280,14 +284,21 @@ export function playbackLine(r: QuantityResolution): string {
   }
   if (r.stream) parts.push(streamLabelAr(r.stream));
   if (r.fate) parts.push(`→ ${r.fate}`);
-  if (r.variety) parts.push(r.variety);
+  if (r.materialType) parts.push(r.materialType);
   if (r.period) parts.push(`${r.period.year} Q${r.period.quarter}`);
   return parts.join(' · ') || r.rawText;
 }
 
 function streamLabelAr(s: WasteStreamCode): string {
   return {
-    DATES: 'فاقد تمور', PITS: 'نوى', FRONDS: 'جريد/سعف',
-    FROND_BASE: 'كرب', FIBER: 'ليف', OTHER: 'نواتج أخرى',
+    PI_CARPET: 'بواقي سجاد مصنع',
+    PC_CARPET_TILE: 'بلاط سجاد',
+    PC_CARPET_BROADLOOM: 'موكيت/سجاد',
+    APPAREL_WEARABLE: 'ملابس صالحة',
+    APPAREL_NONWEARABLE: 'ملابس غير صالحة',
+    HOSPITALITY_TEXTILE: 'منسوجات ضيافة',
+    TECHNICAL_TEXTILE: 'منسوجات تقنية',
+    TURF: 'عشب صناعي',
+    OTHER: 'منسوجات أخرى',
   }[s];
 }

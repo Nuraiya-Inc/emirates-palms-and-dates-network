@@ -1,22 +1,33 @@
 /**
- * seed-directory.ts — imports the Safa BioWorks value-chain network directory
- * (232 entries) into the DirectoryEntry table.
+ * seed-directory.ts — imports the UAE textile recovery value-chain directory
+ * into the DirectoryEntry table.
  *
  * RUN (from the app root, same pattern as the existing seed):
  *   npx tsx scripts/seed-directory.ts
  *
- * INPUT: prisma/data/directory-data.json  (the 232-record export)
+ * INPUT: prisma/data/directory-data.json
+ *   A short, verified list of real UAE organisations across the six value
+ *   chain stages. Fewer accurate entries beat many invented ones: add rows
+ *   only with a public source for the role claimed.
  * SAFE TO RE-RUN: upserts on (nameEn, stage) so re-imports don't duplicate.
  *
- * This script does the field mapping from the researched JSON to the schema:
+ * Field mapping from the JSON to the schema:
  *   stage string  -> ValueChainStage enum
  *   tier string   -> DirectoryPriority enum
  *   confidence    -> ConfidenceLevel enum
  *   emirate       -> Region enum (single emirate) OR null + emirateLabel
+ *   relationship  -> RelationshipStatus enum (optional; default DIRECTORY)
  *   sources       -> split on " | " into String[]
  */
 
-import { PrismaClient, ValueChainStage, DirectoryPriority, ConfidenceLevel, Region } from '@prisma/client';
+import {
+  PrismaClient,
+  ValueChainStage,
+  DirectoryPriority,
+  ConfidenceLevel,
+  RelationshipStatus,
+  Region,
+} from '@prisma/client';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -30,15 +41,16 @@ interface Row {
   description?: string; ownership?: string;
   website?: string; phone?: string; email?: string; address?: string;
   safa_relevance?: string; sources?: string;
+  relationship?: string;
 }
 
 const STAGE: Record<string, ValueChainStage> = {
-  '1. Growers & Farms': 'GROWERS_FARMS',
-  '2. Processors & Manufacturers': 'PROCESSORS_MANUFACTURERS',
-  '3. Waste Collection & By-products': 'WASTE_COLLECTION',
-  '4. Traders, Importers & Exporters': 'TRADERS_IMPORT_EXPORT',
-  '5. Buyers & End-users': 'BUYERS_END_USERS',
-  '6. Ecosystem (Govt, Research, Events, Funders)': 'ECOSYSTEM',
+  '1. Sources & Generators': 'SOURCES_GENERATORS',
+  '2. Collection, Hauling & Diversion': 'COLLECTION_LOGISTICS',
+  '3. Sorting, Grading & Export': 'SORTING_GRADING',
+  '4. Recyclers & Processors': 'RECYCLERS_PROCESSORS',
+  '5. Reuse, Charity & Resale': 'REUSE_CHARITY',
+  '6. Ecosystem': 'ECOSYSTEM',
 };
 
 const PRIORITY: Record<string, DirectoryPriority> = {
@@ -49,6 +61,15 @@ const PRIORITY: Record<string, DirectoryPriority> = {
 
 const CONFIDENCE: Record<string, ConfidenceLevel> = {
   High: 'HIGH', Medium: 'MEDIUM', Low: 'LOW',
+};
+
+const RELATIONSHIP: Record<string, RelationshipStatus> = {
+  DIRECTORY: 'DIRECTORY',
+  CONTACTED: 'CONTACTED',
+  ENGAGED: 'ENGAGED',
+  ONBOARDING: 'ONBOARDING',
+  REGISTERED: 'REGISTERED',
+  DECLINED: 'DECLINED',
 };
 
 // Single-emirate values map to Region; everything else (Federal / National,
@@ -82,6 +103,7 @@ async function main() {
       skipped++;
       continue;
     }
+    const relationship = (r.relationship && RELATIONSHIP[r.relationship]) || 'DIRECTORY';
 
     const data = {
       nameEn: r.name,
@@ -102,6 +124,7 @@ async function main() {
       address: r.address || null,
       safaRelevance: r.safa_relevance || null,
       sources: splitSources(r.sources),
+      relationship,
     };
 
     // Upsert key: name + stage (a name can appear under two stages in the data).

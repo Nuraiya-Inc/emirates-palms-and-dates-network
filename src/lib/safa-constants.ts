@@ -1,24 +1,24 @@
 /**
- * UPN constants shim.
+ * NTR constants shim.
  *
  * Historical filename kept so the inherited runtime's imports keep working
  * (chat route, agent-run, responders). The real source of truth is the
- * UPN fact graph in `@/facts`.
+ * NTR fact graph in `@/facts`.
  *
- * TODO(rename): move importers to `@/lib/upn-constants` once the runtime
+ * TODO(rename): move importers to `@/lib/ntr-constants` once the runtime
  * stabilizes, then delete this file.
  */
 
-import { UPN_FACTS, buildCachedFactsPrefix } from '@/facts';
+import { NTR_FACTS, buildCachedFactsPrefix } from '@/facts';
 
 export const PLATFORM = {
-  nameEn: UPN_FACTS.identity.platformNameEn,
-  nameAr: UPN_FACTS.identity.platformNameAr,
-  authority: UPN_FACTS.identity.authority,
-  brand: UPN_FACTS.brand,
+  nameEn: NTR_FACTS.identity.platformNameEn,
+  nameAr: NTR_FACTS.identity.platformNameAr,
+  authority: NTR_FACTS.identity.authority,
+  brand: NTR_FACTS.brand,
 } as const;
 
-export const HARD_RULES_MD = UPN_FACTS.hardRules
+export const HARD_RULES_MD = NTR_FACTS.hardRules
   .map((r) => `[${r.id} · ${r.severity}] ${r.rule}`)
   .join('\n');
 

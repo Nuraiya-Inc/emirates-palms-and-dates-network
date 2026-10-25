@@ -3,17 +3,18 @@
  *
  * Set (or replace) the theme for the current ISO week. The text is
  * injected into every agent's system prompt next to the date block,
- * so all 18 agents bias their morning work toward the same focus.
+ * so all 7 agents (Noura and the six backend agents) bias their morning
+ * work toward the same focus.
  *
  * Usage (inside Coolify Terminal, from /app):
  *   npx tsx scripts/set-weekly-theme.ts '<theme>' '[optional rationale]'
  *
  * Examples:
- *   npx tsx scripts/set-weekly-theme.ts 'Series A close-prep week'
+ *   npx tsx scripts/set-weekly-theme.ts 'Q3 diversion report chase'
  *
  *   npx tsx scripts/set-weekly-theme.ts \
- *     'Emirates Biotech LOI push' \
- *     'Every branch this week should produce work that either advances or de-risks the Emirates Biotech LOI. Without it, the $30M pre-money is unstable.'
+ *     'Hotel refurbishment season' \
+ *     'Every agent this week should move carpet strip-out loads from hotel and FM partners onto pickup tickets with a graded backing type, and close chain-of-custody gaps with the polymer recyclers.'
  *
  * Notes:
  * - Wrap each argument in single quotes so the shell doesn't interpret
@@ -44,7 +45,7 @@ async function main() {
     console.error(
       'Usage: npx tsx scripts/set-weekly-theme.ts \'<theme>\' \'[rationale]\'\n' +
         '  Wrap each argument in single quotes.\n' +
-        '  Example: npx tsx scripts/set-weekly-theme.ts \'Series A close-prep week\'',
+        '  Example: npx tsx scripts/set-weekly-theme.ts \'Q3 diversion report chase\'',
     );
     process.exit(2);
   }

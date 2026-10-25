@@ -4,7 +4,7 @@
  */
 
 import PDFDocument from 'pdfkit';
-import { BRAND, DEFAULT_FOOTER, withHash, getLogoPng } from './brand';
+import { BRAND, DEFAULT_FOOTER, COMPANY_NAME, withHash, getLogoPng } from './brand';
 
 const BRAND_GREEN = withHash(BRAND.green);
 const LIME = withHash(BRAND.lime);
@@ -38,7 +38,7 @@ export function generatePdf(input: GeneratePdfInput): Promise<Buffer> {
       info: {
         Title: input.title.slice(0, 200),
         Author: 'Safa Platform · AI agent',
-        Creator: 'Emirates Palm & Dates Network',
+        Creator: COMPANY_NAME,
         CreationDate: new Date(),
       },
     });

@@ -2,9 +2,11 @@
  * State of the Sector — national report aggregation.
  *
  * Builds an aggregate-only picture of the network from APPROVED reports:
- * participation, production, diversion, and indicative ESG, by emirate.
+ * participation, textile tonnage logged, diversion, and indicative ESG, by
+ * emirate. (`productionTons` is kept as the field name the UI reads; it now
+ * means textile tons generated or received by reporting partners.)
  *
- * Privacy (rule UPN-3): every figure here is an aggregate. Per-emirate
+ * Privacy (rule NTR-3): every figure here is an aggregate. Per-emirate
  * rows are only broken out when at least MIN_AGGREGATE partners exist in
  * that emirate; smaller emirates are folded into "Other emirates" so no
  * single partner can be inferred.
@@ -27,7 +29,7 @@ export interface EmirateStat {
   code: string;
   nameEn: string;
   nameAr: string;
-  baselineQuality: 'SURVEYED' | 'INDICATIVE';
+  baselineQuality: 'REPORTED' | 'INDICATIVE';
   partners: number;
   reportingPartners: number;
   reportingRatePct: number | null;
@@ -72,7 +74,7 @@ export async function buildSectorReport(now: Date = new Date()): Promise<SectorR
     where: { year, status: 'APPROVED' },
     select: {
       partnerId: true,
-      production: { select: { datesProducedTons: true } },
+      production: { select: { textileGeneratedTons: true } },
       wasteRecords: { select: { fate: true, tons: true } },
     },
   });
@@ -85,8 +87,8 @@ export async function buildSectorReport(now: Date = new Date()): Promise<SectorR
 
   for (const r of approved) {
     reportingByPartner.add(r.partnerId);
-    if (r.production?.datesProducedTons) {
-      prodByPartner.set(r.partnerId, (prodByPartner.get(r.partnerId) ?? 0) + r.production.datesProducedTons);
+    if (r.production?.textileGeneratedTons) {
+      prodByPartner.set(r.partnerId, (prodByPartner.get(r.partnerId) ?? 0) + r.production.textileGeneratedTons);
     }
     for (const w of r.wasteRecords) {
       wasteByPartner.set(r.partnerId, (wasteByPartner.get(r.partnerId) ?? 0) + w.tons);
@@ -125,7 +127,7 @@ export async function buildSectorReport(now: Date = new Date()): Promise<SectorR
       code,
       nameEn: meta?.nameEn ?? code,
       nameAr: meta?.nameAr ?? code,
-      baselineQuality: (meta?.baselineQuality ?? 'INDICATIVE') as 'SURVEYED' | 'INDICATIVE',
+      baselineQuality: (meta?.baselineQuality ?? 'INDICATIVE') as 'REPORTED' | 'INDICATIVE',
       partners: e.partners,
       reportingPartners: e.reporting,
       reportingRatePct: e.partners > 0 ? Math.round((e.reporting / e.partners) * 100) : null,

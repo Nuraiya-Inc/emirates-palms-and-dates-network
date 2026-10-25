@@ -1,8 +1,8 @@
 /**
  * ESG estimation — indicative climate-contribution figures from measured
- * waste-diversion data.
+ * textile-diversion data.
  *
- * HONESTY CONTRACT (mirrors hard rule UPN-7): these are INDICATIVE
+ * HONESTY CONTRACT (mirrors hard rule NTR-7): these are INDICATIVE
  * ESTIMATES using placeholder emission factors, clearly labeled as such
  * everywhere they surface. They are NOT verified carbon accounting and do
  * NOT constitute carbon credits. Credits require an accredited methodology
@@ -11,23 +11,25 @@
  * platform builds is the measured MRV-grade dataset such a project needs.
  *
  * Factor basis (to be replaced by a qualified carbon consultant before any
- * external use): diverting palm residue from open burning / burial to a
- * productive fate (feed, sale, recycling) is credited at a single
- * conservative indicative factor.
+ * external use): diverting textiles from landfill to a productive fate
+ * (reuse, donation, polymer or fibre recycling, downcycling, export) is
+ * credited at a single conservative indicative factor covering avoided
+ * landfill methane and displaced virgin fibre or polymer, vs a landfill
+ * baseline. The factor and the diverted-fate list live in NTR_FACTS.
  */
 
 import { prisma } from './db';
-import { REGION_BASELINE } from '@/facts';
+import { REGION_BASELINE, NTR_FACTS } from '@/facts';
 
-/** Indicative tCO2e avoided per ton of residue diverted from burn/bury/dump. */
-export const INDICATIVE_FACTOR_TCO2E_PER_TON = 1.2;
+/** Indicative tCO2e avoided per ton of textile diverted from landfill. PLACEHOLDER (NTR_FACTS.esg). */
+export const INDICATIVE_FACTOR_TCO2E_PER_TON: number = NTR_FACTS.esg.indicativeFactorTCO2ePerTon;
 
-/** Fates that count as productive diversion. */
-export const DIVERTED_FATES = ['FEED', 'SOLD', 'RECYCLED'] as const;
+/** Fates that count as productive diversion (NTR_FACTS.taxonomy.divertedFates). */
+export const DIVERTED_FATES = NTR_FACTS.taxonomy.divertedFates;
 
-/** Fates that are harmful — burn/bury/dump. These are the OPPORTUNITY:
- *  every harmful ton diverted becomes measured avoided emissions. */
-export const HARMFUL_FATES = ['BURNED', 'BURIED', 'DUMPED'] as const;
+/** Fates that are NOT diversion — landfill and incineration. These are the
+ *  OPPORTUNITY: every such ton diverted becomes measured avoided emissions. */
+export const HARMFUL_FATES = ['LANDFILLED', 'INCINERATED'] as const;
 
 /** Rough equivalence for communication only: passenger car-year ≈ 4.6 tCO2e. */
 const CAR_YEAR_TCO2E = 4.6;
@@ -108,12 +110,12 @@ export async function nationalEsgEstimate(year: number): Promise<EsgEstimate> {
 // ESG SCORE (0–100) — an indicative, fully transparent composite.
 //
 // Deliberately simple and explainable so an official can defend it:
-//   • Diversion   (0–50): how much of reported residue goes to a
-//                          productive fate rather than burn/bury/dump.
+//   • Diversion   (0–50): how much of the logged textile tonnage goes to a
+//                          productive fate rather than landfill/incineration.
 //   • Consistency (0–30): approved quarterly reports in the trailing
 //                          four quarters (participation is the product).
 //   • Data quality(0–20): mean validation confidence of those reports.
-// Bands label the total. Everything here is INDICATIVE (rule UPN-7).
+// Bands label the total. Everything here is INDICATIVE (rule NTR-7).
 // ─────────────────────────────────────────────────────────────────
 
 export interface EsgScore {
@@ -229,12 +231,13 @@ export interface NetZeroContext {
   annualDivertedTons: number;      // diverted tons this year, network-wide
   carYearEquivalent: number;       // cumulative, for communication
   contributingPartners: number;    // partners with any diverted tonnage this year
-  /** MRV coverage — % of the sector's ESTIMATED annual residue now measured
-   *  by the network (reported waste tons ÷ baseline palm-byproduct estimate).
-   *  This is the headline story number: how much of the invisible residue the
-   *  platform has made visible. Null when the baseline is unknown. */
+  /** MRV coverage — % of the sector's INDICATIVE annual textile waste now
+   *  measured by the network (logged tons ÷ indicative national baseline,
+   *  ~220,000 t). This is the headline story number: how much of the
+   *  uncounted stream the platform has made visible. Null when the baseline
+   *  is unknown. */
   measuredSharePct: number | null;
-  estimatedNationalResidueTons: number; // baseline estimate the share is against
+  estimatedNationalResidueTons: number; // indicative baseline the share is against (textile waste t/yr)
   perYear: Array<{ year: number; avoidedTCO2e: number; divertedTons: number; harmfulTons: number }>;
   /** Honesty contract: every figure here is indicative. Always true. */
   indicative: true;
@@ -274,9 +277,9 @@ export async function nationalNetZeroContext(now: Date = new Date()): Promise<Ne
 
   const cumulativeAvoided = cumulativeDiverted * INDICATIVE_FACTOR_TCO2E_PER_TON;
 
-  // MRV coverage: reported residue tons vs the sector's baseline estimate.
-  // Only REPORTED waste counts — the point is measured vs estimated.
-  const nationalBaseline = REGION_BASELINE.reduce((a, r) => a + (r.palmByproductsTons ?? 0), 0);
+  // MRV coverage: logged textile tons vs the indicative national baseline.
+  // Only LOGGED loads count — the point is measured vs indicative.
+  const nationalBaseline = REGION_BASELINE.reduce((a, r) => a + (r.textileWasteTons ?? 0), 0);
   const measuredSharePct =
     nationalBaseline > 0 ? Math.round((measuredThisYear / nationalBaseline) * 1000) / 10 : null;
 
@@ -303,14 +306,14 @@ export async function nationalNetZeroContext(now: Date = new Date()): Promise<Ne
 }
 
 // ─────────────────────────────────────────────────────────────────
-// CLIMATE NARRATIVE — frames residue diversion honestly.
+// CLIMATE NARRATIVE — frames textile diversion honestly.
 //
-// The honest physics: residue that is burned emits CO2 immediately;
-// residue dumped or buried decomposes anaerobically and releases METHANE
-// — a far more potent near-term warming gas. Diverting it (feed, sale,
-// recycling) avoids BOTH. Methane is the near-term lever: cutting it
-// buys time this decade. Diversion = methane avoidance (near-term win)
-// + CO2 avoidance (permanent win).
+// The honest physics: natural fibres (cotton, wool) that go to landfill
+// decompose anaerobically and release METHANE, a far more potent near-term
+// warming gas; synthetic fibres and carpet persist and lock in the
+// emissions of the virgin polymer they displace when recycled. Diverting
+// textiles (reuse, donation, recycling, downcycling) avoids landfill
+// methane now and displaces virgin fibre or polymer permanently.
 // ─────────────────────────────────────────────────────────────────
 
 export interface ClimateNarrative {
@@ -328,12 +331,12 @@ export interface ClimateNarrative {
 export function climateNarrative(est: EsgEstimate): ClimateNarrative {
   const avoided = est.estAvoidedTCO2e;
   return {
-    headlineEn: `${avoided.toLocaleString('en-US')} tCO₂e avoided — indicative`,
-    headlineAr: `تجنب ${avoided.toLocaleString('en-US')} طن من ثاني أكسيد الكربون المكافئ — تقديري`,
+    headlineEn: `${avoided.toLocaleString('en-US')} tCO₂e avoided (indicative)`,
+    headlineAr: `تجنب ${avoided.toLocaleString('en-US')} طن من ثاني أكسيد الكربون المكافئ (تقديري)`,
     detailEn:
-      'Residue diverted from burning skips the immediate CO₂ release; residue diverted from ' +
-      'dumping skips the methane that anaerobic decay releases — a far more potent near-term ' +
-      'warming gas. Diversion is a methane cut now plus a CO₂ cut permanently.',
+      'Textiles kept out of landfill skip the methane that anaerobic decay of natural fibres releases, ' +
+      'a far more potent near-term warming gas. Textiles reused or recycled also displace the virgin ' +
+      'fibre or polymer that would otherwise be made. Diversion is a methane cut now plus a materials cut permanently.',
     avoidedTCO2e: avoided,
     opportunityTCO2e: est.opportunityTCO2e,
     indicative: true,

@@ -5,9 +5,10 @@
  *   npx tsx scripts/eval-arabic.ts --with-model adds the plain-model baseline arm (ANTHROPIC_API_KEY)
  *
  * Arm A (always): the deterministic resolver (src/lib/arabic) on a corpus
- * of Emirati-farmer utterances — stream classification, tonnage bounds,
- * period resolution, clarify-vs-guess verdict. Scored against ground
- * truth below.
+ * of Gulf-dialect utterances from housekeeping managers, fit-out foremen,
+ * store managers and recycler intake clerks — stream classification,
+ * tonnage bounds, period resolution, clarify-vs-guess verdict. Scored
+ * against ground truth below.
  *
  * Arm B (--with-model): the SAME utterances fed to the plain model with
  * today's pre-build instruction ("speak MSA, mirror the user, extract
@@ -15,6 +16,11 @@
  * removes. Prints a side-by-side scorecard.
  *
  * Extend the corpus as real voice notes arrive — the file is data-first.
+ *
+ * Textile units the resolver must know: bale (بالة, pressed 300–500 kg or a
+ * loose sack ~100 kg), roll of carpet (لفة / رول), square metres of carpet
+ * (متر مربع, ~4.5 kg/m2 placeholder prior), bag of linen or clothes
+ * (كيس / شوال), pallet (طبلية), truck load (حمولة).
  */
 
 import { resolveQuantity, playbackLine } from '../src/lib/arabic';
@@ -32,7 +38,7 @@ interface Case {
   expected: {
     stream?: string | null;
     fate?: string | null;
-    variety?: string | null;
+    materialType?: string | null;
     kgLo?: number | null;   // kgMid must be ≥ kgLo
     kgHi?: number | null;   // kgMid must be ≤ kgHi
     quarter?: number | null;
@@ -43,88 +49,88 @@ interface Case {
 
 const CORPUS: Case[] = [
   {
-    id: 'waite-jarid-post-ghaith',
-    utterance: 'عندي وايت جريد ونص كرب بعد القيظ، رميناه في البر',
+    id: 'bales-linen-ramadan',
+    utterance: 'عندنا عشر بالات ملايات قديمة من التجديد، تبرعنا فيها في رمضان',
     kind: 'WASTE',
-    expected: { stream: 'FRONDS', fate: 'DUMPED', kgLo: 300, kgHi: 1500, quarter: 4, mustClarify: true },
-    note: 'وايت = ambiguous unit → must ask, not guess. بعد القيظ → Q4.',
+    expected: { stream: 'HOSPITALITY_TEXTILE', fate: 'DONATED', mustClarify: true },
+    note: 'بالة = ambiguous unit (loose sack vs pressed bale) → must ask, not guess. رمضان → Hijri month → quarter.',
   },
   {
-    id: 'waite-size-confirmed',
-    utterance: 'وايت جريد طن واحد تقريبا',
+    id: 'bale-weight-stated',
+    utterance: 'بالة مكبوسة ٤٠٠ كيلو ملابس صدّرناها',
     kind: 'WASTE',
-    expected: { stream: 'FRONDS', kgLo: 800, kgHi: 1200, mustClarify: false },
-    note: '"وايت طن واحد" — farmer stated the size (≈1t), so resolving as ~1000kg with the approx band is correct; no clarify needed.',
+    expected: { fate: 'EXPORTED', kgLo: 380, kgHi: 420, mustClarify: false },
+    note: 'Weight stated (400 kg) so the bale ambiguity is resolved; record with the approx band.',
   },
   {
-    id: 'beikat',
-    utterance: 'جمعنا ٣ بيكات سكري',
-    kind: 'PRODUCTION',
-    expected: { variety: 'Sukkari', kgLo: 9, kgHi: 24, mustClarify: false },
-    note: '٣ بيكات → 9–24 kg range. The headline failure case from the pitch.',
-  },
-  {
-    id: 'tons-explicit',
-    utterance: 'حصدنا حوالي ١٥ طن خلاص السنة هذي',
-    kind: 'PRODUCTION',
-    expected: { variety: 'Khalas', kgLo: 12000, kgHi: 17500, mustClarify: true },
-    note: 'Quantity is clear (≈15t Khalas) but "السنة هذي" is not a quarter — resolver must ask which one.',
-  },
-  {
-    id: 'suhail',
-    utterance: 'طلع سهيل ونظفنا المزرعة، عندي حمولة كرب',
+    id: 'carpet-rolls-corridors',
+    utterance: '٢٠ رول سجاد من الممرات، نقلناه لمعيد التدوير',
     kind: 'WASTE',
-    expected: { stream: 'FROND_BASE', quarter: 3, mustClarify: true },
-    note: 'سهيل → Q3 (late Aug). حمولة ambiguous → ask.',
+    expected: { stream: 'PC_CARPET_BROADLOOM', mustClarify: true },
+    note: 'Roll length and width unknown → ask. Fate is "recycled" but the route (polymer vs fibre) is not stated.',
   },
   {
-    id: 'ramadan',
-    utterance: 'في رمضان بعنا النوى لمصنع الأعلاف',
+    id: 'carpet-tile-sqm-nylon',
+    utterance: 'شلنا ١٥٠٠ متر مربع بلاط سجاد نايلون، راح للتدوير البوليمري',
     kind: 'WASTE',
-    expected: { stream: 'PITS', fate: 'SOLD', mustClarify: true },
-    note: 'Hijri month → quarter via Umm al-Qura. Quantity missing → ask.',
+    expected: { stream: 'PC_CARPET_TILE', fate: 'RECYCLED_POLYMER', materialType: 'nylon', kgLo: 6000, kgHi: 7500, mustClarify: false },
+    note: '1,500 m2 × ~4.5 kg/m2 placeholder prior → ~6,750 kg, INDICATIVE. Material type captured.',
   },
   {
-    id: 'feed-fronds',
-    utterance: 'السعف كله علف للغنم، شي عشرين كيلو في اليوم',
+    id: 'incinerated-no-qty',
+    utterance: 'حرقنا بقايا القماش القديمة',
     kind: 'WASTE',
-    expected: { stream: 'FRONDS', fate: 'FEED', kgLo: 15, kgHi: 30, mustClarify: false },
-    note: 'Explicit kg — no clarification needed.',
-  },
-  {
-    id: 'burned-karab',
-    utterance: 'حرقنا الكرب زمان بس الحين نبي ندوّره',
-    kind: 'WASTE',
-    expected: { stream: 'FROND_BASE', fate: 'BURNED', mustClarify: true },
+    expected: { fate: 'INCINERATED', mustClarify: true },
     note: 'Past burning acknowledged; no quantity → ask.',
   },
   {
-    id: 'compost-leef',
-    utterance: 'الليف رح لمصنع التدوير، كيسين كبار',
+    id: 'uniforms-september-donated',
+    utterance: 'في سبتمبر جمعنا ٣ طن زي مدرسي وتبرعنا فيه',
     kind: 'WASTE',
-    expected: { stream: 'FIBER', fate: 'RECYCLED', mustClarify: true },
-    note: 'كيس HIGH ambiguity → ask.',
+    expected: { stream: 'APPAREL_WEARABLE', fate: 'DONATED', kgLo: 2800, kgHi: 3200, quarter: 3, mustClarify: false },
+    note: 'Explicit month → Q3. Explicit tons → no clarification needed.',
   },
   {
     id: 'bare-number',
-    utterance: 'عندي 15 جريد',
+    utterance: 'عندي 15 سجاد',
     kind: 'WASTE',
-    expected: { stream: 'FRONDS', mustClarify: true },
-    note: '15 what? tons, kg, loads — must ask.',
+    expected: { mustClarify: true },
+    note: '15 what? rolls, m2, tons → must ask.',
   },
   {
-    id: 'jalla-pits',
-    utterance: 'خمس جلات نوى بعناها',
+    id: 'towels-landfilled-ton-half',
+    utterance: 'الفوط كلها راحت المكب، شي طن ونص',
     kind: 'WASTE',
-    expected: { stream: 'PITS', fate: 'SOLD', kgLo: 200, kgHi: 350, mustClarify: false },
-    note: 'جلة LOW ambiguity → record the range.',
+    expected: { stream: 'HOSPITALITY_TEXTILE', fate: 'LANDFILLED', kgLo: 1400, kgHi: 1600, mustClarify: false },
+    note: 'ونص → ×1.5. Landfill logged with its own fate, never dropped (NTR-8).',
   },
   {
-    id: 'fard-harvest-q2',
-    utterance: 'فرد حصدناه في يونيو، ٢ طن ونص',
+    id: 'sacks-nonwearable',
+    utterance: 'خمس شوالات ملابس ما تنلبس رحنا فيها للمصنع',
+    kind: 'WASTE',
+    expected: { stream: 'APPAREL_NONWEARABLE', mustClarify: true },
+    note: 'شوال HIGH ambiguity → ask.',
+  },
+  {
+    id: 'curtains-pallets',
+    utterance: 'ستاير ومفارش بعد التجديد، أربع طبليات',
+    kind: 'WASTE',
+    expected: { stream: 'HOSPITALITY_TEXTILE', mustClarify: true },
+    note: 'Pallet of soft goods is a volume, not a weight → ask.',
+  },
+  {
+    id: 'recycler-intake-tons',
+    utterance: 'استلمنا هالربع ٤٠ طن سجاد مستعمل في المصنع',
     kind: 'PRODUCTION',
-    expected: { variety: 'Fard', kgLo: 2400, kgHi: 2600, quarter: 2, mustClarify: false },
-    note: 'Explicit month → Q2. ونص → ×1.5.',
+    expected: { kgLo: 38000, kgHi: 42000 },
+    note: 'Recycler intake: 40 t received this quarter. Explicit tons.',
+  },
+  {
+    id: 'turf-landfilled',
+    utterance: 'عشب صناعي من الملعب، حوالي ٨ طن، رحنا فيه للمكب',
+    kind: 'WASTE',
+    expected: { stream: 'TURF', fate: 'LANDFILLED', kgLo: 7000, kgHi: 9000, mustClarify: false },
+    note: 'حوالي → approximate band around 8 t; still recordable.',
   },
 ];
 
@@ -134,6 +140,12 @@ interface ArmResult {
   id: string;
   pass: boolean;
   detail: string;
+}
+
+/** Material type field across resolver versions (materialType, formerly variety). */
+function materialOf(r: unknown): string | null {
+  const o = r as { materialType?: string | null; variety?: string | null };
+  return o.materialType ?? o.variety ?? null;
 }
 
 function scoreResolver(): ArmResult[] {
@@ -146,8 +158,8 @@ function scoreResolver(): ArmResult[] {
       fails.push(`stream: got ${r.stream}, want ${e.stream}`);
     if (e.fate !== undefined && r.fate !== e.fate)
       fails.push(`fate: got ${r.fate}, want ${e.fate}`);
-    if (e.variety !== undefined && r.variety !== e.variety)
-      fails.push(`variety: got ${r.variety}, want ${e.variety}`);
+    if (e.materialType !== undefined && materialOf(r) !== e.materialType)
+      fails.push(`materialType: got ${materialOf(r)}, want ${e.materialType}`);
     if (e.quarter !== undefined && r.period?.quarter !== e.quarter)
       fails.push(`quarter: got ${r.period?.quarter ?? '∅'}, want ${e.quarter}`);
     if (e.kgLo != null && (r.kgMid === null || r.kgMid < e.kgLo))
@@ -180,9 +192,11 @@ async function scorePlainModel(): Promise<ArmResult[]> {
       max_tokens: 300,
       temperature: 0,
       system:
-        'You are a bilingual farm-report assistant. The partner writes in Emirati Arabic. ' +
+        'You are a bilingual textile-recovery reporting assistant. The partner writes in Gulf Arabic. ' +
         'Extract the reported quantity and categorize it. Reply ONLY with compact JSON: ' +
-        '{"stream": "DATES|PITS|FRONDS|FROND_BASE|FIBER|OTHER|null", "fate": "FEED|SOLD|RECYCLED|BURNED|BURIED|DUMPED|UNKNOWN|null", "variety": "canonical-en|null", "tons": number|null, "quarter": 1|2|3|4|null, "would_ask_clarification": boolean}. No prose.',
+        '{"stream": "PI_CARPET|PC_CARPET_TILE|PC_CARPET_BROADLOOM|APPAREL_WEARABLE|APPAREL_NONWEARABLE|HOSPITALITY_TEXTILE|TECHNICAL_TEXTILE|TURF|OTHER|null", ' +
+        '"fate": "REUSED|DONATED|RECYCLED_POLYMER|RECYCLED_FIBER|DOWNCYCLED|EXPORTED|INCINERATED|LANDFILLED|UNKNOWN|null", ' +
+        '"material_type": "canonical-en|null", "tons": number|null, "quarter": 1|2|3|4|null, "would_ask_clarification": boolean}. No prose.',
       messages: [{ role: 'user', content: c.utterance }],
     });
     const text = resp.content
@@ -232,7 +246,7 @@ async function main() {
   console.log('ARM A — deterministic Arabic resolver (src/lib/arabic)');
   console.log('═'.repeat(70));
   const a = scoreResolver();
-  for (const r of a) console.log(`${r.pass ? '✅' : '❌'} ${r.id.padEnd(26)} ${r.detail}`);
+  for (const r of a) console.log(`${r.pass ? '✅' : '❌'} ${r.id.padEnd(30)} ${r.detail}`);
   const aPass = a.filter((r) => r.pass).length;
   console.log(`\nResolver: ${aPass}/${a.length} passed (${Math.round((aPass / a.length) * 100)}%)`);
 
@@ -245,7 +259,7 @@ async function main() {
     console.log('ARM B — plain model, no resolver (baseline for comparison)');
     console.log('═'.repeat(70));
     const b = await scorePlainModel();
-    for (const r of b) console.log(`${r.pass ? '✅' : '❌'} ${r.id.padEnd(26)} ${r.detail}`);
+    for (const r of b) console.log(`${r.pass ? '✅' : '❌'} ${r.id.padEnd(30)} ${r.detail}`);
     const bPass = b.filter((r) => r.pass).length;
     console.log(`\nPlain model: ${bPass}/${b.length} passed (${Math.round((bPass / b.length) * 100)}%)`);
     console.log(`\nDelta: ${aPass - bPass >= 0 ? '+' : ''}${aPass - bPass} cases — the pipeline advantage.`);

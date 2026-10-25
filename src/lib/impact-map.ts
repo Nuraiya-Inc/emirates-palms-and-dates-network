@@ -3,7 +3,7 @@
  *
  * Returns one row per emirate (from the canonical list), with aggregate
  * participation / diversion / indicative avoided emissions. To honour the
- * ≥3-partner aggregate rule (UPN-3), metrics are nulled for any emirate
+ * ≥3-partner aggregate rule (NTR-3), metrics are nulled for any emirate
  * with fewer than MIN_AGGREGATE partners — the map still shows the emirate,
  * just without a figure that could expose a single partner.
  */
@@ -17,7 +17,7 @@ export interface EmirateImpact {
   code: string;
   nameEn: string;
   nameAr: string;
-  baselineQuality: 'SURVEYED' | 'INDICATIVE';
+  baselineQuality: 'REPORTED' | 'INDICATIVE';
   partners: number;
   participationPct: number | null; // null when suppressed or no partners
   diversionPct: number | null;

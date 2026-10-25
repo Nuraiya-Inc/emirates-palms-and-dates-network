@@ -6,12 +6,21 @@
 import { ValueChainStage, DirectoryPriority, ConfidenceLevel, RelationshipStatus, Region } from '@prisma/client';
 
 export const STAGE_LABELS: Record<ValueChainStage, string> = {
-  GROWERS_FARMS: 'Growers & Farms',
-  PROCESSORS_MANUFACTURERS: 'Processors & Manufacturers',
-  WASTE_COLLECTION: 'Waste Collection & By-products',
-  TRADERS_IMPORT_EXPORT: 'Traders, Importers & Exporters',
-  BUYERS_END_USERS: 'Buyers & End-users',
+  SOURCES_GENERATORS: 'Sources & Generators',
+  COLLECTION_LOGISTICS: 'Collection, Hauling & Diversion Units',
+  SORTING_GRADING: 'Sorters, Graders & Exporters',
+  RECYCLERS_PROCESSORS: 'Recyclers & Processors',
+  REUSE_CHARITY: 'Reuse, Charity & Resale',
   ECOSYSTEM: 'Ecosystem',
+};
+
+export const STAGE_LABELS_AR: Record<ValueChainStage, string> = {
+  SOURCES_GENERATORS: 'المصادر والمولّدون',
+  COLLECTION_LOGISTICS: 'الجمع والنقل ووحدات التحويل',
+  SORTING_GRADING: 'الفرز والتصنيف والتصدير',
+  RECYCLERS_PROCESSORS: 'معيدو التدوير والمعالجون',
+  REUSE_CHARITY: 'إعادة الاستخدام والجمعيات الخيرية',
+  ECOSYSTEM: 'المنظومة',
 };
 
 export const PRIORITY_LABELS: Record<DirectoryPriority, string> = {

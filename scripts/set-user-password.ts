@@ -10,7 +10,7 @@
  *   npx tsx scripts/set-user-password.ts <email> <new-password>
  *
  * Example:
- *   npx tsx scripts/set-user-password.ts saqib@safabioworks.com 'SaqibTemp2026!'
+ *   npx tsx scripts/set-user-password.ts demo.official@naseej.nuraiya.ai 'OfficialTemp2026!'
  *
  * Notes:
  * - Wrap the password in single quotes so the shell doesn't interpret special

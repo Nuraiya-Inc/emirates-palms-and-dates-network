@@ -47,7 +47,7 @@ export async function generateXlsx(input: GenerateXlsxInput): Promise<Buffer> {
   }
 
   const wb = new ExcelJS.Workbook();
-  wb.creator = 'Safa Platform · AI agent';
+  wb.creator = 'Naseej Platform · AI agent';
   wb.created = new Date();
   wb.title = input.title.slice(0, 200);
 

@@ -17,7 +17,7 @@ interface LogoProps {
   width?: number;
   alt?: string;
   className?: string;
-  /** Show only the palm mark (no wordmark). */
+  /** Show only the weave mark (no wordmark). */
   markOnly?: boolean;
   priority?: boolean;
 }

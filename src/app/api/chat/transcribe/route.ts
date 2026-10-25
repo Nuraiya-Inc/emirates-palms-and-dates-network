@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
 
   // ── Persist the audio FIRST — voice notes are evidence, not ephemera.
   // Without this the audit trail ends at the transcript and the original
-  // farmer utterance is unrecoverable. Document is tagged 'voice-note';
+  // partner utterance is unrecoverable. Document is tagged 'voice-note';
   // the chat route attaches the agent's branch when the client sends it
   // as an attachment (attachedDocIds), same as any upload.
   const dbUser = await prisma.user.findUnique({ where: { id: session.user.id } });

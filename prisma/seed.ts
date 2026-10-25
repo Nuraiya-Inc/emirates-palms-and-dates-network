@@ -1,12 +1,13 @@
 /**
- * Seed script — Emirates Palm & Dates Network (v0).
+ * Seed script — Naseej Textile Recovery Platform (v0).
  *
  *   1. Admin user (platform owner) + network staff demo user
  *   2. The 7-agent roster from src/lib/agents
- *   3. Emirate baseline (public sources + indicative allocations — see src/facts)
- *   4. "UPN Operations" project (internal task workstream)
- *   5. Demo partners across the actor types (Abu Dhabi-weighted for the pilot
- *      demo) + one partner-portal login (Al Ain Heritage Farm)
+ *   3. Emirate baseline (indicative allocations of the reported national
+ *      figure — see src/facts)
+ *   4. "NTR Operations" project (internal task workstream)
+ *   5. Demo partners across the ten participant types (Dubai and Abu Dhabi
+ *      weighted) + one partner-portal login (Marina Crescent Hotels)
  *
  * Idempotent — safe to re-run after editing agent specs or facts.
  *
@@ -35,8 +36,12 @@ const REGION3: Record<string, string> = {
   UMM_AL_QUWAIN: 'UAQ', RAS_AL_KHAIMAH: 'RAK', FUJAIRAH: 'FUJ',
 };
 
+const DEMO_OFFICIAL_EMAIL = 'demo.official@naseej.nuraiya.ai';
+const DEMO_PARTNER_EMAIL = 'demo.hotel@partners.naseej.nuraiya.ai';
+const DEMO_PARTNER_REGISTRY = `NTR-${REGION3.DUBAI}-00001`;
+
 async function main() {
-  console.log('🌴 Seeding Emirates Palm & Dates Network…');
+  console.log('🧵 Seeding Naseej Textile Recovery Platform…');
 
   // ─────────────────────────────────────────────
   // 1. Admin + staff users
@@ -75,13 +80,13 @@ async function main() {
   const staffPassword =
     process.env.SEED_STAFF_PASSWORD && process.env.SEED_STAFF_PASSWORD.length >= 8
       ? process.env.SEED_STAFF_PASSWORD
-      : `${adminPassword}-upn`;
+      : `${adminPassword}-ntr`;
   const staff = await prisma.user.upsert({
-    where: { email: 'demo.official@uaepalm.ae' },
+    where: { email: DEMO_OFFICIAL_EMAIL },
     update: { isActive: true },
     create: {
-      email: 'demo.official@uaepalm.ae',
-      name: 'UPN Demo Official',
+      email: DEMO_OFFICIAL_EMAIL,
+      name: 'NTR Demo Official',
       role: UserRole.MD,
       title: 'Partner Network Supervisor (Demo)',
       entity: SafaEntity.GROUP,
@@ -132,23 +137,22 @@ async function main() {
   });
 
   // ─────────────────────────────────────────────
-  // 3. Regional baseline
+  // 3. Regional baseline (indicative allocations — see src/facts)
   // ─────────────────────────────────────────────
   for (const r of REGION_BASELINE) {
     const data = {
       nameAr: r.nameAr,
-      palmTrees: r.palmTrees,
-      dateProductionTons: r.dateProductionTons,
-      farmDateWasteTons: r.farmDateWasteTons,
-      palmByproductsTons: r.palmByproductsTons,
-      frondsTons: Math.round(r.frondsTons),
-      frondBaseTons: Math.round(r.frondBaseTons),
-      fiberTons: Math.round(r.fiberTons),
-      otherByproductTons: Math.round(r.otherByproductTons),
-      dateFactories: r.dateFactories,
-      factoryReceiptTons: r.factoryReceiptTons,
-      factoryDateWasteTons: r.factoryDateWasteTons,
-      recyclingPlants: r.recyclingPlants,
+      baselineQuality: r.baselineQuality,
+      textileWasteTons: Math.round(r.textileWasteTons),
+      landfilledTons: Math.round(r.landfilledTons),
+      carpetTons: Math.round(r.carpetTons),
+      apparelTons: Math.round(r.apparelTons),
+      hospitalityTextileTons: Math.round(r.hospitalityTextileTons),
+      otherTextileTons: Math.round(r.otherTextileTons),
+      hotelRooms: r.hotelRooms,
+      recyclers: r.recyclers,
+      sorters: r.sorters,
+      collectionPoints: r.collectionPoints,
     };
     await prisma.regionBaseline.upsert({
       where: { region: r.code as Region },
@@ -156,42 +160,42 @@ async function main() {
       create: { region: r.code as Region, ...data },
     });
   }
-  console.log(`   ✔ ${REGION_BASELINE.length} regional baselines`);
+  console.log(`   ✔ ${REGION_BASELINE.length} regional baselines (indicative)`);
 
   // ─────────────────────────────────────────────
   // 4. Operations project (internal task workstream)
   // ─────────────────────────────────────────────
-  const existingProject = await prisma.project.findFirst({ where: { name: 'UPN Operations' } });
+  const existingProject = await prisma.project.findFirst({ where: { name: 'NTR Operations' } });
   if (!existingProject) {
     await prisma.project.create({
       data: {
-        slug: 'upn-operations',
-        name: 'UPN Operations',
+        slug: 'ntr-operations',
+        name: 'NTR Operations',
         description:
-          'Internal workstream of the Partner Network agent team: follow-ups, audits, campaigns, data-gap chases.',
+          'Internal workstream of the recovery network agent team: follow-ups, chain-of-custody audits, campaigns, data-gap chases.',
         status: ProjectStatus.IN_FLIGHT,
         entity: SafaEntity.GROUP,
       },
     });
-    console.log('   ✔ UPN Operations project created');
+    console.log('   ✔ NTR Operations project created');
   }
 
   // ─────────────────────────────────────────────
-  // 5. Demo partners (pilot: Abu Dhabi-weighted)
+  // 5. Demo partners (Dubai and Abu Dhabi weighted, all ten types)
   // ─────────────────────────────────────────────
   const partnerPassword =
     process.env.SEED_PARTNER_PASSWORD && process.env.SEED_PARTNER_PASSWORD.length >= 8
       ? process.env.SEED_PARTNER_PASSWORD
-      : `${adminPassword}-farm`;
+      : `${adminPassword}-hotel`;
 
   const partnerUser = await prisma.user.upsert({
-    where: { email: 'demo.farm@partners.uaepalm.ae' },
+    where: { email: DEMO_PARTNER_EMAIL },
     update: { isActive: true },
     create: {
-      email: 'demo.farm@partners.uaepalm.ae',
-      name: 'Abu Salem Al Dhaheri',
+      email: DEMO_PARTNER_EMAIL,
+      name: 'Hessa Al Falasi',
       role: UserRole.VIEWER,
-      title: 'Partner — Al Ain Heritage Farm (Demo)',
+      title: 'Partner — Marina Crescent Hotels (Demo)',
       entity: SafaEntity.GROUP,
       passwordHash: await bcrypt.hash(partnerPassword, 12),
       isActive: true,
@@ -204,7 +208,7 @@ async function main() {
     nameAr: string;
     type: PartnerType;
     sizeClass?: PartnerSizeClass;
-    factorySubtype?: string;
+    subtype?: string;
     region: Region;
     city?: string;
     tier?: PartnerTier;
@@ -214,57 +218,141 @@ async function main() {
     profileFacts?: Record<string, unknown>;
   }> = [
     {
-      registryNo: `UPN-${REGION3.ABU_DHABI}-00001`,
-      nameEn: 'Al Ain Heritage Farm',
-      nameAr: 'مزرعة تراث العين',
-      type: PartnerType.FARM,
-      sizeClass: PartnerSizeClass.MEDIUM,
-      region: Region.ABU_DHABI,
-      city: 'Al Ain',
-      foundingMember: true,
-      contactName: 'Abu Salem Al Dhaheri',
-      userId: partnerUser.id,
-      profileFacts: { palm_count: 340, varieties: 'Khalas, Lulu, Fard', irrigation: 'drip' },
-    },
-    {
-      registryNo: `UPN-${REGION3.ABU_DHABI}-00002`,
-      nameEn: 'Liwa Dates Packing House',
-      nameAr: 'مصنع ليوا لتعبئة التمور',
-      type: PartnerType.FACTORY,
-      factorySubtype: 'PACKING',
-      region: Region.ABU_DHABI,
-      city: 'Liwa',
-      foundingMember: true,
-      contactName: 'Eng. Saif Al Mazrouei',
-    },
-    {
-      registryNo: `UPN-${REGION3.ABU_DHABI}-00003`,
-      nameEn: 'Emirates Palm Recycling',
-      nameAr: 'الإمارات لإعادة تدوير النخيل',
-      type: PartnerType.RECYCLER,
-      region: Region.ABU_DHABI,
-      city: 'Al Ain',
-      foundingMember: true,
-      contactName: 'Dr. Moza Al Kaabi',
-      profileFacts: { processes: 'compost, biochar', capacity_tpy: 12000 },
-    },
-    {
-      registryNo: `UPN-${REGION3.DUBAI}-00001`,
-      nameEn: 'Al Aweer Dates Trading Co.',
-      nameAr: 'شركة العوير لتجارة التمور',
-      type: PartnerType.COMPANY,
+      registryNo: DEMO_PARTNER_REGISTRY,
+      nameEn: 'Marina Crescent Hotels',
+      nameAr: 'فنادق هلال المارينا',
+      type: PartnerType.HOSPITALITY,
+      subtype: 'HOTEL',
+      sizeClass: PartnerSizeClass.LARGE,
       region: Region.DUBAI,
       city: 'Dubai',
-      contactName: 'Khalid Al Marri',
+      foundingMember: true,
+      contactName: 'Hessa Al Falasi',
+      userId: partnerUser.id,
+      profileFacts: {
+        properties: 4,
+        rooms: 1180,
+        carpet_backing: 'polyolefin broadloom in corridors, tile in meeting rooms',
+        linen_cycle: 'linen retired on a 24 month cycle',
+        materials: 'nylon 6 carpet, poly-cotton linen, cotton towels',
+      },
     },
     {
-      registryNo: `UPN-${REGION3.RAS_AL_KHAIMAH}-00001`,
-      nameEn: 'RAK Palm Growers Collective',
-      nameAr: 'جمعية مزارعي نخيل رأس الخيمة',
-      type: PartnerType.COLLECTOR,
-      region: Region.RAS_AL_KHAIMAH,
-      city: 'Ras Al Khaimah',
+      registryNo: `NTR-${REGION3.DUBAI}-00002`,
+      nameEn: 'Burj Line Facilities Management',
+      nameAr: 'برج لاين لإدارة المرافق',
+      type: PartnerType.FACILITY,
+      sizeClass: PartnerSizeClass.LARGE,
+      region: Region.DUBAI,
+      city: 'Dubai',
+      foundingMember: true,
+      contactName: 'Rashid Al Mheiri',
+      profileFacts: { sites: 62, portfolio: 'offices, residential towers, two malls', uniform_count: 3400 },
+    },
+    {
+      registryNo: `NTR-${REGION3.DUBAI}-00003`,
+      nameEn: 'Al Khaleej Flooring Contractors',
+      nameAr: 'الخليج لمقاولات الأرضيات',
+      type: PartnerType.INSTALLER,
+      sizeClass: PartnerSizeClass.MEDIUM,
+      region: Region.DUBAI,
+      city: 'Dubai',
+      foundingMember: true,
+      contactName: 'Eng. Tariq Haddad',
+      profileFacts: { crews: 6, typical_job_m2: 1500, strip_out_share: 0.6, materials: 'nylon 6,6 tile, PP broadloom' },
+    },
+    {
+      registryNo: `NTR-${REGION3.DUBAI}-00004`,
+      nameEn: 'Gulf Polymer Recovery',
+      nameAr: 'الخليج لاستعادة البوليمرات',
+      type: PartnerType.RECYCLER,
+      subtype: 'POLYMER',
+      sizeClass: PartnerSizeClass.MEDIUM,
+      region: Region.DUBAI,
+      city: 'Dubai Industrial City',
+      foundingMember: true,
+      contactName: 'Dr. Maryam Al Hammadi',
+      profileFacts: { processes: 'carpet shear, face fibre separation, PP and nylon pelletising', capacity_tpy: 6000, accepts: 'polyolefin and latex backed carpet; no PVC backing' },
+    },
+    {
+      registryNo: `NTR-${REGION3.ABU_DHABI}-00001`,
+      nameEn: 'Mussafah Fibre Works',
+      nameAr: 'مصفح لأشغال الألياف',
+      type: PartnerType.RECYCLER,
+      subtype: 'FIBER',
+      sizeClass: PartnerSizeClass.SMALL,
+      region: Region.ABU_DHABI,
+      city: 'Mussafah',
+      foundingMember: true,
+      contactName: 'Faisal Al Ameri',
+      profileFacts: { processes: 'cutting, pulling, nonwoven padding', capacity_tpy: 2400, accepts: 'cotton and poly-cotton linen, non-wearable apparel' },
+    },
+    {
+      registryNo: `NTR-${REGION3.SHARJAH}-00001`,
+      nameEn: 'Hamriyah Textile Sorting',
+      nameAr: 'الحمرية لفرز المنسوجات',
+      type: PartnerType.SORTER,
+      sizeClass: PartnerSizeClass.MEDIUM,
+      region: Region.SHARJAH,
+      city: 'Hamriyah Free Zone',
+      contactName: 'Imran Qureshi',
+      profileFacts: { grades: 'wearable export, wipers, fibre feedstock', capacity_tpy: 9000, export_markets: 'East Africa, South Asia' },
+    },
+    {
+      registryNo: `NTR-${REGION3.ABU_DHABI}-00002`,
+      nameEn: 'Al Khair Clothing Bank',
+      nameAr: 'بنك الخير للملابس',
+      type: PartnerType.CHARITY,
+      sizeClass: PartnerSizeClass.SMALL,
+      region: Region.ABU_DHABI,
+      city: 'Abu Dhabi',
+      contactName: 'Umm Khalid Al Mazrouei',
+      profileFacts: { collection_points: 18, programs: 'Ramadan drive, school uniform exchange' },
+    },
+    {
+      registryNo: `NTR-${REGION3.DUBAI}-00005`,
+      nameEn: 'Souq Line Retail Group',
+      nameAr: 'مجموعة سوق لاين للتجزئة',
+      type: PartnerType.RETAILER,
+      sizeClass: PartnerSizeClass.LARGE,
+      region: Region.DUBAI,
+      city: 'Dubai',
+      contactName: 'Noor Abdulrahman',
+      profileFacts: { stores: 41, take_back: 'in-store bins for apparel and staff uniforms', materials: 'cotton, polyester, poly-cotton' },
+    },
+    {
+      registryNo: `NTR-${REGION3.ABU_DHABI}-00003`,
+      nameEn: 'Al Dhafra Haulage',
+      nameAr: 'الظفرة للنقل',
+      type: PartnerType.HAULIER,
+      sizeClass: PartnerSizeClass.MEDIUM,
+      region: Region.ABU_DHABI,
+      city: 'Abu Dhabi',
       contactName: 'Salem Al Shehhi',
+      profileFacts: { trucks: 14, service_area: 'Abu Dhabi, Al Ain, Dubai', baled_loads: true },
+    },
+    {
+      registryNo: `NTR-${REGION3.DUBAI}-00006`,
+      nameEn: 'Al Lisaili Diversion Unit',
+      nameAr: 'وحدة الليسيلي للتحويل',
+      type: PartnerType.DIVERSION_UNIT,
+      sizeClass: PartnerSizeClass.MEDIUM,
+      region: Region.DUBAI,
+      city: 'Dubai',
+      contactName: 'Hamad Al Ketbi',
+      profileFacts: { role: 'transfer station textile pick-out line', capacity_tpy: 15000, streams: 'bulky carpet, mixed textile bags' },
+    },
+    {
+      registryNo: `NTR-${REGION3.DUBAI}-00007`,
+      nameEn: 'Emirates Loom Flooring',
+      nameAr: 'الإمارات لوم للأرضيات',
+      type: PartnerType.MANUFACTURER,
+      subtype: 'FLOORING',
+      sizeClass: PartnerSizeClass.MEDIUM,
+      region: Region.DUBAI,
+      city: 'Jebel Ali',
+      contactName: 'Eng. Priya Nair',
+      profileFacts: { products: 'carpet tile, broadloom', offcut_share: 0.04, materials: 'nylon 6 face, polyolefin backing' },
     },
   ];
 
@@ -280,7 +368,7 @@ async function main() {
       },
     });
   }
-  console.log(`   ✔ ${demoPartners.length} demo partners (Al Ain Heritage Farm has portal login: demo.farm@partners.uaepalm.ae)`);
+  console.log(`   ✔ ${demoPartners.length} demo partners (Marina Crescent Hotels has portal login: ${DEMO_PARTNER_EMAIL})`);
 
   // ─────────────────────────────────────────────
   // 6. Announcements (demo)
@@ -291,25 +379,25 @@ async function main() {
       data: [
         {
           kind: 'DIRECTIVE',
-          titleEn: 'Q3 reporting window opens',
-          titleAr: 'فتح نافذة تقارير الربع الثالث',
-          bodyEn: 'Harvest-season reports are now open. Abdullah is ready to receive your figures in any format — files, photos, or voice notes.',
-          bodyAr: 'نافذة تقارير موسم الحصاد مفتوحة الآن. عبدالله جاهز لاستقبال أرقامكم بأي صيغة — ملفات أو صور أو رسائل صوتية.',
+          titleEn: 'Q3 diversion reporting window opens',
+          titleAr: 'فتح نافذة تقارير التحويل للربع الثالث',
+          bodyEn: 'Quarterly diversion reports are now open. Noura is ready to receive your load figures in any format: files, photos, weighbridge tickets or voice notes.',
+          bodyAr: 'نافذة تقارير التحويل الفصلية مفتوحة الآن. نورة جاهزة لاستقبال أرقام حمولاتكم بأي صيغة: ملفات أو صور أو تذاكر الميزان أو رسائل صوتية.',
         },
         {
           kind: 'ADVISORY',
-          titleEn: 'Red palm weevil advisory — Al Ain & Ras Al Khaimah',
-          titleAr: 'تنبيه سوسة النخيل الحمراء — العين ورأس الخيمة',
-          bodyEn: 'Increased activity reported. Inspect trunks near the crown; report suspected infestations through the platform for a coordinated response.',
-          bodyAr: 'رصد نشاط متزايد. افحصوا الجذوع قرب القمة وبلغوا عن أي اشتباه عبر المنصة لاستجابة منسقة.',
+          titleEn: 'PVC-backed carpet: route separately',
+          titleAr: 'السجاد بظهر PVC: يُوجَّه بشكل منفصل',
+          bodyEn: 'Polymer recyclers in the network do not accept PVC-backed carpet tile. Grade the backing at removal and log PVC loads on their own ticket so they reach the right offtaker.',
+          bodyAr: 'معيدو تدوير البوليمر في الشبكة لا يستلمون بلاط السجاد بظهر PVC. صنّفوا نوع الظهر عند الإزالة وسجّلوا حمولات PVC في تذكرة مستقلة لتصل إلى الجهة المناسبة.',
         },
         {
           kind: 'EVENT',
-          titleEn: 'Liwa Date Festival — Emirates Palm & Dates Network Pavilion',
-          titleAr: 'مهرجان ليوا للتمور — جناح شبكة الإمارات للنخيل والتمور',
-          bodyEn: 'Founding members are invited to exhibit in the network pavilion. RSVP to reserve a place; certified partners receive priority.',
-          bodyAr: 'الشركاء المؤسسون مدعوون للعرض في جناح الشبكة. أكدوا الحضور لحجز مكانكم؛ الأولوية للشركاء المعتمدين.',
-          eventDate: new Date(Date.UTC(new Date().getUTCFullYear(), 7, 15)),
+          titleEn: 'Back-to-school uniform take-back week',
+          titleAr: 'أسبوع استرجاع الزي المدرسي',
+          bodyEn: 'Retail and charity partners are invited to join the September uniform take-back week. RSVP to be listed as a drop-off point; certified partners are listed first.',
+          bodyAr: 'شركاء التجزئة والجمعيات مدعوون للمشاركة في أسبوع استرجاع الزي المدرسي في سبتمبر. أكدوا المشاركة لإدراجكم كنقطة تسليم؛ الشركاء المعتمدون يُدرجون أولاً.',
+          eventDate: new Date(Date.UTC(new Date().getUTCFullYear(), 8, 7)),
           rsvpEnabled: true,
         },
       ],
@@ -320,37 +408,38 @@ async function main() {
   // ─────────────────────────────────────────────
   // 7. Demo network activity (one ticket, one listing)
   // ─────────────────────────────────────────────
-  const farm = await prisma.partner.findUnique({ where: { registryNo: 'UPN-AUH-00001' } });
-  const factory = await prisma.partner.findUnique({ where: { registryNo: 'UPN-AUH-00002' } });
-  if (farm && (await prisma.collectionTicket.count()) === 0) {
+  const hotel = await prisma.partner.findUnique({ where: { registryNo: DEMO_PARTNER_REGISTRY } });
+  const manufacturer = await prisma.partner.findUnique({ where: { registryNo: `NTR-${REGION3.DUBAI}-00007` } });
+  if (hotel && (await prisma.collectionTicket.count()) === 0) {
     await prisma.collectionTicket.create({
       data: {
-        partnerId: farm.id,
-        stream: 'FRONDS',
-        estimatedTons: 3.2,
-        region: farm.region,
-        city: farm.city,
-        locationNote: 'North gate — bundled and dry, loader on site',
+        partnerId: hotel.id,
+        stream: 'PC_CARPET_BROADLOOM',
+        estimatedTons: 4.8,
+        region: hotel.region,
+        city: hotel.city,
+        locationNote: 'Loading bay B, rolled and strapped, polyolefin backing, floors 6 to 9 strip-out',
         status: 'OPEN',
       },
     });
-    console.log('   ✔ demo collection ticket (Al Ain Heritage Farm, 3.2t fronds)');
+    console.log('   ✔ demo collection ticket (Marina Crescent Hotels, 4.8 t broadloom)');
   }
-  if (factory && (await prisma.listing.count()) === 0) {
+  if (manufacturer && (await prisma.listing.count()) === 0) {
     await prisma.listing.create({
       data: {
-        partnerId: factory.id,
-        category: 'PITS',
-        title: 'Date pits — cleaned, 6 tons, ex-factory Liwa',
-        qtyTons: 6,
-        askPriceAed: 4200,
-        region: factory.region,
+        partnerId: manufacturer.id,
+        category: 'CARPET_PI',
+        title: 'Nylon 6 carpet tile offcuts, clean, 7 tons, ex-works Jebel Ali',
+        qtyTons: 7,
+        askPriceAed: 0,
+        notes: 'Single polymer face, polyolefin backing, palletised. Free to a network recycler against a chain-of-custody record.',
+        region: manufacturer.region,
       },
     });
-    console.log('   ✔ demo listing (Liwa Dates Packing House, 6t pits)');
+    console.log('   ✔ demo listing (Emirates Loom Flooring, 7 t PI carpet offcuts)');
   }
 
-  console.log('🌴 Seed complete.');
+  console.log('🧵 Seed complete.');
 }
 
 main()

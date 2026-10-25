@@ -1,7 +1,7 @@
 /**
  * Emirati seasonal/Hijri time anchors → reporting quarter.
  *
- * Farmers don't say "Q3 2026". They say "بعد القيظ" (after the summer
+ * Partners don't always say "Q3 2026". They say "بعد القيظ" (after the summer
  * heat), "طلع سهيل" (when Suhail rose — the traditional marker that the
  * worst heat is breaking, ~late August), or a Hijri month. This module
  * maps those anchors to a {year, quarter} deterministically, relative to
@@ -55,7 +55,7 @@ export const SEASON_ANCHORS: SeasonAnchor[] = [
     variants: ['بعد القيظ', 'بعد الصيف', 'بعد الحر', 'بعد شدة الحر', 'بعد ما راحت الحر', 'بعد انقضاء الصيف'],
     monthStart: 9, monthEnd: 12,
     quarter: 4,
-    note: '"After the summer heat" — the cooling-off and post-harvest cleanup period.',
+    note: '"After the summer heat" — the cooling-off period when fit-out and event season restart.',
   },
   {
     code: 'SUHAIL',
@@ -65,11 +65,25 @@ export const SEASON_ANCHORS: SeasonAnchor[] = [
     note: 'Suhail (Canopus) rises ~late August — the traditional marker that peak heat is breaking; falls in Q3.',
   },
   {
-    code: 'HASAD',
-    variants: ['الحصاد', 'موسم الحصاد', 'وقت الحصاد', 'القطاف', 'موسم القطاف', 'حصادنا', 'قطفنا', 'harvest', 'harvest season'],
-    monthStart: 6, monthEnd: 9,
+    code: 'TAJDEED',
+    variants: ['التجديد', 'موسم التجديد', 'وقت التجديد', 'الريفربش', 'ريفربشمنت', 'تجديد الفندق', 'تجديد المكاتب', 'refurbishment', 'refurb season', 'renovation season', 'strip-out season'],
+    monthStart: 1, monthEnd: 3,
+    quarter: 1,
+    note: 'Hotel and office refurbishment windows cluster Jan–Mar in the UAE → Q1 (low-occupancy strip-outs).',
+  },
+  {
+    code: 'MADARIS',
+    variants: ['بداية المدارس', 'دخول المدارس', 'رجعة المدارس', 'موسم المدارس', 'back to school', 'school season', 'uniform season'],
+    monthStart: 8, monthEnd: 10,
     quarter: 3,
-    note: 'Date harvest (rutab/tamr picking) runs Jun–Sep in the UAE → Q3.',
+    note: 'Back-to-school uniform take-back peaks Aug–Oct → dominantly Q3; October spillover handled by caller asking.',
+  },
+  {
+    code: 'FAALIYAT',
+    variants: ['موسم الفعاليات', 'الفعاليات', 'موسم المعارض', 'المعارض', 'موسم الحفلات', 'event season', 'exhibition season', 'events season'],
+    monthStart: 10, monthEnd: 12,
+    quarter: 4,
+    note: 'Event and exhibition season (carpets, banners, turf) runs Oct–Dec → Q4.',
   },
   {
     code: 'SHITA',
@@ -80,10 +94,10 @@ export const SEASON_ANCHORS: SeasonAnchor[] = [
   },
   {
     code: 'RABIEE',
-    variants: ['الربيع', 'ربيع', 'موسم الربيع', 'الدسم', 'الرطب الأول', 'spring', 'early spring'],
+    variants: ['الربيع', 'ربيع', 'موسم الربيع', 'spring', 'early spring'],
     monthStart: 2, monthEnd: 4,
     quarter: 1,
-    note: 'الربيع/الدسم — pollination-to-early-fruit window → Q1 (Apr spillover handled by caller asking).',
+    note: 'Spring (Feb–Apr) → Q1 (Apr spillover handled by caller asking).',
   },
 ];
 
@@ -129,7 +143,7 @@ function quarterOfMonth(month: number): 1 | 2 | 3 | 4 {
 // ── Public API ─────────────────────────────────────────────────
 
 /**
- * Resolve a farmer's time reference to a reporting {year, quarter}.
+ * Resolve a partner's time reference to a reporting {year, quarter}.
  * `refDate` is "now" from the caller's perspective (usually new Date()).
  * Returns null when nothing matched — the caller asks a generic question.
  */

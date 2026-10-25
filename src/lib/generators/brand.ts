@@ -12,16 +12,19 @@
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 
+// Naseej palette: ink indigo ground, weave violet accent, recovery green.
+// Key names are inherited (generators reference them); only values changed.
 export const BRAND = {
-  green: '004923',
-  midGreen: '006950',
-  lime: 'E1E32A',
-  cream: 'F7F4EC',
-  ink: '111714',
+  green: '1F2A44',    // ink indigo — primary
+  midGreen: '2E9E7E', // recovery green — success / secondary
+  lime: '6B4EFF',     // weave violet — accent
+  cream: 'F5F2EC',    // warm linen canvas
+  ink: '121829',
   muted: '6B7470',
 } as const;
 
-export const COMPANY_NAME = 'Emirates Palm & Dates Network';
+export const COMPANY_NAME = 'Naseej Textile Recovery Platform';
+export const COMPANY_NAME_AR = 'منصة نسيج لاستعادة المنسوجات';
 
 /**
  * Default confidentiality footer applied to generated documents when the
@@ -56,7 +59,7 @@ let _logoCache: Buffer | null | undefined;
 export function getLogoPng(): Buffer | null {
   if (_logoCache !== undefined) return _logoCache;
   try {
-    _logoCache = readFileSync(path.join(process.cwd(), 'public', 'upn-logo-color.png'));
+    _logoCache = readFileSync(path.join(process.cwd(), 'public', 'ntr-logo-color.png'));
   } catch {
     _logoCache = null;
   }
@@ -75,7 +78,7 @@ let _lightLogoCache: string | null | undefined;
 export function getLightLogoDataUrl(): string | null {
   if (_lightLogoCache !== undefined) return _lightLogoCache;
   try {
-    const buf = readFileSync(path.join(process.cwd(), 'public', 'upn-logo-white.png'));
+    const buf = readFileSync(path.join(process.cwd(), 'public', 'ntr-logo-white.png'));
     _lightLogoCache = `data:image/png;base64,${buf.toString('base64')}`;
   } catch {
     _lightLogoCache = null;

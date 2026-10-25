@@ -1,10 +1,10 @@
 /**
- * Emirates Palm & Dates Network — tool catalog.
+ * Naseej Textile Recovery Platform — tool catalog.
  *
  * Each tool: name + description + input_schema (what the model sees) and
  * an execute() handler (server-side). Every mutation writes an AuditLog
  * row; sensitive actions (tier changes, registry changes) create
- * ApprovalRequests instead of acting directly — hard rule UPN-2.
+ * ApprovalRequests instead of acting directly — hard rule NTR-2.
  *
  * v0 catalogue:
  *   consult_agent            — ask a backend agent (executed in chat route)
@@ -13,8 +13,8 @@
  *   list_partners            — registry queries (staff-facing)
  *   list_partner_reports     — report history for a partner
  *   start_or_get_report      — open/find the DRAFT report for a period
- *   record_production        — set production figures on a draft
- *   record_waste             — add/replace a waste-stream record
+ *   record_production        — set activity figures (units, generated, recovered) on a draft
+ *   record_waste             — add/replace a textile load record (stream × fate)
  *   submit_report            — DRAFT → SUBMITTED (partner confirmed)
  *   get_report_detail        — full report with records + validation
  *   set_validation_result    — VAL-01: score + notes, SUBMITTED → VALIDATED/RETURNED
@@ -29,7 +29,7 @@
 import { prisma } from './db';
 import type { Agent, User, Prisma } from '@prisma/client';
 import {
-  UPN_FACTS,
+  NTR_FACTS,
   FACTS_SECTIONS,
   type FactsSection,
   REGION_BASELINE,
@@ -65,9 +65,9 @@ export interface ToolExecuteContext {
   consultationDepth: number;
   agentRunId?: string;
   /** Id of the Message row the current turn was triggered by — recorded on
-   * QuantityResolution rows so an audit can walk figure → farmer's words. */
+   * QuantityResolution rows so an audit can walk figure → partner's words. */
   currentMessageId?: string;
-  /** Document ids attached to the current turn (voice notes, ledgers,
+  /** Document ids attached to the current turn (voice notes, weighbridge slips,
    * spreadsheets) — recorded on QuantityResolution rows as sourceDocId. */
   currentAttachmentDocIds?: string[];
 }
@@ -110,7 +110,7 @@ function err(text: string): ToolResult {
 /**
  * Resolve the partner in scope. Partner-linked users (portal accounts) are
  * ALWAYS locked to their own partner — registry_no from the model is ignored
- * for them (hard rule UPN-3). Staff/agents may address any partner by
+ * for them (hard rule NTR-3). Staff/agents may address any partner by
  * registry number.
  */
 async function resolvePartner(ctx: ToolExecuteContext, registryNo?: string) {
@@ -159,7 +159,7 @@ export const CONSULT_AGENT_TOOL: ToolDefinition = {
   input_schema: {
     type: 'object',
     properties: {
-      agent_slug: { type: 'string', description: 'One of: int-01, val-01, ana-01, cer-01, eng-01, reg-01, abd-00' },
+      agent_slug: { type: 'string', description: 'One of: int-01, val-01, ana-01, cer-01, eng-01, reg-01, nou-00' },
       question: { type: 'string', description: 'Self-contained question — the consulted agent does not see your conversation.', maxLength: 2000 },
     },
     required: ['agent_slug', 'question'],
@@ -176,7 +176,7 @@ export const GET_PARTNER_PROFILE_TOOL: ToolDefinition = {
   input_schema: {
     type: 'object',
     properties: {
-      registry_no: { type: 'string', description: 'e.g. UPN-AUH-00042 (ignored for partner-portal users — they always get their own record)' },
+      registry_no: { type: 'string', description: 'e.g. NTR-DXB-00042 (ignored for partner-portal users — they always get their own record)' },
     },
   },
 };
@@ -208,12 +208,12 @@ export async function executeGetPartnerProfile(
 
 export const UPDATE_PARTNER_PROFILE_TOOL: ToolDefinition = {
   name: 'update_partner_profile',
-  description: `Merge durable facts into the partner's profile memory (palm count, varieties, capacity, preferred contact, seasonal notes). Use whenever you learn something worth never asking again. Keys are free-form snake_case; values are strings/numbers. Does NOT change tier/standing/registry fields.`,
+  description: `Merge durable facts into the partner's profile memory (rooms or sites, floor area, material types handled, accepted backing types, processing capacity, preferred contact, seasonal notes). Use whenever you learn something worth never asking again. Keys are free-form snake_case; values are strings/numbers. Does NOT change tier/standing/registry fields.`,
   input_schema: {
     type: 'object',
     properties: {
       registry_no: { type: 'string' },
-      facts: { type: 'object', description: 'Key→value facts to merge, e.g. {"palm_count": 340, "varieties": "Sukkari, Khalas", "irrigation": "drip"}' },
+      facts: { type: 'object', description: 'Key→value facts to merge, e.g. {"units_count": 320, "material_types": "nylon 6, PP", "accepted_backing": "bitumen, latex", "capacity_tpy": 2000}' },
       preferred_lang: { type: 'string', description: '"ar" or "en" — only when the partner states a preference' },
     },
     required: ['facts'],
@@ -251,7 +251,7 @@ export const LIST_PARTNERS_TOOL: ToolDefinition = {
     type: 'object',
     properties: {
       region: { type: 'string', description: `One of: ${REGION_CODES.join(', ')}` },
-      type: { type: 'string', description: 'FARM | FACTORY | COMPANY | RECYCLER | COLLECTOR' },
+      type: { type: 'string', description: 'RECYCLER | INSTALLER | DIVERSION_UNIT | CHARITY | HOSPITALITY | FACILITY | RETAILER | MANUFACTURER | HAULIER | SORTER' },
       tier: { type: 'string', description: 'REGISTERED | ACTIVE | CERTIFIED | ELITE' },
       standing: { type: 'string', description: 'GOOD | AT_RISK | PAUSED' },
     },
@@ -319,7 +319,7 @@ export async function executeListPartnerReports(
     text: reports
       .map((r) => {
         const waste = r.wasteRecords.map((w) => `${w.stream}:${w.tons}t→${w.fate}`).join(', ');
-        return `${r.year} Q${r.quarter} [${r.status}]${r.confidenceScore != null ? ` conf=${r.confidenceScore}` : ''} · production=${r.production?.datesProducedTons ?? '—'}t · waste: ${waste || '—'} · id=${r.id}`;
+        return `${r.year} Q${r.quarter} [${r.status}]${r.confidenceScore != null ? ` conf=${r.confidenceScore}` : ''} · generated=${r.production?.textileGeneratedTons ?? '—'}t · recovered=${r.production?.textileRecoveredTons ?? '—'}t · loads: ${waste || '—'} · id=${r.id}`;
       })
       .join('\n'),
   };
@@ -357,7 +357,7 @@ export async function executeStartOrGetReport(
   await audit(ctx, 'start_or_get_report', `${partner.registryNo} ${input.year}Q${input.quarter}`, { reportId: report.id });
   const waste = report.wasteRecords.map((w) => `${w.stream}:${w.tons}t→${w.fate}`).join(', ') || '(none)';
   return {
-    text: `Report ${report.id} · ${partner.registryNo} · ${input.year} Q${input.quarter} · status=${report.status}\nProduction: ${report.production ? JSON.stringify(report.production) : '(not recorded)'}\nWaste records: ${waste}`,
+    text: `Report ${report.id} · ${partner.registryNo} · ${input.year} Q${input.quarter} · status=${report.status}\nActivity: ${report.production ? JSON.stringify(report.production) : '(not recorded)'}\nLoad records: ${waste}`,
     effects: { reportId: report.id },
   };
 }
@@ -370,7 +370,7 @@ export async function executeStartOrGetReport(
 
 export const RESOLVE_QUANTITY_TOOL: ToolDefinition = {
   name: 'resolve_quantity',
-  description: `REQUIRED before record_waste / record_production whenever a figure came from partner words (chat text, voice transcript, or a document you read). Pass the partner's VERBATIM phrase (raw_text, dialect preserved — e.g. "عندي وايت جريد ونص كرب بعد القيظ"). Returns a resolution: kg low–high range, waste stream/fate, variety, reporting period, confidence, and either a resolution_id to pass to record_* OR a clarifying question (in the farmer's dialect) when the number can't be resolved without asking. Never pass a number you computed yourself — resolve first.`,
+  description: `REQUIRED before record_waste / record_production whenever a figure came from partner words (chat text, voice transcript, or a document you read). Pass the partner's VERBATIM phrase (raw_text, dialect preserved — e.g. "شلنا 40 بالة بلاط سجاد راحت للتدوير بعد الصيف"). Returns a resolution: kg low–high range, textile stream/fate, material type, reporting period, confidence, and either a resolution_id to pass to record_* OR a clarifying question (in the partner's dialect) when the number can't be resolved without asking. Never pass a number you computed yourself — resolve first.`,
   input_schema: {
     type: 'object',
     properties: {
@@ -380,7 +380,7 @@ export const RESOLVE_QUANTITY_TOOL: ToolDefinition = {
       },
       kind: {
         type: 'string',
-        description: 'WASTE | PRODUCTION | AUTO — narrows matching (e.g. skips stream/fate detection for production figures).',
+        description: 'WASTE | PRODUCTION | AUTO — WASTE = a load with a stream and fate; PRODUCTION = an activity total (generated/received/recovered tons); AUTO detects.',
       },
     },
     required: ['raw_text'],
@@ -427,7 +427,7 @@ async function persistResolution(
       streamMatched: r.streamMatched,
       fate: (r.fate as never) ?? undefined,
       fateMatched: r.fateMatched,
-      variety: r.variety,
+      materialType: r.materialType,
       periodYear: r.period?.year ?? null,
       periodQuarter: r.period?.quarter ?? null,
       periodBasis: r.period?.basis ?? null,
@@ -457,7 +457,7 @@ function formatResolutionForModel(id: string, r: QuantityResolution): string {
   if (r.stream) lines.push(`stream: ${r.stream} (matched "${r.streamMatched}")`);
   if (r.fate) lines.push(`fate: ${r.fate} (matched "${r.fateMatched}")`);
   else if (r.stream) lines.push('fate: UNKNOWN — ask where it went');
-  if (r.variety) lines.push(`variety: ${r.variety}`);
+  if (r.materialType) lines.push(`material_type: ${r.materialType}`);
   if (r.period) lines.push(`period: ${r.period.year} Q${r.period.quarter} (via "${r.period.matched}", ${r.period.confidence})`);
   lines.push(`confidence: ${r.confidence}`);
   if (r.mustClarify) {
@@ -508,7 +508,7 @@ async function resolveInline(
 
 export const RECORD_PRODUCTION_TOOL: ToolDefinition = {
   name: 'record_production',
-  description: `Set production figures on a DRAFT/RETURNED report AFTER the partner confirms them. Farms: datesProducedTons = harvested. Factories/recyclers: datesProducedTons = received; use processing_capacity_tons for capacity. Overwrites previous values for provided fields only.
+  description: `Set the activity figures on a DRAFT/RETURNED report AFTER the partner confirms them. Sources (hotels, FM, installers, retailers, manufacturers): textile_generated_tons = textile removed or generated in the quarter; textile_recovered_tons = the part that left to a productive fate. Recyclers, sorters, diversion units: textile_generated_tons = received; textile_recovered_tons = output to a productive fate; use processing_capacity_tons for capacity. units_count = rooms / sites / jobs / stores depending on partner type. Overwrites previous values for provided fields only.
 
 PROVENANCE GATE: when the figures came from partner words, pass resolution_id (from resolve_quantity) — or raw_text and the executor resolves it first. Bare tonnage with no provenance is rejected.`,
   input_schema: {
@@ -517,10 +517,10 @@ PROVENANCE GATE: when the figures came from partner words, pass resolution_id (f
       report_id: { type: 'string' },
       resolution_id: { type: 'string', description: 'QuantityResolution.id returned by resolve_quantity. The recorded tonnage defaults to its kg midpoint.' },
       raw_text: { type: 'string', description: "Partner's verbatim quantity phrase — resolved internally if no resolution_id." },
-      palm_tree_count: { type: 'number' },
-      dates_produced_tons: { type: 'number', description: 'Explicit tons — overrides the resolution midpoint when the partner stated an exact figure.' },
-      dates_sold_tons: { type: 'number' },
-      varieties: { type: 'array', items: { type: 'string' } },
+      units_count: { type: 'number', description: 'Rooms / sites / jobs / stores, by partner type' },
+      textile_generated_tons: { type: 'number', description: 'Explicit tons generated or received — overrides the resolution midpoint when the partner stated an exact figure.' },
+      textile_recovered_tons: { type: 'number', description: 'Tons that left to a productive fate (reuse, donation, recycling, downcycling, export)' },
+      material_types: { type: 'array', items: { type: 'string' }, description: 'e.g. ["nylon 6", "PP", "cotton", "poly-cotton"]' },
       processing_capacity_tons: { type: 'number' },
       notes: { type: 'string' },
     },
@@ -533,10 +533,10 @@ export async function executeRecordProduction(
     report_id: string;
     resolution_id?: string;
     raw_text?: string;
-    palm_tree_count?: number;
-    dates_produced_tons?: number;
-    dates_sold_tons?: number;
-    varieties?: string[];
+    units_count?: number;
+    textile_generated_tons?: number;
+    textile_recovered_tons?: number;
+    material_types?: string[];
     processing_capacity_tons?: number;
     notes?: string;
   },
@@ -548,11 +548,11 @@ export async function executeRecordProduction(
   });
   if (!report) return err('Report not found.');
   if (report.status !== 'DRAFT' && report.status !== 'RETURNED')
-    return err(`Report is ${report.status} — production can only change on DRAFT/RETURNED reports.`);
+    return err(`Report is ${report.status} — activity figures can only change on DRAFT/RETURNED reports.`);
 
   // ── Provenance gate ──────────────────────────────────────────
   // A figure from partner words must come through the Arabic resolver.
-  const carriesTonnage = input.dates_produced_tons !== undefined || input.dates_sold_tons !== undefined;
+  const carriesTonnage = input.textile_generated_tons !== undefined || input.textile_recovered_tons !== undefined;
   let resolutionId: string | null = input.resolution_id ?? null;
   if (resolutionId) {
     const res = await prisma.quantityResolution.findUnique({ where: { id: resolutionId } });
@@ -560,11 +560,11 @@ export async function executeRecordProduction(
     if (res.neededClarification) {
       return err(`Resolution ${resolutionId} was flagged MUST_CLARIFY — ask the partner "${res.clarifyQuestion ?? 'confirm the quantity'}" and resolve their reply first.`);
     }
-    if (res.kgMid !== null && input.dates_produced_tons === undefined && input.dates_sold_tons === undefined) {
-      input = { ...input, dates_produced_tons: res.kgMid / 1000 };
+    if (res.kgMid !== null && input.textile_generated_tons === undefined && input.textile_recovered_tons === undefined) {
+      input = { ...input, textile_generated_tons: res.kgMid / 1000 };
     }
-    if (res.variety && input.varieties === undefined) {
-      input = { ...input, varieties: [res.variety] };
+    if (res.materialType && input.material_types === undefined) {
+      input = { ...input, material_types: [res.materialType] };
     }
   } else if (input.raw_text) {
     const { r, id } = await resolveInline(input.raw_text, 'PRODUCTION', ctx);
@@ -576,18 +576,18 @@ export async function executeRecordProduction(
       return err(`Could not resolve a figure from "${input.raw_text}". Ask the partner: "${r.clarifyQuestion ?? 'كم الكمية بالكيلو أو الطن؟'}" then resolve_quantity their reply.`);
     }
     if (!carriesTonnage) {
-      input = { ...input, dates_produced_tons: r.kgMid / 1000 };
-      if (r.variety && !input.varieties) input = { ...input, varieties: [r.variety] };
+      input = { ...input, textile_generated_tons: r.kgMid / 1000 };
+      if (r.materialType && !input.material_types) input = { ...input, material_types: [r.materialType] };
     }
   } else if (carriesTonnage && !input.resolution_id) {
     return err('Tonnage with no provenance is rejected. Call resolve_quantity with the partner\'s exact words first (or pass raw_text) — every recorded figure must trace to what they said.');
   }
 
   const data = {
-    ...(input.palm_tree_count !== undefined ? { palmTreeCount: Math.round(input.palm_tree_count) } : {}),
-    ...(input.dates_produced_tons !== undefined ? { datesProducedTons: input.dates_produced_tons } : {}),
-    ...(input.dates_sold_tons !== undefined ? { datesSoldTons: input.dates_sold_tons } : {}),
-    ...(input.varieties !== undefined ? { varieties: input.varieties } : {}),
+    ...(input.units_count !== undefined ? { unitsCount: Math.round(input.units_count) } : {}),
+    ...(input.textile_generated_tons !== undefined ? { textileGeneratedTons: input.textile_generated_tons } : {}),
+    ...(input.textile_recovered_tons !== undefined ? { textileRecoveredTons: input.textile_recovered_tons } : {}),
+    ...(input.material_types !== undefined ? { materialTypes: input.material_types } : {}),
     ...(input.processing_capacity_tons !== undefined ? { processingCapacityTons: input.processing_capacity_tons } : {}),
     ...(input.notes !== undefined ? { notes: input.notes } : {}),
     ...(resolutionId ? { resolutionId } : {}),
@@ -599,17 +599,17 @@ export async function executeRecordProduction(
     create: { reportId: report.id, ...data },
   });
 
-  // Thread the source doc (voice note, ledger photo) onto the report
+  // Thread the source doc (voice note, weighbridge slip photo) onto the report
   // so the audit trail is figure → resolution → source.
   if (resolutionId) await linkResolutionSourceToReport(resolutionId, report.id);
 
   await audit(ctx, 'record_production', report.id, data as Prisma.InputJsonValue);
-  return { text: `Production recorded on ${report.partner.registryNo} ${report.year} Q${report.quarter}: ${JSON.stringify(data)}${resolutionId ? ` (resolution ${resolutionId})` : ''}` };
+  return { text: `Activity recorded on ${report.partner.registryNo} ${report.year} Q${report.quarter}: ${JSON.stringify(data)}${resolutionId ? ` (resolution ${resolutionId})` : ''}` };
 }
 
 export const RECORD_WASTE_TOOL: ToolDefinition = {
   name: 'record_waste',
-  description: `Add or replace ONE waste-stream record on a DRAFT/RETURNED report after partner confirmation. One record per (stream, fate) pair — recording the same pair again replaces it. destination_registry_no when material went to another network member (enables national traceability).
+  description: `Add or replace ONE textile load record (stream × fate) on a DRAFT/RETURNED report after partner confirmation. One record per (stream, fate) pair — recording the same pair again replaces it. destination_registry_no when material went to another network member (enables chain-of-custody reconciliation). Landfilled loads are recorded too, with the reason in notes.
 
 PROVENANCE GATE: the quantity must come through resolve_quantity. Pass resolution_id (preferred — stream/fate/tons are taken from the resolution and only need to be repeated if you are correcting them) or raw_text. Bare tons with no provenance are rejected.`,
   input_schema: {
@@ -618,8 +618,8 @@ PROVENANCE GATE: the quantity must come through resolve_quantity. Pass resolutio
       report_id: { type: 'string' },
       resolution_id: { type: 'string', description: 'QuantityResolution.id from resolve_quantity. Stream/fate/tonnage default from it.' },
       raw_text: { type: 'string', description: "Partner's verbatim quantity phrase — resolved internally if no resolution_id." },
-      stream: { type: 'string', description: 'DATES | PITS | FRONDS | FROND_BASE | FIBER | OTHER — defaults to the resolution\'s matched stream' },
-      fate: { type: 'string', description: 'FEED | SOLD | RECYCLED | BURNED | BURIED | DUMPED | UNKNOWN — defaults to the resolution\'s matched fate' },
+      stream: { type: 'string', description: 'PI_CARPET | PC_CARPET_TILE | PC_CARPET_BROADLOOM | APPAREL_WEARABLE | APPAREL_NONWEARABLE | HOSPITALITY_TEXTILE | TECHNICAL_TEXTILE | TURF | OTHER — defaults to the resolution\'s matched stream' },
+      fate: { type: 'string', description: 'REUSED | DONATED | RECYCLED_POLYMER | RECYCLED_FIBER | DOWNCYCLED | EXPORTED | INCINERATED | LANDFILLED | UNKNOWN — defaults to the resolution\'s matched fate' },
       tons: { type: 'number', description: 'Explicit tons — overrides the resolution midpoint when the partner stated an exact figure' },
       destination_registry_no: { type: 'string' },
       notes: { type: 'string' },
@@ -647,7 +647,7 @@ export async function executeRecordWaste(
   });
   if (!report) return err('Report not found.');
   if (report.status !== 'DRAFT' && report.status !== 'RETURNED')
-    return err(`Report is ${report.status} — waste records can only change on DRAFT/RETURNED reports.`);
+    return err(`Report is ${report.status} — load records can only change on DRAFT/RETURNED reports.`);
 
   // ── Provenance gate ──────────────────────────────────────────
   // resolve_quantity must produce the number — enforced here, in code.
@@ -681,12 +681,12 @@ export async function executeRecordWaste(
   if (input.tons === undefined) return err('No tonnage resolved. Call resolve_quantity on the partner\'s words first.');
   if (input.tons < 0) return err('tons must be ≥ 0.');
 
-  const STREAMS = ['DATES', 'PITS', 'FRONDS', 'FROND_BASE', 'FIBER', 'OTHER'];
-  const FATES = ['FEED', 'SOLD', 'RECYCLED', 'BURNED', 'BURIED', 'DUMPED', 'UNKNOWN'];
+  const STREAMS = [...NTR_FACTS.taxonomy.wasteStreams.map((w) => w.code)] as string[];
+  const FATES = [...NTR_FACTS.taxonomy.wasteFates] as string[];
   if (!input.stream || !STREAMS.includes(input.stream))
-    return err(`stream must be one of ${STREAMS.join(', ')} — the resolution didn\'t identify one; ask which byproduct it is (سعف/كرب/ليف/نوى/فاقد).`);
+    return err(`stream must be one of ${STREAMS.join(', ')} — the resolution didn\'t identify one; ask what the load is (موكيت؟ بلاط سجاد؟ ملابس؟ مفارش؟ بانرات؟).`);
   if (!input.fate || !FATES.includes(input.fate))
-    return err(`fate must be one of ${FATES.join(', ')} — the resolution didn\'t identify one; ask where the material went (علف؟ بيع؟ تدوير؟)`);
+    return err(`fate must be one of ${FATES.join(', ')} — the resolution didn\'t identify one; ask where the load went (تبرع؟ تدوير؟ تصدير؟ مكب؟)`);
 
   if (input.destination_registry_no) {
     const dest = await prisma.partner.findUnique({ where: { registryNo: input.destination_registry_no } });
@@ -709,16 +709,16 @@ export async function executeRecordWaste(
     },
   });
 
-  // Thread the source doc (voice note, ledger photo) onto the report.
+  // Thread the source doc (voice note, weighbridge slip photo) onto the report.
   if (resolutionId) await linkResolutionSourceToReport(resolutionId, report.id);
 
   await audit(ctx, 'record_waste', report.id, input as unknown as Prisma.InputJsonValue);
-  return { text: `Waste recorded on ${report.partner.registryNo} ${report.year} Q${report.quarter}: ${input.stream} ${input.tons}t → ${input.fate}${input.destination_registry_no ? ` (to ${input.destination_registry_no})` : ''}${resolutionId ? ` (resolution ${resolutionId})` : ''}` };
+  return { text: `Load recorded on ${report.partner.registryNo} ${report.year} Q${report.quarter}: ${input.stream} ${input.tons}t → ${input.fate}${input.destination_registry_no ? ` (to ${input.destination_registry_no})` : ''}${resolutionId ? ` (resolution ${resolutionId})` : ''}` };
 }
 
-/** When a resolution carries a source document (voice note, ledger
- * photo), append it to the report's sourceDocIds — the audit trail is
- * figure → resolution → farmer's words → original media. */
+/** When a resolution carries a source document (voice note, weighbridge
+ * slip photo), append it to the report's sourceDocIds — the audit trail is
+ * figure → resolution → partner's words → original media. */
 async function linkResolutionSourceToReport(resolutionId: string, reportId: string) {
   const res = await prisma.quantityResolution.findUnique({
     where: { id: resolutionId },
@@ -753,7 +753,7 @@ export async function executeSubmitReport(
   if (report.status !== 'DRAFT' && report.status !== 'RETURNED')
     return err(`Report is already ${report.status}.`);
   if (!report.production && report.wasteRecords.length === 0)
-    return err('Report has no production and no waste records — nothing to submit.');
+    return err('Report has no activity figures and no load records — nothing to submit.');
 
   await prisma.quarterlyReport.update({
     where: { id: report.id },
@@ -768,7 +768,7 @@ export async function executeSubmitReport(
     entityType: 'QuarterlyReport',
     entityId: report.id,
     title: `${report.partner.registryNo} submitted ${report.year} Q${report.quarter}`,
-    summary: `Production ${report.production?.datesProducedTons ?? '—'}t · ${report.wasteRecords.length} waste records`,
+    summary: `Generated ${report.production?.textileGeneratedTons ?? '—'}t · recovered ${report.production?.textileRecoveredTons ?? '—'}t · ${report.wasteRecords.length} load records`,
   });
 
   return {
@@ -779,7 +779,7 @@ export async function executeSubmitReport(
 
 export const GET_REPORT_DETAIL_TOOL: ToolDefinition = {
   name: 'get_report_detail',
-  description: `Full detail of one report: production, waste records, status, validation notes, source documents.`,
+  description: `Full detail of one report: activity figures, load records (stream × fate), status, validation notes, source documents.`,
   input_schema: {
     type: 'object',
     properties: { report_id: { type: 'string' } },
@@ -802,7 +802,7 @@ export async function executeGetReportDetail(
       `Report ${r.id} · ${r.partner.registryNo} (${r.partner.nameEn}, ${r.partner.type}, ${r.partner.region}) · ${r.year} Q${r.quarter} · status=${r.status}`,
       `Confidence: ${r.confidenceScore ?? '—'} · Submitted: ${r.submittedAt?.toISOString() ?? '—'}`,
       `Production: ${r.production ? JSON.stringify(r.production) : '(none)'}`,
-      `Waste: ${r.wasteRecords.map((w) => `${w.stream} ${w.tons}t → ${w.fate}${w.destinationRegistryNo ? ` (to ${w.destinationRegistryNo})` : ''}`).join(' · ') || '(none)'}`,
+      `Loads: ${r.wasteRecords.map((w) => `${w.stream} ${w.tons}t → ${w.fate}${w.destinationRegistryNo ? ` (to ${w.destinationRegistryNo})` : ''}`).join(' · ') || '(none)'}`,
       `Source docs: ${r.sourceDocIds.join(', ') || '(none)'}`,
       r.validationNotes ? `Validation notes:\n${r.validationNotes}` : '',
     ].filter(Boolean).join('\n'),
@@ -811,7 +811,7 @@ export async function executeGetReportDetail(
 
 export const SET_VALIDATION_RESULT_TOOL: ToolDefinition = {
   name: 'set_validation_result',
-  description: `VAL-01 only. Record the validation outcome on a SUBMITTED report: confidence score 0-100 + Markdown notes. score ≥ 70 → VALIDATED; score < 70 → RETURNED (with clarifying questions in the notes for Abdullah to relay).`,
+  description: `VAL-01 only. Record the validation outcome on a SUBMITTED report: confidence score 0-100 + Markdown notes. score ≥ 70 → VALIDATED; score < 70 → RETURNED (with clarifying questions in the notes for Noura to relay).`,
   input_schema: {
     type: 'object',
     properties: {
@@ -827,8 +827,8 @@ export async function executeSetValidationResult(
   input: { report_id: string; confidence_score: number; notes: string },
   ctx: ToolExecuteContext,
 ): Promise<ToolResult> {
-  if (ctx.agent.slug !== 'val-01' && ctx.agent.slug !== 'abd-00')
-    return err('Only val-01 (or abd-00 relaying) may set validation results.');
+  if (ctx.agent.slug !== 'val-01' && ctx.agent.slug !== 'nou-00')
+    return err('Only val-01 (or nou-00 relaying) may set validation results.');
   const report = await prisma.quarterlyReport.findUnique({
     where: { id: input.report_id },
     include: { partner: true },
@@ -907,7 +907,7 @@ export async function executeApproveReport(
 }
 
 // ─────────────────────────────────────────────────────────────
-// Tier change (draft → human approval; hard rule UPN-2)
+// Tier change (draft → human approval; hard rule NTR-2)
 // ─────────────────────────────────────────────────────────────
 
 export const REQUEST_TIER_CHANGE_TOOL: ToolDefinition = {
@@ -982,12 +982,12 @@ export async function executeRequestTierChange(
 
 export const GET_REGIONAL_BENCHMARK_TOOL: ToolDefinition = {
   name: 'get_regional_benchmark',
-  description: `Regional aggregates for benchmarking a partner. Uses MEASURED data (APPROVED reports) when ≥ 3 partners have reported in the region+type; otherwise falls back to the modeled baseline, clearly labeled. Never returns another partner's individual figures.`,
+  description: `Regional aggregates for benchmarking a partner. Uses MEASURED data (APPROVED reports) when ≥ 3 partners have reported in the region+type; otherwise falls back to the INDICATIVE emirate baseline, clearly labeled. Never returns another partner's individual figures.`,
   input_schema: {
     type: 'object',
     properties: {
       region: { type: 'string', description: `One of: ${REGION_CODES.join(', ')}` },
-      partner_type: { type: 'string', description: 'FARM | FACTORY | COMPANY | RECYCLER | COLLECTOR' },
+      partner_type: { type: 'string', description: 'RECYCLER | INSTALLER | DIVERSION_UNIT | CHARITY | HOSPITALITY | FACILITY | RETAILER | MANUFACTURER | HAULIER | SORTER' },
       year: { type: 'number' },
       quarter: { type: 'number' },
     },
@@ -1021,24 +1021,27 @@ export async function executeGetRegionalBenchmark(
   await audit(ctx, 'get_regional_benchmark', input.region, { distinctPartners });
 
   if (distinctPartners >= 3) {
-    const prods = reports.map((r) => r.production?.datesProducedTons ?? 0).filter((x) => x > 0);
-    const trees = reports.map((r) => r.production?.palmTreeCount ?? 0).filter((x) => x > 0);
-    const totalWaste = reports.flatMap((r) => r.wasteRecords);
-    const wasteTons = totalWaste.reduce((a, w) => a + w.tons, 0);
-    const divertedTons = totalWaste
-      .filter((w) => w.fate === 'RECYCLED' || w.fate === 'SOLD' || w.fate === 'FEED')
+    const generated = reports.map((r) => r.production?.textileGeneratedTons ?? 0).filter((x) => x > 0);
+    const units = reports.map((r) => r.production?.unitsCount ?? 0).filter((x) => x > 0);
+    const loads = reports.flatMap((r) => r.wasteRecords);
+    const loadTons = loads.reduce((a, w) => a + w.tons, 0);
+    const divertedFates = NTR_FACTS.taxonomy.divertedFates as readonly string[];
+    const divertedTons = loads
+      .filter((w) => divertedFates.includes(w.fate))
       .reduce((a, w) => a + w.tons, 0);
-    const avgYieldKgPerPalm =
-      prods.length && trees.length
-        ? Math.round((prods.reduce((a, b) => a + b, 0) * 1000) / trees.reduce((a, b) => a + b, 0))
+    const landfilledTons = loads.filter((w) => w.fate === 'LANDFILLED').reduce((a, w) => a + w.tons, 0);
+    const avgKgPerUnit =
+      generated.length && units.length
+        ? Math.round((generated.reduce((a, b) => a + b, 0) * 1000) / units.reduce((a, b) => a + b, 0))
         : null;
 
     return {
       text: [
         `MEASURED benchmark — ${baseline.nameEn} (${baseline.nameAr})${input.partner_type ? ` · ${input.partner_type}` : ''} · ${distinctPartners} partners, ${reports.length} approved reports`,
-        `Avg production per reporting partner: ${(prods.reduce((a, b) => a + b, 0) / Math.max(prods.length, 1)).toFixed(1)} t`,
-        avgYieldKgPerPalm ? `Avg yield: ~${avgYieldKgPerPalm} kg/palm` : '',
-        `Waste diversion rate (FEED+SOLD+RECYCLED / total): ${wasteTons > 0 ? Math.round((divertedTons / wasteTons) * 100) : 0}%`,
+        `Avg textile generated/received per reporting partner: ${(generated.reduce((a, b) => a + b, 0) / Math.max(generated.length, 1)).toFixed(1)} t`,
+        avgKgPerUnit ? `Avg: ~${avgKgPerUnit} kg per unit (room / site / job / store, as reported)` : '',
+        `Diversion rate (${divertedFates.join('+')} / total logged): ${loadTons > 0 ? Math.round((divertedTons / loadTons) * 100) : 0}%`,
+        `Landfilled share: ${loadTons > 0 ? Math.round((landfilledTons / loadTons) * 100) : 0}% (national reference ~88%, reported June 2026)`,
         `(Aggregates only — individual partner figures are never disclosed.)`,
       ].filter(Boolean).join('\n'),
     };
@@ -1046,11 +1049,11 @@ export async function executeGetRegionalBenchmark(
 
   return {
     text: [
-      `MODELED baseline — ${baseline.nameEn} (${baseline.nameAr}) — fewer than 3 partners have measured data here yet; figures below are the network's modeled estimates (label them as such):`,
-      `Palm trees: ${baseline.palmTrees.toLocaleString('en-US')} · Est. production: ${baseline.dateProductionTons.toLocaleString('en-US')} t/yr · Est. farm date waste (10% coefficient): ${baseline.farmDateWasteTons.toLocaleString('en-US')} t`,
-      `Est. palm byproducts (~20 kg/tree): ${baseline.palmByproductsTons.toLocaleString('en-US')} t (fronds ${baseline.frondsTons.toLocaleString('en-US')}, frond base ${baseline.frondBaseTons.toLocaleString('en-US')}, fiber ${baseline.fiberTons.toLocaleString('en-US')})`,
-      baseline.dateFactories != null ? `Factories: ${baseline.dateFactories} (receipts ${baseline.factoryReceiptTons?.toLocaleString('en-US')} t) · Recyclers: ${baseline.recyclingPlants}` : 'Factory/recycler detail not separately reported for this region.',
-      `National context: ~90% of palm byproducts are currently unused (burned, buried, or dumped) — every diverted ton is a measurable contribution.`,
+      `INDICATIVE baseline — ${baseline.nameEn} (${baseline.nameAr}) — fewer than 3 partners have measured data here yet; figures below are the network's indicative allocation of the national figure (label them as such, never as measured):`,
+      `Textile waste: ~${baseline.textileWasteTons.toLocaleString('en-US')} t/yr · Landfilled: ~${baseline.landfilledTons.toLocaleString('en-US')} t (88%)`,
+      `Indicative stream split: carpet ${baseline.carpetTons.toLocaleString('en-US')} t · apparel ${baseline.apparelTons.toLocaleString('en-US')} t · hospitality textiles ${baseline.hospitalityTextileTons.toLocaleString('en-US')} t · other ${baseline.otherTextileTons.toLocaleString('en-US')} t`,
+      baseline.recyclers != null ? `Recyclers: ${baseline.recyclers} · Sorters: ${baseline.sorters ?? '—'} · Collection points: ${baseline.collectionPoints ?? '—'}` : 'Recycler, sorter and collection-point counts are not centrally published for this emirate — the network is counting them.',
+      `National context: ~220,000 t of textile waste per year, ~88% to landfill (reported June 2026) — every diverted ton is a measurable contribution.`,
     ].join('\n'),
   };
 }
@@ -1078,28 +1081,28 @@ export async function executeGetFacts(
   await audit(ctx, 'get_facts', input.section);
   switch (input.section) {
     case 'identity':
-      return { text: JSON.stringify(UPN_FACTS.identity, null, 2) };
+      return { text: JSON.stringify(NTR_FACTS.identity, null, 2) };
     case 'taxonomy':
-      return { text: JSON.stringify(UPN_FACTS.taxonomy, null, 2) };
+      return { text: JSON.stringify(NTR_FACTS.taxonomy, null, 2) };
     case 'regions':
-      return { text: JSON.stringify(UPN_FACTS.regions, null, 2) };
+      return { text: JSON.stringify(NTR_FACTS.regions, null, 2) };
     case 'tiers':
-      return { text: JSON.stringify(UPN_FACTS.tiers, null, 2) };
+      return { text: JSON.stringify(NTR_FACTS.tiers, null, 2) };
     case 'baseline':
-      return { text: JSON.stringify(UPN_FACTS.baseline, null, 2) };
+      return { text: JSON.stringify(NTR_FACTS.baseline, null, 2) };
     case 'engagement':
-      return { text: JSON.stringify(UPN_FACTS.engagement, null, 2) };
+      return { text: JSON.stringify(NTR_FACTS.engagement, null, 2) };
     case 'esg':
-      return { text: JSON.stringify(UPN_FACTS.esg, null, 2) };
+      return { text: JSON.stringify(NTR_FACTS.esg, null, 2) };
     case 'rules':
-      return { text: UPN_FACTS.hardRules.map((r) => `[${r.id} · ${r.severity}] ${r.rule}`).join('\n') };
+      return { text: NTR_FACTS.hardRules.map((r) => `[${r.id} · ${r.severity}] ${r.rule}`).join('\n') };
     default:
       return err(`Unknown section. Use: ${FACTS_SECTIONS.join(', ')}`);
   }
 }
 
 // ─────────────────────────────────────────────────────────────
-// Documents (uploaded source files: Excel, ledger photos, voice notes)
+// Documents (uploaded source files: Excel, weighbridge slips, voice notes)
 // ─────────────────────────────────────────────────────────────
 
 export const LIST_DOCUMENTS_TOOL: ToolDefinition = {
@@ -1292,18 +1295,18 @@ export async function executeListTasks(
 }
 
 // ─────────────────────────────────────────────────────────────
-// Portal services — chat-first paths (Abdullah acts for the partner)
+// Portal services — chat-first paths (Noura acts for the partner)
 // ─────────────────────────────────────────────────────────────
 
 export const CREATE_COLLECTION_TICKET_TOOL: ToolDefinition = {
   name: 'create_collection_ticket',
-  description: `Open a waste-collection ticket for the partner in this conversation (partner-linked users only). Registered recyclers/collectors in their region see it immediately. Confirm stream + quantity with the partner BEFORE calling.`,
+  description: `Open a pickup request for a textile load for the partner in this conversation (partner-linked users only). Registered recyclers, sorters, hauliers and diversion units in their emirate see it immediately. Confirm stream + estimated quantity with the partner BEFORE calling.`,
   input_schema: {
     type: 'object',
     properties: {
-      stream: { type: 'string', description: 'DATES | PITS | FRONDS | FROND_BASE | FIBER | OTHER' },
+      stream: { type: 'string', description: 'PI_CARPET | PC_CARPET_TILE | PC_CARPET_BROADLOOM | APPAREL_WEARABLE | APPAREL_NONWEARABLE | HOSPITALITY_TEXTILE | TECHNICAL_TEXTILE | TURF | OTHER' },
       estimated_tons: { type: 'number' },
-      location_note: { type: 'string', description: 'Pickup guidance, e.g. "Gate 2, after Asr"' },
+      location_note: { type: 'string', description: 'Pickup guidance, e.g. "Loading dock B, after 10pm"' },
       notes: { type: 'string' },
     },
     required: ['stream', 'estimated_tons'],
@@ -1317,7 +1320,7 @@ export async function executeCreateCollectionTicket(
   if (!ctx.user) return err('Partner conversation required.');
   const partner = await prisma.partner.findUnique({ where: { userId: ctx.user.id } });
   if (!partner) return err('This user is not linked to a partner record — tickets are created by partners (or via the staff console).');
-  const STREAMS = ['DATES', 'PITS', 'FRONDS', 'FROND_BASE', 'FIBER', 'OTHER'];
+  const STREAMS = [...NTR_FACTS.taxonomy.wasteStreams.map((w) => w.code)] as string[];
   if (!STREAMS.includes(input.stream)) return err(`stream must be one of ${STREAMS.join(', ')}`);
   if (!input.estimated_tons || input.estimated_tons <= 0) return err('estimated_tons must be > 0.');
 
@@ -1334,7 +1337,7 @@ export async function executeCreateCollectionTicket(
   });
   await audit(ctx, 'create_collection_ticket', ticket.id, { stream: input.stream, tons: input.estimated_tons });
   return {
-    text: `Collection ticket ${ticket.id} opened: ${input.stream} · ${input.estimated_tons}t · region ${partner.region}. Recyclers in the region can now claim it — the partner can track it under Portal → Collection.`,
+    text: `Pickup request ${ticket.id} opened: ${input.stream} · ${input.estimated_tons}t · region ${partner.region}. Recyclers, sorters and hauliers in the emirate can now claim it — the partner can track it under Portal → Pickups.`,
     effects: { ticketId: ticket.id },
   };
 }
@@ -1405,7 +1408,7 @@ export async function executeLogSuggestion(
 
 // ─────────────────────────────────────────────────────────────
 // bulk_register_partners — staff-context onboarding power move.
-// Abdullah reads ANY membership spreadsheet/list a staff member pastes or
+// Noura reads ANY membership spreadsheet/list a staff member pastes or
 // uploads, normalizes it, and registers the whole batch with sequential
 // registry numbers per region. Partner-portal users can never call this.
 // ─────────────────────────────────────────────────────────────
@@ -1417,7 +1420,7 @@ export const REGION_REGISTRY_CODE: Record<string, string> = {
 
 export async function nextRegistryNo(region: string, offsetCache: Map<string, number>): Promise<string> {
   const code = REGION_REGISTRY_CODE[region] ?? region.slice(0, 3).toUpperCase();
-  const prefix = `UPN-${code}-`;
+  const prefix = `NTR-${code}-`;
   if (!offsetCache.has(code)) {
     const last = await prisma.partner.findFirst({
       where: { registryNo: { startsWith: prefix } },
@@ -1433,7 +1436,7 @@ export async function nextRegistryNo(region: string, offsetCache: Map<string, nu
 
 export const BULK_REGISTER_PARTNERS_TOOL: ToolDefinition = {
   name: 'bulk_register_partners',
-  description: `STAFF ONLY — register a batch of partners in one call (max 100 rows). Use when network staff provide a member list in any format (spreadsheet, pasted table, document): first normalize every row yourself (map their region names to region codes, their facility types to types), then call once with the clean rows. Registry numbers are assigned automatically and sequentially per region. Rows whose name already exists in that region are skipped as duplicates, not overwritten. NEVER invent partners — only register rows the staff member actually supplied.`,
+  description: `STAFF ONLY — register a batch of partners in one call (max 100 rows). Use when network staff provide a member list in any format (spreadsheet, pasted table, document): first normalize every row yourself (map their emirate names to region codes, their business descriptions to partner types), then call once with the clean rows. Registry numbers are assigned automatically and sequentially per region. Rows whose name already exists in that region are skipped as duplicates, not overwritten. NEVER invent partners — only register rows the staff member actually supplied.`,
   input_schema: {
     type: 'object',
     properties: {
@@ -1445,18 +1448,19 @@ export const BULK_REGISTER_PARTNERS_TOOL: ToolDefinition = {
           properties: {
             name_en: { type: 'string' },
             name_ar: { type: 'string' },
-            type: { type: 'string', enum: ['FARM', 'FACTORY', 'COMPANY', 'RECYCLER', 'COLLECTOR'] },
+            type: { type: 'string', enum: ['RECYCLER', 'INSTALLER', 'DIVERSION_UNIT', 'CHARITY', 'HOSPITALITY', 'FACILITY', 'RETAILER', 'MANUFACTURER', 'HAULIER', 'SORTER'] },
             region: { type: 'string', enum: REGION_CODES },
             city: { type: 'string' },
             size_class: { type: 'string', enum: ['SMALL', 'MEDIUM', 'LARGE'] },
             contact_name: { type: 'string' },
-            palm_count: { type: 'number' },
-            varieties: { type: 'string' },
+            subtype: { type: 'string', description: 'Free text, e.g. RECYCLER: POLYMER | FIBER | MIXED · HOSPITALITY: HOTEL | MALL | AIRPORT' },
+            units_count: { type: 'number', description: 'Rooms / sites / stores, if the list has it' },
+            material_types: { type: 'string', description: 'e.g. "nylon 6, PP" or "cotton, poly-cotton"' },
           },
           required: ['name_en', 'type', 'region'],
         },
       },
-      source_note: { type: 'string', description: 'One line describing where this list came from, e.g. "Al Ain branch member register, June 2026 — provided by Eng. Saif"' },
+      source_note: { type: 'string', description: 'One line describing where this list came from, e.g. "Dubai hotel housekeeping contacts, June 2026 — provided by the FM association"' },
     },
     required: ['rows'],
   },
@@ -1464,14 +1468,14 @@ export const BULK_REGISTER_PARTNERS_TOOL: ToolDefinition = {
 
 interface BulkRow {
   name_en: string; name_ar?: string; type: string; region: string; city?: string;
-  size_class?: string; contact_name?: string; palm_count?: number; varieties?: string;
+  size_class?: string; contact_name?: string; subtype?: string; units_count?: number; material_types?: string;
 }
 
 export async function executeBulkRegisterPartners(
   input: { rows: BulkRow[]; source_note?: string },
   ctx: ToolExecuteContext,
 ): Promise<ToolResult> {
-  // Hard gate: a partner-linked user can never bulk-register (UPN-3).
+  // Hard gate: a partner-linked user can never bulk-register (NTR-3).
   if (ctx.user) {
     const linked = await prisma.partner.findUnique({ where: { userId: ctx.user.id } });
     if (linked) return err('Not available to partner accounts. Registration batches are run by network staff.');
@@ -1487,7 +1491,7 @@ export async function executeBulkRegisterPartners(
 
   for (const row of input.rows) {
     if (!row.name_en?.trim() || !REGION_CODES.includes(row.region) ||
-        !['FARM', 'FACTORY', 'COMPANY', 'RECYCLER', 'COLLECTOR'].includes(row.type)) {
+        !['RECYCLER', 'INSTALLER', 'DIVERSION_UNIT', 'CHARITY', 'HOSPITALITY', 'FACILITY', 'RETAILER', 'MANUFACTURER', 'HAULIER', 'SORTER'].includes(row.type)) {
       rejected.push(row.name_en ?? '(unnamed)');
       continue;
     }
@@ -1500,8 +1504,8 @@ export async function executeBulkRegisterPartners(
     }
     const registryNo = await nextRegistryNo(row.region, offsetCache);
     const facts: Record<string, unknown> = {};
-    if (row.palm_count) facts.palm_count = row.palm_count;
-    if (row.varieties) facts.varieties = row.varieties;
+    if (row.units_count) facts.units_count = row.units_count;
+    if (row.material_types) facts.material_types = row.material_types;
     if (input.source_note) facts.registration_source = input.source_note;
 
     await prisma.partner.create({
@@ -1516,6 +1520,7 @@ export async function executeBulkRegisterPartners(
           ? row.size_class
           : null) as never,
         contactName: row.contact_name?.trim() || null,
+        subtype: row.subtype?.trim() || null,
         profileFacts: Object.keys(facts).length ? (facts as Prisma.InputJsonValue) : undefined,
       },
     });
@@ -1584,7 +1589,7 @@ const BACKEND_COMMON: ToolDefinition[] = [
 /** Which tools each agent slug may use. Unknown slugs get the backend common set. */
 export function toolsForAgent(slug: string): ToolDefinition[] {
   switch (slug) {
-    case 'abd-00':
+    case 'nou-00':
       return [...PARTNER_FACING_TOOLS, GET_REPORT_DETAIL_TOOL, SET_VALIDATION_RESULT_TOOL, APPROVE_REPORT_TOOL, LIST_PARTNERS_TOOL, REQUEST_TIER_CHANGE_TOOL, UPDATE_TASK_STATUS_TOOL, LIST_TASKS_TOOL, CREATE_COLLECTION_TICKET_TOOL, SUBMIT_PORTAL_APPLICATION_TOOL, LOG_SUGGESTION_TOOL, BULK_REGISTER_PARTNERS_TOOL];
     case 'int-01':
       return [READ_DOCUMENT_TOOL, LIST_DOCUMENTS_TOOL, GET_PARTNER_PROFILE_TOOL, LIST_PARTNER_REPORTS_TOOL, GET_REPORT_DETAIL_TOOL, GET_FACTS_TOOL, RESOLVE_QUANTITY_TOOL];
@@ -1607,19 +1612,19 @@ export function toolsForAgent(slug: string): ToolDefinition[] {
 // query_sector_metrics — powers "Ask the Sector". Structured,
 // aggregate-only reads over approved reports so an agent can answer
 // natural-language questions from live data. Never returns partner-level
-// rows (rule UPN-3): every cut is an aggregate, and per-emirate rows are
+// rows (rule NTR-3): every cut is an aggregate, and per-emirate rows are
 // suppressed below MIN_AGGREGATE partners.
 // ─────────────────────────────────────────────────────────────
 
 export const QUERY_SECTOR_METRICS_TOOL: ToolDefinition = {
   name: 'query_sector_metrics',
-  description: `Read live, AGGREGATE sector metrics to answer questions about the network. Never exposes a single partner's figures. Use this to answer officials' questions like "which emirates are behind on reporting?", "how much residue was diverted this year?", "what's our estimated climate contribution?". Returns JSON you then explain in the user's language (Arabic or English). Choose a metric and optionally a breakdown.`,
+  description: `Read live, AGGREGATE sector metrics to answer questions about the network. Never exposes a single partner's figures. Use this to answer officials' questions like "which emirates are behind on reporting?", "how many tons of textiles were diverted this year?", "what's our estimated climate contribution?". Returns JSON you then explain in the user's language (Arabic or English). Choose a metric and optionally a breakdown.`,
   input_schema: {
     type: 'object',
     properties: {
       metric: {
         type: 'string',
-        description: 'overview | participation | production | diversion | esg | tiers. "overview" returns the headline national numbers.',
+        description: 'overview | participation | production | diversion | esg | tiers. "production" = textile tons generated/received by reporting partners. "overview" returns the headline national numbers.',
       },
       group_by: {
         type: 'string',

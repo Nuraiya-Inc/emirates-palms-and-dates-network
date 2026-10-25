@@ -12,7 +12,7 @@ export async function GET() {
     await prisma.$queryRaw`SELECT 1`;
     return NextResponse.json({
       status: 'ok',
-      app: process.env.APP_NAME ?? 'Emirates Palm & Dates Network',
+      app: process.env.APP_NAME ?? 'Naseej Textile Recovery Platform',
       time: new Date().toISOString(),
     });
   } catch (err: unknown) {

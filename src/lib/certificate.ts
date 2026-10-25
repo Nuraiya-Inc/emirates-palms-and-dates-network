@@ -1,6 +1,6 @@
 /**
  * Official certificate generator — bilingual A4 landscape PDF under the
- * Center's mark, with a QR that resolves to the PUBLIC verification page
+ * network's mark, with a QR that resolves to the PUBLIC verification page
  * (/verify/[partnerId]). The scan is the power move: the network becomes a
  * verification authority.
  */
@@ -10,17 +10,19 @@ import QRCode from 'qrcode';
 import fs from 'fs';
 import path from 'path';
 
-const TEAL_950 = '#07272D';
-const TEAL_700 = '#124E57';
-const GOLD = '#B08A3E';
-const GOLD_L = '#D5B672';
-const SAND = '#F4F1EA';
+// Naseej palette: ink indigo ground, weave violet accent, recovery green,
+// warm linen canvas. Variable names are inherited from the base platform.
+const TEAL_950 = '#1F2A44'; // ink indigo
+const TEAL_700 = '#2E9E7E'; // recovery green
+const GOLD = '#6B4EFF';     // weave violet
+const GOLD_L = '#A595FF';   // light violet
+const SAND = '#F5F2EC';     // warm linen
 const MUTED = '#6E7A78';
 
 const TIER_TITLES: Record<string, { en: string; ar: string }> = {
   ACTIVE: { en: 'Active Member', ar: 'عضو نشط' },
-  CERTIFIED: { en: 'Certified Partner', ar: 'شريك معتمد' },
-  ELITE: { en: 'Elite Partner', ar: 'شريك نخبة' },
+  CERTIFIED: { en: 'Certified Recovery Partner', ar: 'شريك استعادة معتمد' },
+  ELITE: { en: 'Elite Recovery Partner', ar: 'شريك استعادة نخبة' },
   REGISTERED: { en: 'Registered Member', ar: 'عضو مسجّل' },
 };
 
@@ -85,13 +87,13 @@ export async function generateCertificate(input: CertificateInput): Promise<Buff
 
     // Canvas
     doc.rect(0, 0, W, H).fill('#FFFFFF');
-    // Border frame — double rule, gold inside teal
+    // Border frame — double rule, violet inside indigo
     doc.lineWidth(3).strokeColor(TEAL_950).rect(24, 24, W - 48, H - 48).stroke();
     doc.lineWidth(1.2).strokeColor(GOLD).rect(34, 34, W - 68, H - 68).stroke();
 
     // Header band
     doc.rect(35, 35, W - 70, 110).fill(TEAL_950);
-    const logo = logoBuffer('upn-logo-white.png');
+    const logo = logoBuffer('ntr-logo-white.png');
     if (logo) doc.image(logo, W / 2 - 110, 55, { width: 220 });
 
     // Title — Climate Contribution Certificate (M8)
@@ -99,7 +101,7 @@ export async function generateCertificate(input: CertificateInput): Promise<Buff
     doc.fillColor(GOLD).font('Helvetica').fontSize(11).text('CLIMATE CONTRIBUTION CERTIFICATE', 0, 168, {
       width: W, align: 'center', characterSpacing: 3.2,
     });
-    doc.fillColor(GOLD).font('Helvetica').fontSize(9).text('THE NATIONAL CENTER FOR PALMS AND DATES HEREBY RECOGNIZES', 0, 184, {
+    doc.fillColor(GOLD).font('Helvetica').fontSize(9).text('THE NASEEJ TEXTILE RECOVERY PLATFORM HEREBY RECOGNIZES', 0, 184, {
       width: W, align: 'center', characterSpacing: 1.6,
     });
 
@@ -128,18 +130,18 @@ export async function generateCertificate(input: CertificateInput): Promise<Buff
     // certificate a *contribution* certificate, not just membership.
     if (typeof input.avoidedTCO2e === 'number' && input.avoidedTCO2e > 0) {
       doc.fillColor(TEAL_700).font('Helvetica-Bold').fontSize(13).text(
-        `${(input.divertedTons ?? 0).toLocaleString('en-US')} tons diverted · ~${input.avoidedTCO2e.toLocaleString('en-US')} tCO₂e avoided (indicative)`,
+        `${(input.divertedTons ?? 0).toLocaleString('en-US')} tons of textiles diverted from landfill · ~${input.avoidedTCO2e.toLocaleString('en-US')} tCO₂e avoided (indicative)`,
         0, 404, { width: W, align: 'center' },
       );
     }
 
     doc.fillColor(MUTED).font('Helvetica').fontSize(10.5).text(
-      'as a partner in good standing of the Emirates Palm & Dates Network, in recognition of verified quarterly reporting and measured\nresidue diversion contributing to UAE Net Zero 2050, the Circular Economy Policy 2021–2031, and Food Security 2051.',
+      'as a partner in good standing of the Naseej Textile Recovery Platform, in recognition of verified quarterly diversion reporting and\nmeasured textile diversion from landfill, contributing to UAE Net Zero 2050 and the Circular Economy Policy 2021–2031.',
       0, 424, { width: W, align: 'center', lineGap: 3 },
     );
 
     doc.fillColor(MUTED).font('Helvetica-Oblique').fontSize(7.5).text(
-      'Avoided-emission figures are indicative estimates from measured tonnage — not verified carbon credits.',
+      'Avoided-emission figures are indicative estimates from measured tonnage, not verified carbon credits. Certification is the network\'s own recognition.',
       0, 456, { width: W, align: 'center' },
     );
 
@@ -151,7 +153,7 @@ export async function generateCertificate(input: CertificateInput): Promise<Buff
     doc.fillColor(MUTED).font('Helvetica').fontSize(9)
       .text(`Valid through 31 Dec ${year} — renewed by quarterly reporting`, 90, footY + 48);
     doc.moveTo(90, footY + 80).lineTo(300, footY + 80).lineWidth(1).strokeColor(MUTED).stroke();
-    doc.fillColor(MUTED).fontSize(9).text('Emirates Palm & Dates Network — Authorized Signatory', 90, footY + 86);
+    doc.fillColor(MUTED).fontSize(9).text('Naseej Textile Recovery Platform, Authorized Signatory', 90, footY + 86);
 
     doc.image(qrPng, W - 188, footY - 8, { width: 90 });
     doc.fillColor(MUTED).fontSize(8.5).text('Verify this certificate:', W - 205, footY + 88, { width: 125, align: 'center' });

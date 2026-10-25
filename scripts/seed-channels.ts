@@ -1,31 +1,32 @@
 /**
- * Seed default platform channels + memberships.
+ * Seed default platform channels + memberships (Naseej Textile Recovery Platform).
  *
  * Run ONCE after first deploy of the channels feature:
  *   npx tsx scripts/seed-channels.ts
  *
  * Idempotent — uses upserts. Re-running just reconciles memberships.
  *
- * Channel design:
- *   #leadership   — Nima, Kevin, Layla (MD), all 5 C-suite (private/exec)
- *   #finance      — John (CFO) + FIN-* agents + Layla + Nima
- *   #commercial   — Priya (CCO) + CCO sub-agents + Layla + Nima
- *   #technology   — Marcus (CTO) + TECH-* agents + Zara + Layla + Nima
- *   #marketing    — Ashley (CMO) + COMM-* agents + Layla + Nima
- *   #operations   — Omar (COO) + OPS-* agents + Layla + Nima
- *   #all-hands    — every user, every agent
+ * Channel design (7-agent roster, see src/lib/agents):
+ *   #leadership      — platform owner + Noura (private)
+ *   #network-ops     — intake, validation, registry: NOU-00, INT-01, VAL-01, REG-01 + staff
+ *   #certification   — tier and certification drafting: CER-01, VAL-01, NOU-00 + staff
+ *   #engagement      — campaigns, seasons, recognition: ENG-01, ANA-01, NOU-00 + staff
+ *   #all-hands       — every user, every agent
  */
 
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+const OWNER_EMAIL = (process.env.SEED_CEO_EMAIL ?? 'nima.vakili@kmigroup.com').toLowerCase();
+const DEMO_OFFICIAL_EMAIL = 'demo.official@naseej.nuraiya.ai';
+
 interface ChannelSpec {
   slug: string;
   name: string;
   description: string;
   isLeadership: boolean;
-  /** Default responder when nobody specifically addressed — usually the branch head. */
+  /** Default responder when nobody specifically addressed — usually Noura. */
   defaultResponderSlug: string | null;
   /** Slugs of agents that should be in this channel. */
   agentSlugs: 'all' | string[];
@@ -37,63 +38,45 @@ const CHANNELS: ChannelSpec[] = [
   {
     slug: 'leadership',
     name: '#leadership',
-    description: 'Exec-only — strategy, capital, hard decisions. Nima, Kevin, Layla, and the five branch heads.',
+    description: 'Owner-only. Platform direction, partner strategy, hard calls.',
     isLeadership: true,
-    defaultResponderSlug: 'md-00',
-    agentSlugs: ['md-00', 'cfo-00', 'cto-00', 'cco-00', 'cmo-00', 'coo-00'],
-    userEmails: ['nimav@safabioworks.com', 'kevinv@safabioworks.com'],
+    defaultResponderSlug: 'nou-00',
+    agentSlugs: ['nou-00'],
+    userEmails: [OWNER_EMAIL],
   },
   {
-    slug: 'finance',
-    name: '#finance',
-    description: 'Capital strategy, fundraising, financial ops. CFO + finance functional agents.',
+    slug: 'network-ops',
+    name: '#network-ops',
+    description: 'Intake, validation and registry: load reports, chain-of-custody checks, partner records.',
     isLeadership: false,
-    defaultResponderSlug: 'cfo-00',
-    agentSlugs: ['cfo-00', 'fin-01', 'fin-04', 'fin-05', 'md-00'],
-    userEmails: ['nimav@safabioworks.com'],
+    defaultResponderSlug: 'nou-00',
+    agentSlugs: ['nou-00', 'int-01', 'val-01', 'reg-01'],
+    userEmails: [OWNER_EMAIL, DEMO_OFFICIAL_EMAIL],
   },
   {
-    slug: 'commercial',
-    name: '#commercial',
-    description: 'Customer & partner pipeline — Emirates Biotech, Agthia, Almarai. CCO + commercial agents.',
+    slug: 'certification',
+    name: '#certification',
+    description: 'Tier changes, certification drafts and standing reviews. Agents draft, officials approve.',
     isLeadership: false,
-    defaultResponderSlug: 'cco-00',
-    agentSlugs: ['cco-00', 'md-00'],
-    userEmails: ['nimav@safabioworks.com'],
+    defaultResponderSlug: 'cer-01',
+    agentSlugs: ['cer-01', 'val-01', 'nou-00'],
+    userEmails: [OWNER_EMAIL, DEMO_OFFICIAL_EMAIL],
   },
   {
-    slug: 'technology',
-    name: '#technology',
-    description: 'Strain, process, IP, R&D. CTO + tech functional agents.',
+    slug: 'engagement',
+    name: '#engagement',
+    description: 'Seasonal campaigns, benchmarks, recognition and partner communications.',
     isLeadership: false,
-    defaultResponderSlug: 'cto-00',
-    agentSlugs: ['cto-00', 'tech-01', 'tech-04', 'tech-07', 'tech-08', 'md-00'],
-    userEmails: ['nimav@safabioworks.com', 'zara@safabioworks.com'],
-  },
-  {
-    slug: 'marketing',
-    name: '#marketing',
-    description: 'Brand, press, public materials. CMO + comms agents.',
-    isLeadership: false,
-    defaultResponderSlug: 'cmo-00',
-    agentSlugs: ['cmo-00', 'comm-01', 'md-00'],
-    userEmails: ['nimav@safabioworks.com'],
-  },
-  {
-    slug: 'operations',
-    name: '#operations',
-    description: 'Legal, hiring, PRO, supply, plant. COO + ops agents.',
-    isLeadership: false,
-    defaultResponderSlug: 'coo-00',
-    agentSlugs: ['coo-00', 'ops-01', 'ops-03', 'ops-05', 'ops-06', 'md-00'],
-    userEmails: ['nimav@safabioworks.com'],
+    defaultResponderSlug: 'eng-01',
+    agentSlugs: ['eng-01', 'ana-01', 'nou-00'],
+    userEmails: [OWNER_EMAIL, DEMO_OFFICIAL_EMAIL],
   },
   {
     slug: 'all-hands',
     name: '#all-hands',
-    description: 'Cross-functional broadcast. Everyone — every user, every agent.',
+    description: 'Cross-functional broadcast. Everyone: every user, every agent.',
     isLeadership: false,
-    defaultResponderSlug: 'md-00',
+    defaultResponderSlug: 'nou-00',
     agentSlugs: 'all',
     userEmails: 'all',
   },

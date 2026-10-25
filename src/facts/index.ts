@@ -420,6 +420,6 @@ export function validateFacts(): ValidationResult {
 // Back-compat aliases — the runtime imported these names historically.
 // ─────────────────────────────────────────────────────────────────
 
-export { NTR_FACTS as PLATFORM_FACTS, NTR_FACTS as UPN_FACTS };
+export { NTR_FACTS as PLATFORM_FACTS };
 export type PlatformFacts = typeof NTR_FACTS;
-export type UpnFacts = NtrFacts;
+

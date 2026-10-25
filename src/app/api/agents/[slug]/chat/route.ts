@@ -557,7 +557,7 @@ export async function POST(
     threadId: thread.id,
     consultationDepth: 0,
     // Provenance for resolve_quantity → QuantityResolution rows:
-    // figure → the farmer's message → the media it arrived in.
+    // figure → the partner's message → the media it arrived in.
     currentMessageId: userMessage.id,
     currentAttachmentDocIds: attachedDocIds,
   };

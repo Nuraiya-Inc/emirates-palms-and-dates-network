@@ -4,7 +4,7 @@
  * Partner portal — server actions.
  *
  * Every action resolves the signed-in user's linked Partner record and acts
- * ONLY on it (hard rule UPN-3). All mutations write audit rows via the
+ * ONLY on it (hard rule NTR-3). All mutations write audit rows via the
  * ActivityEvent stream where staff attention is useful.
  */
 
@@ -39,12 +39,12 @@ export async function updateProfile(formData: FormData) {
   const city = String(formData.get('city') ?? '').trim() || null;
   const preferredLang = formData.get('preferredLang') === 'en' ? 'en' : 'ar';
 
-  const factKeys = ['palm_count', 'varieties', 'irrigation', 'capacity_tpy', 'certifications', 'about'] as const;
+  const factKeys = ['units_count', 'floor_area_m2', 'material_types', 'streams_handled', 'capacity_tpy', 'certifications', 'about'] as const;
   const existing = (partner.profileFacts as Record<string, unknown> | null) ?? {};
   const facts: Record<string, unknown> = { ...existing };
   for (const k of factKeys) {
     const v = String(formData.get(k) ?? '').trim();
-    if (v) facts[k] = k === 'palm_count' || k === 'capacity_tpy' ? Number(v) || v : v;
+    if (v) facts[k] = k === 'units_count' || k === 'floor_area_m2' || k === 'capacity_tpy' ? Number(v) || v : v;
   }
 
   await prisma.partner.update({
@@ -55,13 +55,17 @@ export async function updateProfile(formData: FormData) {
   revalidatePath('/portal');
 }
 
-// ── Waste collection tickets ─────────────────────────────────
+// ── Pickup requests (collection tickets for textile loads) ───
 
 export async function createTicket(formData: FormData) {
   const { partner } = await requirePartner();
   const stream = String(formData.get('stream')) as WasteStream;
   const tons = Number(formData.get('estimatedTons'));
   if (!tons || tons <= 0) return;
+  const readyFromRaw = String(formData.get('readyFrom') ?? '').trim();
+  const readyFromDate = readyFromRaw ? new Date(readyFromRaw) : null;
+  const readyFrom = readyFromDate && !Number.isNaN(readyFromDate.getTime()) ? readyFromDate : null;
+  const city = String(formData.get('city') ?? '').trim() || partner.city;
 
   const ticket = await prisma.collectionTicket.create({
     data: {
@@ -69,7 +73,8 @@ export async function createTicket(formData: FormData) {
       stream,
       estimatedTons: tons,
       region: partner.region as Region,
-      city: partner.city,
+      city,
+      readyFrom,
       locationNote: String(formData.get('locationNote') ?? '').trim() || null,
       notes: String(formData.get('notes') ?? '').trim() || null,
     },
@@ -78,7 +83,7 @@ export async function createTicket(formData: FormData) {
     data: {
       kind: 'PARTNER_ONBOARDED', // reuse generic partner kind for feed visibility
       severity: 'INFO',
-      title: `Collection ticket: ${partner.registryNo} · ${stream} · ${tons}t (${partner.region})`,
+      title: `Pickup request: ${partner.registryNo} · ${stream} · ${tons}t (${partner.region})`,
       entityType: 'CollectionTicket',
       entityId: ticket.id,
       payload: {},
@@ -89,7 +94,10 @@ export async function createTicket(formData: FormData) {
 
 export async function claimTicket(formData: FormData) {
   const { partner } = await requirePartner();
-  if (partner.type !== 'RECYCLER' && partner.type !== 'COLLECTOR' && partner.type !== 'FACTORY') return;
+  // Offtakers and movers may claim a load: recyclers, sorters, hauliers,
+  // diversion units, charities, and manufacturers taking back material.
+  const CLAIMERS = ['RECYCLER', 'SORTER', 'HAULIER', 'DIVERSION_UNIT', 'CHARITY', 'MANUFACTURER'];
+  if (!CLAIMERS.includes(partner.type)) return;
   const id = String(formData.get('ticketId'));
   await prisma.collectionTicket.updateMany({
     where: { id, status: 'OPEN', partnerId: { not: partner.id } },
@@ -112,7 +120,7 @@ export async function confirmCollected(formData: FormData) {
     data: { status: 'COLLECTED', collectedAt: new Date(), actualTons },
   });
 
-  // Traceability: the collection becomes a MaterialTransfer edge.
+  // Chain of custody: the collected load becomes a MaterialTransfer edge.
   if (ticket.claimedByPartnerId) {
     const now = new Date();
     const q = Math.floor(now.getUTCMonth() / 3) + 1;

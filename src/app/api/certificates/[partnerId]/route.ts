@@ -35,7 +35,7 @@ export async function GET(
     return NextResponse.json(
       {
         error: 'Certificate unavailable while standing is paused',
-        detail: 'Complete your reporting record with Abdullah to restore standing — the certificate returns immediately.',
+        detail: 'Complete your diversion reporting record with Noura to restore standing. The certificate returns immediately.',
       },
       { status: 403 },
     );
@@ -74,7 +74,7 @@ export async function GET(
   return new NextResponse(new Uint8Array(pdf), {
     headers: {
       'Content-Type': 'application/pdf',
-      'Content-Disposition': `inline; filename="UPN-Certificate-${partner.registryNo}.pdf"`,
+      'Content-Disposition': `inline; filename="NTR-Certificate-${partner.registryNo}.pdf"`,
     },
   });
 }

@@ -6,11 +6,11 @@
  *   - sets DirectoryEntry.relationship = REGISTERED and links partnerId
  *   - writes an AuditLog row + a PARTNER_ONBOARDED activity event
  *
- * UPN-2: the new partner is created at the default REGISTERED tier — no
+ * NTR-2: the new partner is created at the default REGISTERED tier — no
  * tier/certification/standing is set here, so no ApprovalRequest is needed.
  * Any subsequent tier change goes through the approvals queue.
  *
- * UPN-7: only after this call does the entity enter partner aggregates —
+ * NTR-7: only after this call does the entity enter partner aggregates —
  * DirectoryEntry rows are never counted.
  *
  * Staff-only (TEAM_MEMBER and above). Idempotent via the unique partnerId
