@@ -1,5 +1,5 @@
 /**
- * Portal home — the partner's standing, this quarter's status, and one
+ * Portal home: the partner's standing, this quarter's status, and one
  * benchmark insight. Dignity first: the tier card is the hero.
  */
 
@@ -137,7 +137,7 @@ export default async function PortalHome() {
               <div className="mb-1.5 flex justify-between text-xs text-white/80">
                 <span>
                   {quartersToNext === 0
-                    ? t(lang, `Eligible for ${nextTier.nameEn} — under network review`, `مؤهلون لمستوى «${nextTier.nameAr}» — قيد اعتماد الشبكة`)
+                    ? t(lang, `Eligible for ${nextTier.nameEn}, under network review`, `مؤهلون لمستوى «${nextTier.nameAr}»، قيد اعتماد الشبكة`)
                     : t(lang, `${quartersToNext} approved quarter${quartersToNext === 1 ? '' : 's'} to ${nextTier.nameEn}`, `${quartersToNext} من التقارير المعتمدة تفصلكم عن «${nextTier.nameAr}»`)}
                 </span>
                 <span>{t(lang, `${approvedCount} approved`, `${approvedCount} معتمد`)}</span>
@@ -373,7 +373,7 @@ export default async function PortalHome() {
         <section className="fade-up fade-up-3 rounded-2xl border border-line bg-white p-5 shadow-card">
           <div className="section-rule" aria-hidden />
           <h2 className="text-lg font-semibold tracking-tight text-brand-800">
-            {lang === 'ar' ? `منطقتكم — ${baseline.nameAr} · ${baseline.nameEn}` : `Your region — ${baseline.nameEn} · ${baseline.nameAr}`}
+            {lang === 'ar' ? `إمارتكم: ${baseline.nameAr} · ${baseline.nameEn}` : `Your emirate: ${baseline.nameEn} · ${baseline.nameAr}`}
           </h2>
           <div className="mt-1 flex items-center gap-1.5 text-[11px] text-muted">
             {t(lang, 'Indicative allocation of the reported national figure', 'توزيع تقديري للرقم الوطني المُعلن')}

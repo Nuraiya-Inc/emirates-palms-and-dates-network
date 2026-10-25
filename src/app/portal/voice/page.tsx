@@ -7,27 +7,27 @@ import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/db';
 import { redirect } from 'next/navigation';
 import { submitSuggestion } from '@/lib/portal-actions';
+import { getPortalLang, t } from '@/lib/portal-lang';
 
 export const dynamic = 'force-dynamic';
-
-const KINDS: Record<string, string> = {
-  REQUEST: 'Request · طلب',
-  FEEDBACK: 'Feedback · ملاحظة',
-  IDEA: 'Idea · فكرة',
-  COMPLAINT: 'Complaint · شكوى',
-};
-
-const STATUS_LABEL: Record<string, string> = {
-  NEW: 'Received',
-  REVIEWED: 'Reviewed by the network',
-  PLANNED: 'Planned',
-  DONE: 'Done',
-  DECLINED: 'Not planned',
-};
 
 export default async function VoicePage() {
   const session = await auth();
   if (!session?.user) redirect('/signin');
+  const lang = await getPortalLang();
+  const KINDS: Record<string, string> = {
+    REQUEST: t(lang, 'Request · طلب', 'طلب · Request'),
+    FEEDBACK: t(lang, 'Feedback · ملاحظة', 'ملاحظة · Feedback'),
+    IDEA: t(lang, 'Idea · فكرة', 'فكرة · Idea'),
+    COMPLAINT: t(lang, 'Complaint · شكوى', 'شكوى · Complaint'),
+  };
+  const STATUS_LABEL: Record<string, string> = {
+    NEW: t(lang, 'Received', 'تم الاستلام'),
+    REVIEWED: t(lang, 'Reviewed by the network', 'راجعته الشبكة'),
+    PLANNED: t(lang, 'Planned', 'مخطط له'),
+    DONE: t(lang, 'Done', 'تم'),
+    DECLINED: t(lang, 'Not planned', 'غير مخطط له'),
+  };
   const partner = await prisma.partner.findUnique({
     where: { userId: session.user.id },
     include: { suggestions: { orderBy: { createdAt: 'desc' }, take: 20 } },
@@ -38,10 +38,13 @@ export default async function VoicePage() {
     <div className="space-y-5">
       <header className="fade-up">
         <div className="section-rule" aria-hidden />
-        <h1 className="text-2xl font-semibold tracking-tight text-brand-800">Your voice</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-brand-800">{t(lang, 'Your voice', 'صوتكم')}</h1>
         <p className="text-sm text-muted">
-          صوتك يصل · Requests, ideas, and honest feedback go straight to the Center — and you can
-          see what happens to them.
+          {t(
+            lang,
+            'Requests, ideas and honest feedback go straight to the network team, and you can see what happens to them.',
+            'الطلبات والأفكار والملاحظات الصريحة تصل مباشرة إلى فريق الشبكة، وترون ما يحدث لها.',
+          )}
         </p>
       </header>
 
@@ -50,25 +53,25 @@ export default async function VoicePage() {
           <div className="flex flex-wrap gap-3">
             {Object.entries(KINDS).map(([k, v], i) => (
               <label key={k} className="flex cursor-pointer items-center gap-1.5 text-sm">
-                <input type="radio" name="kind" value={k} defaultChecked={i === 0} className="accent-[#124E57]" />
+                <input type="radio" name="kind" value={k} defaultChecked={i === 0} className="accent-[#1F2A44]" />
                 {v}
               </label>
             ))}
           </div>
           <textarea
             name="body" rows={4} required
-            placeholder="Tell the Center what you need, what's not working, or the idea that would help your operation…"
+            placeholder={t(lang, 'Tell the network what you need, what is not working, or the idea that would help your operation.', 'أخبروا الشبكة بما تحتاجونه، أو ما لا يعمل، أو الفكرة التي تساعد منشأتكم.')}
             className="w-full rounded-lg border border-line bg-white px-3 py-2 text-sm"
           />
           <button className="rounded-xl bg-brand-700 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-brand-600">
-            Send to the network
+            {t(lang, 'Send to the network', 'إرسال إلى الشبكة')}
           </button>
         </form>
       </section>
 
       <section className="fade-up fade-up-2 space-y-3">
-        <h2 className="text-base font-semibold text-brand-800">Previously sent</h2>
-        {partner.suggestions.length === 0 && <p className="text-sm text-muted">Nothing sent yet.</p>}
+        <h2 className="text-base font-semibold text-brand-800">{t(lang, 'Previously sent', 'المرسَل سابقًا')}</h2>
+        {partner.suggestions.length === 0 && <p className="text-sm text-muted">{t(lang, 'Nothing sent yet.', 'لم يُرسل شيء بعد.')}</p>}
         {partner.suggestions.map((s) => (
           <div key={s.id} className="rounded-2xl border border-line bg-white p-4 shadow-card">
             <div className="flex items-center justify-between gap-3">
@@ -82,7 +85,7 @@ export default async function VoicePage() {
             <p className="mt-2 text-sm text-ink">{s.body}</p>
             {s.staffNote && (
               <p className="mt-2 rounded-lg bg-brand-50 p-3 text-xs leading-relaxed text-brand-800">
-                Network: {s.staffNote}
+                {t(lang, 'Network', 'الشبكة')}: {s.staffNote}
               </p>
             )}
           </div>
