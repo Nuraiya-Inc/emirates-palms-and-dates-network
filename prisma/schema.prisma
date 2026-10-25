@@ -285,8 +285,8 @@ enum ApprovalKind {
   EXTERNAL_COMMUNICATION // any draft email/LinkedIn for a named investor or partner
   PARTNER_LANGUAGE // legacy (inherited runtime)
   IP_DISCLOSURE // legacy (inherited runtime)
-  TIER_CHANGE // NCPD: tier/standing change drafted by CER-01 — official approval applies it
-  REGISTRY_CHANGE // NCPD: public registry change set drafted by REG-01
+  TIER_CHANGE // tier/standing change drafted by CER-01 — official approval applies it
+  REGISTRY_CHANGE // public registry change set drafted by REG-01
 }
 
 enum ApprovalStatus {
@@ -1455,7 +1455,7 @@ enum ActivityEventKind {
   // the next morning brief.
   OPINION_PUSHBACK
 
-  // NCPD Partner Network
+  // Naseej partner network
   REPORT_SUBMITTED
   REPORT_VALIDATED
   REPORT_APPROVED
@@ -1550,7 +1550,7 @@ model UserNotificationPreference {
 }
 
 // =============================================================
-// NCPD Partner Network — domain models (v0)
+// Naseej Textile Recovery Platform — domain models (v0)
 // =============================================================
 
 enum Region {
@@ -1564,11 +1564,16 @@ enum Region {
 }
 
 enum PartnerType {
-  FARM
-  FACTORY
-  COMPANY
   RECYCLER
-  COLLECTOR
+  INSTALLER
+  DIVERSION_UNIT
+  CHARITY
+  HOSPITALITY
+  FACILITY
+  RETAILER
+  MANUFACTURER
+  HAULIER
+  SORTER
 }
 
 enum PartnerSizeClass {
@@ -1591,33 +1596,38 @@ enum PartnerStanding {
 }
 
 enum ReportPeriodStatus {
-  DRAFT // Abdullah is still collecting / clarifying
+  DRAFT // Noura is still collecting / clarifying
   SUBMITTED // partner confirmed; awaiting validation
-  VALIDATED // VAL-01 passed it; awaiting NCPD approval if flagged
+  VALIDATED // VAL-01 passed it; awaiting network-official approval if flagged
   APPROVED // counted for tier standing
   RETURNED // sent back to partner with questions
 }
 
 enum WasteStream {
-  DATES
-  PITS
-  FRONDS
-  FROND_BASE
-  FIBER
+  PI_CARPET
+  PC_CARPET_TILE
+  PC_CARPET_BROADLOOM
+  APPAREL_WEARABLE
+  APPAREL_NONWEARABLE
+  HOSPITALITY_TEXTILE
+  TECHNICAL_TEXTILE
+  TURF
   OTHER
 }
 
 enum WasteFate {
-  FEED
-  SOLD
-  RECYCLED
-  BURNED
-  BURIED
-  DUMPED
+  REUSED
+  DONATED
+  RECYCLED_POLYMER
+  RECYCLED_FIBER
+  DOWNCYCLED
+  EXPORTED
+  INCINERATED
+  LANDFILLED
   UNKNOWN
 }
 
-/// How a farmer utterance reached the resolver — for the audit trail.
+/// How a partner utterance reached the resolver — for the audit trail.
 enum QuantitySource {
   CHAT_TEXT
   VOICE_NOTE
@@ -1627,13 +1637,13 @@ enum QuantitySource {
 
 model Partner {
   id             String            @id @default(cuid())
-  /// Public registry number, e.g. "NCPD-QSM-00042"
+  /// Public registry number, e.g. "NTR-DXB-00042"
   registryNo     String            @unique
   nameEn         String
   nameAr         String?
   type           PartnerType
   sizeClass      PartnerSizeClass?
-  factorySubtype String? // PACKING | TRANSFORMATIVE (factories only)
+  subtype        String? // e.g. RECYCLER: POLYMER | FIBER | MIXED · HOSPITALITY: HOTEL | MALL | AIRPORT
   region         Region
   city           String?
   tier           PartnerTier       @default(REGISTERED)
@@ -1645,8 +1655,8 @@ model Partner {
   contactEmail  String?
   preferredLang String  @default("ar") // "ar" | "en"
 
-  /// Structured profile facts Abdullah has learned (palm count, varieties,
-  /// capacity…) — the "never ask twice" memory.
+  /// Structured profile facts Noura has learned (sites, rooms, floor area,
+  /// material types, capacity…) — the "never ask twice" memory.
   profileFacts Json?
 
   /// Optional login for the partner portal.
@@ -1712,11 +1722,11 @@ model ProductionRecord {
   reportId String          @unique
   report   QuarterlyReport @relation(fields: [reportId], references: [id], onDelete: Cascade)
 
-  palmTreeCount          Int?
-  datesProducedTons      Float? // farms: harvested; factories: received
-  datesSoldTons          Float?
-  varieties              String[] @default([])
-  processingCapacityTons Float? // factories/recyclers
+  unitsCount             Int? // rooms / sites / jobs / stores, by participant type
+  textileGeneratedTons   Float? // sources: generated; recyclers & sorters: received
+  textileRecoveredTons   Float? // tons that left to a productive fate
+  materialTypes          String[] @default([]) // e.g. "nylon 6", "PP", "cotton"
+  processingCapacityTons Float? // recyclers / sorters / diversion units
   notes                  String?
 
   /// Provenance — the resolve_quantity step that produced these figures.
@@ -1740,7 +1750,7 @@ model WasteRecord {
 
   /// Provenance — the resolve_quantity step that produced `tons`.
   /// `tons` stores the resolved MIDPOINT; the honest low/high range and
-  /// the farmer's original words live on the resolution row.
+  /// the partner's original words live on the resolution row.
   resolutionId String?
   resolution   QuantityResolution? @relation(fields: [resolutionId], references: [id])
 
@@ -1752,7 +1762,7 @@ model WasteRecord {
 /// Audit-grade provenance for every recorded quantity.
 ///
 /// The resolve_quantity tool (or an inline raw_text resolve inside a
-/// record tool) creates one row per utterance: the farmer's verbatim
+/// record tool) creates one row per utterance: the partner's verbatim
 /// words, the unit the resolver matched, the honest kg range, the
 /// confidence, and a link back to the source message/document (voice
 /// note, ledger photo). This is what turns "the record shows the
@@ -1760,7 +1770,7 @@ model WasteRecord {
 model QuantityResolution {
   id String @id @default(cuid())
 
-  /// Farmer's words verbatim (dialect preserved).
+  /// Partner's words verbatim (dialect preserved).
   rawText    String
   /// Normalized text the resolver parsed (Latin digits, no diacritics).
   normalized String
@@ -1781,7 +1791,7 @@ model QuantityResolution {
   streamMatched String?
   fate          WasteFate?
   fateMatched   String?
-  variety       String?
+  materialType  String?
   periodYear    Int?
   periodQuarter Int?
   periodBasis   String? // SEASON | HIJRI | EXPLICIT | APPROX
@@ -1845,27 +1855,27 @@ model TierEvent {
   @@index([partnerId, createdAt(sort: Desc)])
 }
 
-/// Static regional baseline from the NCPD May 2026 deck (Restricted).
+/// Regional textile baseline — indicative allocations of the national figure (see src/facts).
 /// Seeded once; dashboards read measured data first and fall back to this.
 model RegionBaseline {
-  region               Region @id
-  nameAr               String
-  palmTrees            Int
-  dateProductionTons   Int
-  farmDateWasteTons    Int
-  palmByproductsTons   Int
-  frondsTons           Int
-  frondBaseTons        Int
-  fiberTons            Int
-  otherByproductTons   Int
-  dateFactories        Int?
-  factoryReceiptTons   Int?
-  factoryDateWasteTons Int?
-  recyclingPlants      Int?
+  region                 Region @id
+  nameAr                 String
+  /// REPORTED = figure published by the national initiative · INDICATIVE = allocation placeholder
+  baselineQuality        String @default("INDICATIVE")
+  textileWasteTons       Int
+  landfilledTons         Int
+  carpetTons             Int
+  apparelTons            Int
+  hospitalityTextileTons Int
+  otherTextileTons       Int
+  hotelRooms             Int?
+  recyclers              Int?
+  sorters                Int?
+  collectionPoints       Int?
 }
 
 // =============================================================
-// NCPD Partner Portal — network services (v1)
+// Naseej partner portal — network services (v1)
 // =============================================================
 
 enum ApplicationKind {
@@ -1934,13 +1944,13 @@ model CollectionTicket {
 }
 
 enum ListingCategory {
-  DATES
-  PITS
-  FRONDS
-  FROND_BASE
-  FIBER
-  COMPOST
-  PRODUCTS
+  CARPET_PI
+  CARPET_PC
+  APPAREL
+  HOSPITALITY_TEXTILE
+  TECHNICAL_TEXTILE
+  FIBER_FEEDSTOCK
+  RECYCLED_PRODUCTS
   OTHER
 }
 
@@ -2064,14 +2074,14 @@ model AnnouncementRsvp {
 //   via DirectoryEntry.partnerId. Aggregates read Partner only.
 // =============================================================
 
-/// Six stages of the UAE date-palm value chain.
+/// Six stages of the UAE textile recovery value chain.
 enum ValueChainStage {
-  GROWERS_FARMS // 1. Growers & Farms
-  PROCESSORS_MANUFACTURERS // 2. Processors & Manufacturers
-  WASTE_COLLECTION // 3. Waste Collection & By-products
-  TRADERS_IMPORT_EXPORT // 4. Traders, Importers & Exporters
-  BUYERS_END_USERS // 5. Buyers & End-users
-  ECOSYSTEM // 6. Ecosystem (Govt, Research, Events, Funders)
+  SOURCES_GENERATORS // 1. Sources & Generators (hotels, FM, retail, fit-out, events)
+  COLLECTION_LOGISTICS // 2. Collection, Hauling & Diversion Units
+  SORTING_GRADING // 3. Sorters, Graders & Exporters
+  RECYCLERS_PROCESSORS // 4. Recyclers & Processors (polymer, fibre, downcycling)
+  REUSE_CHARITY // 5. Reuse, Charity & Resale
+  ECOSYSTEM // 6. Ecosystem (Govt, National Initiative, Research, Funders, Brands)
 }
 
 /// Outreach priority from the desk research. DISTINCT from PartnerTier —
@@ -2105,7 +2115,7 @@ model DirectoryEntry {
   nameEn     String
   nameAr     String?
   stage      ValueChainStage
-  segment    String // e.g. "Farm / Grower", "Trader / Wholesaler"
+  segment    String // e.g. "Hotel group", "Carpet contractor", "Fibre recycler"
   alsoRoles  String? // secondary roles, e.g. "Government / Regulator"
   priority   DirectoryPriority
   confidence ConfidenceLevel
@@ -2126,8 +2136,8 @@ model DirectoryEntry {
   email   String?
   address String?
 
-  /// Internal Safa BioWorks context (feedstock relevance). INTERNAL ONLY —
-  /// keep off neutral/public platform surfaces to honor rule UPN-1.
+  /// Internal offtaker context (Chemplax feedstock relevance). INTERNAL ONLY —
+  /// keep off neutral/public platform surfaces to honor rule NTR-1.
   safaRelevance String? @db.Text
 
   sources String[] @default([])
